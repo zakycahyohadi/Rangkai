@@ -12,7 +12,10 @@ window.RANGKAI_CONFIG={goatcounter:'zaky'};
 <title>Rangkai Skematik</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&family=JetBrains+Mono:wght@400..700&display=swap" media="print" onload="this.media='all'">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23101925'/%3E%3Cpath d='M5 18h5l2.8-8.5 5 17 3-8.5H27' fill='none' stroke='%23f08a4b' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#f2f4f6" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0a0e13" media="(prefers-color-scheme: dark)">
 <style>
 /* Layout: full-bleed drafting sheet; floating glass panels (tool rail, library, inspector) on desktop; bottom dock + sheets on phone */
 :root{
@@ -331,20 +334,20 @@ table.bom td:first-child{font-weight:700;font-variant-numeric:tabular-nums}
   .search{width:auto}
   .ib.text .lbl{display:none}
   .app-lib-open .hud{left:70px}
+  .simbar{left:calc(50% - 116px);max-width:calc(100% - 420px)}
   .lib{box-shadow:0 20px 60px rgba(0,0,0,.25)}
 }
 /* phone */
-@media (max-width:760px){
+@media (max-width:760px),(max-height:520px){
   .top{padding:6px 10px;gap:4px;min-height:52px}
-  .brand .wm,.seg .lbl,.only-wide{display:none!important}
+  .brand,.seg .lbl,.only-wide,.top .grow{display:none!important}
   .only-phone{display:inline-flex!important}
   .seg{margin-left:2px}
   .seg button{padding:6px 10px}
-  .proj{max-width:none;flex:1;padding:6px 6px}
+  .proj{max-width:none;flex:1;padding:6px 4px}
   .rail{display:none}
-  .hud{left:12px;right:12px;bottom:auto;top:10px}
-  .hud .hint{display:none}
-  .simbar{top:46px;font-size:12px}
+  .hud{display:none}
+  .simbar{top:10px;font-size:12px;left:50%;max-width:calc(100% - 32px)}
   .panel{position:fixed;left:0;right:0;top:auto;bottom:0;width:auto;border-radius:20px 20px 0 0;max-height:68%;height:68%;z-index:20;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px)}
   .app-lib-closed .lib{display:flex}
   .panel.open{transform:none}
@@ -521,7 +524,7 @@ let hlNet=null, simOn=false, tab='props', libOpen=true, sheet=null;
 let view={x:0,y:0,k:2}, cur=[0,0], hoverPin=null;
 let undoS=[],redoS=[],last='', clip=null, pasteN=0;
 let A=null, SIM=null;
-const isPhone=()=>matchMedia('(max-width:760px)').matches;
+const PHONE_MQ='(max-width:760px),(max-height:520px)',isPhone=()=>matchMedia(PHONE_MQ).matches;
 const isNarrow=()=>matchMedia('(max-width:1000px)').matches;
 
 function store(k,v){try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v))}catch(e){}}
@@ -671,7 +674,7 @@ function simulate(){
   R.nodeV.forEach(v=>{R.vmax=Math.max(R.vmax,Math.abs(v))});
   const Vp=pt=>{const r=A.find(K(pt[0],pt[1]));return R.nodeV.has(r)?R.nodeV.get(r):0};
   S.parts.forEach(p=>{
-    if(!SIMK.has(p.k)||p.k==='VCC'&&false)return;
+    if(!SIMK.has(p.k))return;
     const pv=pinsOf(p).map(pn=>Vp(pn.pt)),val=parseSI(p.val),res={};
     switch(p.k){
       case 'R':{const r=val>0?val:1e3,rt=ratingOf(p);res.V=pv[0]-pv[1];res.I=res.V/r;res.P=res.I*res.I*r;res.rate=rt;
@@ -965,7 +968,7 @@ function renderChrome(){
   // sim bar
   const sb=$('#simbar');
   if(simOn&&SIM){sb.hidden=false;sb.classList.toggle('err',!SIM.ok);
-    const msg=SIM.ok?L(`Simulasi DC aktif · ${SIM.iters} iterasi`,`DC simulation live · ${SIM.iters} iterations`)+(S.parts.some(p=>p.k==='SW')?L(' · ketuk saklar untuk menyalakan',' · tap a switch to flip it'):'')
+    const msg=SIM.ok?L('Simulasi DC aktif','DC simulation live')+(S.parts.some(p=>p.k==='SW')?L(' · ketuk saklar untuk menyalakan',' · tap a switch to flip it'):'')
       :SIM.err==='noGround'?L('Tambahkan simbol Ground atau baterai sebagai titik 0 V','Add a Ground symbol or a battery as the 0 V reference')
       :SIM.err==='empty'?L('Belum ada komponen yang bisa disimulasikan','Nothing to simulate yet')
       :SIM.err==='singular'?L('Rangkaian tidak bisa dipecahkan. Cek bagian yang mengambang.','The circuit cannot be solved. Look for floating parts.')
@@ -1227,7 +1230,7 @@ function paste(){if(!clip)return;pasteN++;const d=20*pasteN;sel.clear();const us
   clip.wires.forEach(o=>{const w={id:'w'+(++S.n),x1:o.x1+d,y1:o.y1+d,x2:o.x2+d,y2:o.y2+d};S.wires.push(w);sel.add(w.id)});changed()}
 function zoomAt(f,sx,sy){const r=sv.getBoundingClientRect();if(sx==null){sx=r.width/2;sy=r.height/2}const nk=clamp(view.k*f,.35,12),wx=(sx-view.x)/view.k,wy=(sy-view.y)/view.k;view.k=nk;view.x=sx-wx*nk;view.y=sy-wy*nk;applyView()}
 function visibleRect(){const r=sv.getBoundingClientRect();let l=0,t=0,rt=r.width,b=r.height;
-  if(!isPhone()){t=56;b-=50;if(libOpen&&!isNarrow())l=$('#lib').getBoundingClientRect().right-r.left+8;else l=64;rt=$('#insp').getBoundingClientRect().left-r.left-8}else{t=40;b-=70}
+  if(!isPhone()){t=56;b-=50;if(libOpen&&!isNarrow())l=$('#lib').getBoundingClientRect().right-r.left+8;else l=64;rt=$('#insp').getBoundingClientRect().left-r.left-8}else{t=simOn?52:12;b-=sel.size?70:12}
   return {l,t,w:Math.max(rt-l,120),h:Math.max(b-t,120)}}
 function fit(){const b=boundsOf(S),v=visibleRect();if(!b){view.k=2;view.x=v.l+v.w/2;view.y=v.t+v.h/2;applyView();return}
   const bw=b[2]-b[0]+60,bh=b[3]-b[1]+60;view.k=clamp(Math.min(v.w/bw,v.h/bh),.35,5);view.x=v.l+v.w/2-(b[0]+b[2])/2*view.k;view.y=v.t+v.h/2-(b[1]+b[3])/2*view.k;applyView()}
@@ -1249,10 +1252,10 @@ function act(a,el){
     case 'selall':sel=new Set([...S.parts.map(p=>p.id),...S.wires.map(w=>w.id)]);render({noSim:true});break;
     case 'undo':undo();break;case 'redo':redo();break;
     case 'zin':zoomAt(1.25);break;case 'zout':zoomAt(.8);break;case 'fit':fit();break;
-    case 'mode-sim':simOn=true;render();if(SIM&&SIM.ok&&!isPhone())tab=tab==='props'&&!sel.size?'props':tab;break;
+    case 'mode-sim':simOn=true;render();break;
     case 'mode-design':simOn=false;render();break;
     case 'lib':if(isPhone()){sheet=sheet==='lib'?null:'lib';renderChrome()}else{libOpen=!libOpen;store('rangkai2.lib',libOpen?'1':'0');renderChrome()}break;
-    case 'lib-close':if(isPhone())sheet=null;else libOpen=false;renderChrome();break;
+    case 'lib-close':if(isPhone())sheet=null;else{libOpen=false;store('rangkai2.lib','0')}renderChrome();break;
     case 'insp':if(isPhone()){sheet=sheet==='insp'?null:'insp';if(sel.size)tab='props'}renderInsp();renderChrome();break;
     case 'sheet-close':sheet=null;renderChrome();break;
     case 'done':wireStart=null;setTool('select');break;
@@ -1280,7 +1283,7 @@ function act(a,el){
 
 /* ---------- pointer interaction ---------- */
 const sv=$('#sv');
-let gest=null,downInfo=null,lpTimer=null,spaceDown=false;const ptrs=new Map();
+let gest=null,downInfo=null,lpTimer=null,spaceDown=false,lastTap=null;const ptrs=new Map();
 function toWorld(cx,cy){const r=sv.getBoundingClientRect();return [(cx-r.left-view.x)/view.k,(cy-r.top-view.y)/view.k]}
 function pinAt(w,tol){let best=null,bd=tol;S.parts.forEach(p=>pinsOf(p).forEach(pn=>{const d=Math.hypot(pn.pt[0]-w[0],pn.pt[1]-w[1]);if(d<=bd){bd=d;best={p,pn,pt:pn.pt}}}));return best}
 function wireAt(w,tol){let best=null,bd=tol;S.wires.forEach(s=>{const minx=Math.min(s.x1,s.x2)-tol,maxx=Math.max(s.x1,s.x2)+tol,miny=Math.min(s.y1,s.y2)-tol,maxy=Math.max(s.y1,s.y2)+tol;if(w[0]<minx||w[0]>maxx||w[1]<miny||w[1]>maxy)return;
@@ -1317,7 +1320,7 @@ sv.addEventListener('pointerdown',e=>{
   const wr=part?null:wireAt(w,tol);const obj=part||wr;
   if(obj){if(e.shiftKey){sel.has(obj.id)?sel.delete(obj.id):sel.add(obj.id);gest=null;render({noSim:true});return}
     if(!sel.has(obj.id))sel=new Set([obj.id]);if(isPhone()||sel.size)tab='props';
-    gest={type:'drag',start:pt,snap:dragSnap()};render({noSim:true});return}
+    gest={type:'drag',start:pt,snap:dragSnap(),part};render({noSim:true});return}
   if(!e.shiftKey&&sel.size){sel.clear();render({noSim:true})}
   if(hlNet&&!e.shiftKey){hlNet=null;render({noSim:true})}
   gest=touch?{type:'pan',vx:view.x,vy:view.y}:{type:'box',a:w,b:w,add:e.shiftKey};
@@ -1352,7 +1355,8 @@ function endPtr(e){
   if(e.type==='pointercancel'){if(g.type==='drag')render();return}
   const w=toWorld(e.clientX,e.clientY),pt=[snap(w[0]),snap(w[1])],tol=tolW();
   switch(g.type){
-    case 'drag':if(di.moved){fixDiagonals(g.snap);S.wires=S.wires.filter(x=>x.x1!==x.x2||x.y1!==x.y2);const one=g.snap.parts.length===1&&!S.wires.some(x=>sel.has(x.id))?g.snap.parts[0].p:null;const sp=one&&splicePart(one);changed();if(sp)toast(L(`${one.ref} disisipkan ke kabel.`,`${one.ref} spliced into the wire.`))}else render({noSim:true});break;
+    case 'drag':if(di.moved){fixDiagonals(g.snap);S.wires=S.wires.filter(x=>x.x1!==x.x2||x.y1!==x.y2);const one=g.snap.parts.length===1&&!S.wires.some(x=>sel.has(x.id))?g.snap.parts[0].p:null;const sp=one&&splicePart(one);changed();if(sp)toast(L(`${one.ref} disisipkan ke kabel.`,`${one.ref} spliced into the wire.`));lastTap=null}
+      else{const now=Date.now(),id=g.part&&g.part.id;if(id&&lastTap&&lastTap.id===id&&now-lastTap.t<450){lastTap=null;editPart(id)}else{lastTap={id,t:now};render({noSim:true})}}break;
     case 'box':{const a=g.a,b=g.b,x0=Math.min(a[0],b[0]),x1=Math.max(a[0],b[0]),y0=Math.min(a[1],b[1]),y1=Math.max(a[1],b[1]);if(!g.add)sel.clear();
       if(di.moved){S.parts.forEach(p=>{if(p.x>=x0&&p.x<=x1&&p.y>=y0&&p.y<=y1)sel.add(p.id)});S.wires.forEach(s=>{if(Math.min(s.x1,s.x2)>=x0&&Math.max(s.x1,s.x2)<=x1&&Math.min(s.y1,s.y2)>=y0&&Math.max(s.y1,s.y2)<=y1)sel.add(s.id)})}
       render({noSim:true});break}
@@ -1369,7 +1373,9 @@ function endPtr(e){
 }
 sv.addEventListener('pointerup',endPtr);sv.addEventListener('pointercancel',endPtr);
 sv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&!gest){hoverPin=null;$('#go').innerHTML=''}});
-sv.addEventListener('dblclick',e=>{if(tool==='wire'){wireStart=null;if(wireFromSelect){tool='select';wireFromSelect=false}render({noSim:true})}else if(tool==='select'){const p=partFromTarget(e.target);if(p&&!isPhone()){sel=new Set([p.id]);tab='props';render({noSim:true});setTimeout(()=>{const f=$('#f-val')||$('#f-ref');if(f){f.focus();f.select()}},20)}}});
+sv.addEventListener('dblclick',e=>{if(tool==='wire'){wireStart=null;if(wireFromSelect){tool='select';wireFromSelect=false}render({noSim:true})}});
+/* double-click / double-tap a part: open its properties with the value field ready to type */
+function editPart(id){sel=new Set([id]);tab='props';if(isPhone())sheet='insp';render({noSim:true});if(!isPhone())setTimeout(()=>{const f=$('#f-val')||$('#f-ref');if(f){f.focus();f.select()}},20)}
 sv.addEventListener('contextmenu',e=>{e.preventDefault();if(tool==='wire'&&wireStart){wireStart=null;if(wireFromSelect){tool='select';wireFromSelect=false}render({noSim:true});return}if(tool!=='select'){setTool('select');return}
   const w=toWorld(e.clientX,e.clientY),p=partFromTarget(e.target),wr=p?null:wireAt(w,tolW());const o=p||wr;if(o){if(!sel.has(o.id))sel=new Set([o.id])}else sel.clear();render({noSim:true});openCtx(e.clientX,e.clientY,o?'sel':'empty')});
 sv.addEventListener('wheel',e=>{e.preventDefault();const r=sv.getBoundingClientRect();
@@ -1447,7 +1453,7 @@ document.addEventListener('keydown',e=>{
 });
 document.addEventListener('keyup',e=>{if(e.key===' ')spaceDown=false});
 new ResizeObserver(()=>{applyView()}).observe(sv);
-matchMedia('(max-width:760px)').addEventListener('change',()=>{sheet=null;renderLib();render({noSim:true})});
+matchMedia(PHONE_MQ).addEventListener('change',()=>{sheet=null;renderLib();render({noSim:true})});
 
 /* ---------- example circuits ---------- */
 function mk(){const s={parts:[],wires:[],n:0};const P=(k,x,y,o={})=>{const p={id:'p'+(++s.n),k,x,y,r:o.r||0,m:!!o.m,ref:'',val:o.val!=null?o.val:SYM[k].v};if(k==='SW')p.on=o.on!=null?o.on:true;if(k==='POT')p.pos=o.pos!=null?o.pos:.5;s.parts.push(p);return p};
