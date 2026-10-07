@@ -1,3 +1,14 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Editor skematik + simulator rangkaian listrik DC di browser. Gratis, tanpa akun, bisa mendeteksi dan memperbaiki kesalahan rangkaian otomatis.">
+<script>
+/* Pengaturan situs
+   goatcounter : kode akun GoatCounter (dashboard di https://<kode>.goatcounter.com). Kosongkan untuk mematikan statistik. */
+window.RANGKAI_CONFIG={goatcounter:'zaky'};
+</script>
 <title>Rangkai Skematik</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -390,6 +401,15 @@ table.bom td:first-child{font-weight:700;font-variant-numeric:tabular-nums}
 /* =========================================================
    Rangkai — schematic editor + live DC simulator
    ========================================================= */
+
+/* statistik pengunjung (GoatCounter): dimuat setelah halaman selesai supaya tidak memperlambat apa pun.
+   Event dicatat sebagai rangkai/aksi/<nama>, sekali per nama per kunjungan supaya tidak membanjiri dasbor. */
+const GC=(window.RANGKAI_CONFIG||{}).goatcounter,gcSent=new Set();
+function track(name){if(!GC||gcSent.has(name))return;gcSent.add(name);
+  try{if(window.goatcounter&&window.goatcounter.count)window.goatcounter.count({path:'rangkai/aksi/'+name,title:name,event:true})}catch(e){}}
+if(GC){const startGC=()=>{const s=document.createElement('script');s.async=true;s.src='https://gc.zgo.at/count.js';
+    s.setAttribute('data-goatcounter','https://'+GC+'.goatcounter.com/count');document.body.appendChild(s)};
+  if(document.readyState==='complete')setTimeout(startGC,0);else addEventListener('load',startGC)}
 const G=10, VT=0.025852;
 let lang='id';
 try{lang=localStorage.getItem('rangkai2.lang')||'id'}catch(e){}
@@ -818,7 +838,7 @@ function diagnose(){
   }
   const ord={bad:0,warn:1,info:2};out.sort((a,b)=>ord[a.lv]-ord[b.lv]);return out;
 }
-function runFix(key){const i=ISS.find(x=>x.key===key);if(!i||!i.fix)return;inFix=true;let r;try{r=i.fix.run()}finally{inFix=false}
+function runFix(key){const i=ISS.find(x=>x.key===key);if(!i||!i.fix)return;track('perbaiki');inFix=true;let r;try{r=i.fix.run()}finally{inFix=false}
   if(r==='skip')return;if(r===false){toast(L('Belum bisa diperbaiki otomatis di posisi ini. Coba geser komponennya sedikit.','Could not fix this automatically here. Try moving the part a little.'));return}
   changed({fromFix:true});toastAction(L('Diperbaiki: ','Fixed: ')+i.t,[{label:L('Batalkan','Undo'),act:'undo'}],'ok')}
 function fixAll(){const tried=new Set(),names=[];inFix=true;
@@ -1214,8 +1234,10 @@ function fit(){const b=boundsOf(S),v=visibleRect();if(!b){view.k=2;view.x=v.l+v.
 function gotoPart(id){const p=S.parts.find(q=>q.id===id);if(!p)return;sel=new Set([id]);tab='props';const v=visibleRect();view.x=v.l+v.w/2-p.x*view.k;view.y=v.t+v.h/2-p.y*view.k;applyView();if(isPhone())sheet=null;render()}
 function setTheme(){const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';store('rangkai2.theme',r.dataset.theme);renderChrome()}
 
+const TRACKED=new Set(['mode-sim','export','copy-exp','copy-bom','do-import','samples','new-proj','fixall','autofix','palette','lang','theme']);
 function act(a,el){
   closeCtx();
+  if(TRACKED.has(a))track(a==='copy-exp'?'salin-'+expTab:a);
   switch(a){
     case 'tool-select':setTool('select');break;
     case 'tool-wire':setTool('wire');break;
@@ -1379,7 +1401,7 @@ document.addEventListener('click',e=>{
   const g=e.target.closest('[data-goto]');if(g){if(g.closest('#toast'))$('#toast').hidden=true;gotoPart(g.dataset.goto);return}
   const ld=e.target.closest('[data-led]');if(ld){const p=selParts()[0];if(p){p.val=ld.dataset.led;changed()}return}
   const x=e.target.closest('[data-exp]');if(x){openExport(x.dataset.exp);return}
-  const sm=e.target.closest('[data-sample]');if(sm){const s=SAMPLES.find(q=>q.id===sm.dataset.sample);closeModal();newProj(s.build(),s.n[lang==='id'?0:1]);simOn=true;render();fit();toast(L('Contoh dibuka dengan simulasi aktif.','Example opened with simulation on.'));return}
+  const sm=e.target.closest('[data-sample]');if(sm){const s=SAMPLES.find(q=>q.id===sm.dataset.sample);track('contoh-'+s.id);closeModal();newProj(s.build(),s.n[lang==='id'?0:1]);simOn=true;render();fit();toast(L('Contoh dibuka dengan simulasi aktif.','Example opened with simulation on.'));return}
   const op=e.target.closest('[data-openp]');if(op){closeModal();openProj(op.dataset.openp);render();fit();return}
   const dp=e.target.closest('[data-delp]');if(dp){const id=dp.dataset.delp;if(dp.dataset.confirm!=='1'){dp.dataset.confirm='1';dp.style.color='var(--danger)';dp.setAttribute('aria-label',L('Klik lagi untuk menghapus','Click again to delete'));toast(L('Klik sekali lagi untuk menghapus proyek ini.','Click again to delete this project.'));return}
     IDX.list=IDX.list.filter(p=>p.id!==id);try{localStorage.removeItem('rangkai2.p.'+id)}catch(_){}if(id===S.id){if(IDX.list.length)openProj(IDX.list[0].id);else newProj(null,L('Proyek baru','New project'))}store('rangkai2.index',IDX);render();openProjects();return}

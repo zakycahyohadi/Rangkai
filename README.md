@@ -88,7 +88,7 @@ Peringatan menunjuk ke **penyebab utamanya**. Contohnya, yang muncul adalah "LED
 
 **Langsung:** unduh `index.html`, lalu buka di browser (Chrome, Edge, Safari, atau Firefox).
 
-**Online lewat GitHub Pages:** Settings → Pages → Source: *Deploy from a branch* → Branch `main`, folder `/ (root)` → Save. Situsnya aktif di `https://<username>.github.io/rangkai/`.
+**Online:** [zakycahyohadi.github.io/Rangkai](https://zakycahyohadi.github.io/Rangkai/). Situs di-deploy otomatis oleh `.github/workflows/pages.yml` setiap ada push ke `main` (Settings → Pages → Source: *GitHub Actions*).
 
 ### Pintasan keyboard
 
@@ -126,6 +126,7 @@ Peringatan menunjuk ke **penyebab utamanya**. Contohnya, yang muncul adalah "LED
 ```
 rangkai/
 ├── index.html      # seluruh aplikasi: UI, simulator, contoh rangkaian
+├── .github/        # workflow deploy ke GitHub Pages
 ├── docs/           # screenshot untuk README
 ├── CHANGELOG.md
 └── LICENSE
