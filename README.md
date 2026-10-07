@@ -67,6 +67,7 @@ Peringatan menunjuk ke **penyebab utamanya**. Contohnya, yang muncul adalah "LED
 ![Cek desain otomatis](docs/cek-otomatis.png)
 
 ### Ekspor dan proyek
+- **PCB untuk KiCad** (`.kicad_pcb`): komponen langsung jadi footprint lubang tembus standar dari library resmi KiCad, disusun mengikuti skematik, lengkap dengan ratsnest, batas papan, dan konektor daya otomatis. Ada pratinjau papan sebelum diunduh. Lihat [Dari skematik ke PCB](#dari-skematik-ke-pcb).
 - **SPICE netlist** (`.cir`) untuk LTspice, ngspice, atau KiCad.
 - **BOM** dalam CSV, dengan komponen bernilai sama dikelompokkan.
 - **SVG** untuk laporan, slide, Figma, atau Inkscape.
@@ -83,6 +84,29 @@ Peringatan menunjuk ke **penyebab utamanya**. Contohnya, yang muncul adalah "LED
 - Bahasa Indonesia dan English, tema terang dan gelap.
 
 <br clear="right">
+
+## Dari skematik ke PCB
+
+1. Gambar rangkaian di Rangkai, pastikan tab **Cek** bersih.
+2. **Ekspor → PCB (KiCad) → Unduh file KiCad.**
+3. Buka file `.kicad_pcb` di [KiCad](https://www.kicad.org/) (gratis): PCB Editor → File → Open.
+4. Rapikan posisi komponen, tarik jalur dengan `X`, lalu cek dengan *Inspect → Design Rules Checker*.
+5. *File → Fabrication Outputs → Gerbers*, zip, unggah ke JLCPCB atau PCBWay.
+
+| Komponen | Footprint | Catatan |
+|---|---|---|
+| Resistor, induktor | Axial, jarak kaki 10,16 mm | |
+| Dioda, zener | DO-35, 7,62 mm | Pad kotak = katoda |
+| LED | 5 mm | Pad kotak = katoda |
+| Kapasitor / elco | Keramik 5 mm / radial 5 mm | Pad kotak elco = + |
+| Transistor NPN/PNP | TO-92 (C-B-E, cocok untuk BC547/BC557) | |
+| Op-amp, 555 | DIP-8 | Op-amp memakai pinout LM358, pin daya otomatis ke rail |
+| Potensiometer | Trimpot Bourns 3386P | |
+| Saklar | Saklar geser SPDT | |
+| Baterai, lampu | Terminal sekrup 5 mm | |
+| Konektor 2 pin | Pin header 2,54 mm | |
+
+Simbol VCC dan Ground hanyalah nama net. Rangkai otomatis menambahkan terminal sekrup sebagai masukan daya.
 
 ## Cara pakai
 
@@ -111,7 +135,7 @@ Peringatan menunjuk ke **penyebab utamanya**. Contohnya, yang muncul adalah "LED
 - Simulasi baru **DC** (kondisi stabil). Belum ada analisis transien, AC, atau osiloskop.
 - IC 555 bisa digambar tetapi belum disimulasikan.
 - Proyek tersimpan di browser masing-masing perangkat. Gunakan Ekspor → JSON untuk memindahkan.
-- Belum ada editor PCB dan simulasi mikrokontroler.
+- Jalur tembaga PCB ditarik di KiCad, belum di Rangkai. Belum ada simulasi mikrokontroler.
 
 ## Rencana
 

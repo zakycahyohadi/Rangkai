@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0 — 2026-10-07
+- **Ekspor PCB ke KiCad.** Ekspor → PCB menghasilkan file `.kicad_pcb` dengan footprint lubang tembus dari library resmi KiCad, disusun mengikuti skematik, plus ratsnest, batas papan, dan pratinjau papan.
+- Konektor daya ditambahkan otomatis untuk rail VCC, dan pin daya op-amp (LM358) disambungkan ke rail.
+- Tombol **Unduh** untuk semua format ekspor (PCB, SPICE, BOM, JSON, SVG).
+
 ## 0.3.1 — 2026-10-07
 - Perbaikan: klik dua kali pada komponen untuk mengedit nilainya sekarang benar-benar berfungsi (sebelumnya tidak pernah terpicu). Di HP, ketuk dua kali membuka panel properti.
 - Perbaikan: menutup panel Komponen dengan tombol ✕ sekarang diingat setelah halaman dibuka ulang.

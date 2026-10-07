@@ -302,6 +302,14 @@ table.bom td:first-child{font-weight:700;font-variant-numeric:tabular-nums}
 .pal-item .pic path.f{fill:currentColor;stroke:none}
 .pal-item span{flex:1}
 .pal-item small{color:var(--muted);font:500 11px var(--mono)}
+.pcbv{width:100%;max-height:340px;background:#0b3d2a;border-radius:11px;display:block}
+.pcbv .pb{fill:#14583d;stroke:#e9d8a6;stroke-width:.3}
+.pcbv .ps{fill:none;stroke:#f2f2ec;stroke-width:.15}
+.pcbv .pp{fill:#d9a441}
+.pcbv .pr{stroke:#8fd3ff;stroke-width:.15;stroke-dasharray:.6 .4}
+.pcbv .pt{font:600 1.2px var(--mono);fill:#f2f2ec;text-anchor:middle;dominant-baseline:middle}
+.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--muted)}
+.steps b{color:var(--text)}
 .prow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
 .prow:first-child{border-top:0}
 .prow input{flex:1;min-width:0;border:1px solid transparent;background:transparent;padding:6px 8px;border-radius:8px;font-weight:600}
@@ -1139,15 +1147,135 @@ function exportSVG(){
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${w} ${h}" width="${w*3}" height="${h*3}"><style>${css}</style><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#ffffff"/>${wires}${parts}${dots}</svg>`;
 }
 
+/* ---------- PCB export: a KiCad board with real footprints, laid out like the schematic ---------- */
+/* footprints copied from the official KiCad library (pads, silkscreen, courtyard); pin numbers checked against the KiCad library */
+const FP={"CP_Radial_D5.0mm_P2.00mm":{"lib":"Capacitor_THT:CP_Radial_D5.0mm_P2.00mm","pads":[["1","roundrect",0.0,0.0,1.6,1.6,0.8,0.15625],["2","circle",2.0,0.0,1.6,1.6,0.8,0]],"g":[["L",-1.805,-1.475,-1.305,-1.475,0.12,"S"],["L",-1.555,-1.725,-1.555,-1.225,0.12,"S"],["L",1.0,-2.58,1.0,-1.04,0.12,"S"],["L",1.0,1.04,1.0,2.58,0.12,"S"],["L",1.04,-2.58,1.04,-1.04,0.12,"S"],["L",1.04,1.04,1.04,2.58,0.12,"S"],["L",1.08,-2.579,1.08,-1.04,0.12,"S"],["L",1.08,1.04,1.08,2.579,0.12,"S"],["L",1.12,-2.577,1.12,-1.04,0.12,"S"],["L",1.12,1.04,1.12,2.577,0.12,"S"],["L",1.16,-2.575,1.16,-1.04,0.12,"S"],["L",1.16,1.04,1.16,2.575,0.12,"S"],["L",1.2,-2.572,1.2,-1.04,0.12,"S"],["L",1.2,1.04,1.2,2.572,0.12,"S"],["L",1.24,-2.569,1.24,-1.04,0.12,"S"],["L",1.24,1.04,1.24,2.569,0.12,"S"],["L",1.28,-2.565,1.28,-1.04,0.12,"S"],["L",1.28,1.04,1.28,2.565,0.12,"S"],["L",1.32,-2.56,1.32,-1.04,0.12,"S"],["L",1.32,1.04,1.32,2.56,0.12,"S"],["L",1.36,-2.555,1.36,-1.04,0.12,"S"],["L",1.36,1.04,1.36,2.555,0.12,"S"],["L",1.4,-2.549,1.4,-1.04,0.12,"S"],["L",1.4,1.04,1.4,2.549,0.12,"S"],["L",1.44,-2.543,1.44,-1.04,0.12,"S"],["L",1.44,1.04,1.44,2.543,0.12,"S"],["L",1.48,-2.536,1.48,-1.04,0.12,"S"],["L",1.48,1.04,1.48,2.536,0.12,"S"],["L",1.52,-2.528,1.52,-1.04,0.12,"S"],["L",1.52,1.04,1.52,2.528,0.12,"S"],["L",1.56,-2.519,1.56,-1.04,0.12,"S"],["L",1.56,1.04,1.56,2.519,0.12,"S"],["L",1.6,-2.51,1.6,-1.04,0.12,"S"],["L",1.6,1.04,1.6,2.51,0.12,"S"],["L",1.64,-2.501,1.64,-1.04,0.12,"S"],["L",1.64,1.04,1.64,2.501,0.12,"S"],["L",1.68,-2.49,1.68,-1.04,0.12,"S"],["L",1.68,1.04,1.68,2.49,0.12,"S"],["L",1.72,-2.479,1.72,-1.04,0.12,"S"],["L",1.72,1.04,1.72,2.479,0.12,"S"],["L",1.76,-2.467,1.76,-1.04,0.12,"S"],["L",1.76,1.04,1.76,2.467,0.12,"S"],["L",1.8,-2.455,1.8,-1.04,0.12,"S"],["L",1.8,1.04,1.8,2.455,0.12,"S"],["L",1.84,-2.442,1.84,-1.04,0.12,"S"],["L",1.84,1.04,1.84,2.442,0.12,"S"],["L",1.88,-2.428,1.88,-1.04,0.12,"S"],["L",1.88,1.04,1.88,2.428,0.12,"S"],["L",1.92,-2.413,1.92,-1.04,0.12,"S"],["L",1.92,1.04,1.92,2.413,0.12,"S"],["L",1.96,-2.398,1.96,-1.04,0.12,"S"],["L",1.96,1.04,1.96,2.398,0.12,"S"],["L",2.0,-2.382,2.0,-1.04,0.12,"S"],["L",2.0,1.04,2.0,2.382,0.12,"S"],["L",2.04,-2.365,2.04,-1.04,0.12,"S"],["L",2.04,1.04,2.04,2.365,0.12,"S"],["L",2.08,-2.347,2.08,-1.04,0.12,"S"],["L",2.08,1.04,2.08,2.347,0.12,"S"],["L",2.12,-2.329,2.12,-1.04,0.12,"S"],["L",2.12,1.04,2.12,2.329,0.12,"S"],["L",2.16,-2.309,2.16,-1.04,0.12,"S"],["L",2.16,1.04,2.16,2.309,0.12,"S"],["L",2.2,-2.289,2.2,-1.04,0.12,"S"],["L",2.2,1.04,2.2,2.289,0.12,"S"],["L",2.24,-2.268,2.24,-1.04,0.12,"S"],["L",2.24,1.04,2.24,2.268,0.12,"S"],["L",2.28,-2.246,2.28,-1.04,0.12,"S"],["L",2.28,1.04,2.28,2.246,0.12,"S"],["L",2.32,-2.223,2.32,-1.04,0.12,"S"],["L",2.32,1.04,2.32,2.223,0.12,"S"],["L",2.36,-2.199,2.36,-1.04,0.12,"S"],["L",2.36,1.04,2.36,2.199,0.12,"S"],["L",2.4,-2.175,2.4,-1.04,0.12,"S"],["L",2.4,1.04,2.4,2.175,0.12,"S"],["L",2.44,-2.149,2.44,-1.04,0.12,"S"],["L",2.44,1.04,2.44,2.149,0.12,"S"],["L",2.48,-2.122,2.48,-1.04,0.12,"S"],["L",2.48,1.04,2.48,2.122,0.12,"S"],["L",2.52,-2.094,2.52,-1.04,0.12,"S"],["L",2.52,1.04,2.52,2.094,0.12,"S"],["L",2.56,-2.065,2.56,-1.04,0.12,"S"],["L",2.56,1.04,2.56,2.065,0.12,"S"],["L",2.6,-2.035,2.6,-1.04,0.12,"S"],["L",2.6,1.04,2.6,2.035,0.12,"S"],["L",2.64,-2.003,2.64,-1.04,0.12,"S"],["L",2.64,1.04,2.64,2.003,0.12,"S"],["L",2.68,-1.97,2.68,-1.04,0.12,"S"],["L",2.68,1.04,2.68,1.97,0.12,"S"],["L",2.72,-1.936,2.72,-1.04,0.12,"S"],["L",2.72,1.04,2.72,1.936,0.12,"S"],["L",2.76,-1.901,2.76,-1.04,0.12,"S"],["L",2.76,1.04,2.76,1.901,0.12,"S"],["L",2.8,-1.864,2.8,-1.04,0.12,"S"],["L",2.8,1.04,2.8,1.864,0.12,"S"],["L",2.84,-1.825,2.84,-1.04,0.12,"S"],["L",2.84,1.04,2.84,1.825,0.12,"S"],["L",2.88,-1.785,2.88,-1.04,0.12,"S"],["L",2.88,1.04,2.88,1.785,0.12,"S"],["L",2.92,-1.743,2.92,-1.04,0.12,"S"],["L",2.92,1.04,2.92,1.743,0.12,"S"],["L",2.96,-1.699,2.96,-1.04,0.12,"S"],["L",2.96,1.04,2.96,1.699,0.12,"S"],["L",3.0,-1.652,3.0,-1.04,0.12,"S"],["L",3.0,1.04,3.0,1.652,0.12,"S"],["L",3.04,-1.604,3.04,1.604,0.12,"S"],["L",3.08,-1.553,3.08,1.553,0.12,"S"],["L",3.12,-1.499,3.12,1.499,0.12,"S"],["L",3.16,-1.443,3.16,1.443,0.12,"S"],["L",3.2,-1.383,3.2,1.383,0.12,"S"],["L",3.24,-1.319,3.24,1.319,0.12,"S"],["L",3.28,-1.251,3.28,1.251,0.12,"S"],["L",3.32,-1.177,3.32,1.177,0.12,"S"],["L",3.36,-1.098,3.36,1.098,0.12,"S"],["L",3.4,-1.011,3.4,1.011,0.12,"S"],["L",3.44,-0.914,3.44,0.914,0.12,"S"],["L",3.48,-0.805,3.48,0.805,0.12,"S"],["L",3.52,-0.677,3.52,0.677,0.12,"S"],["L",3.56,-0.517,3.56,0.517,0.12,"S"],["L",3.6,-0.283,3.6,0.283,0.12,"S"],["C",1.0,0.0,3.62,0.0,0.12,"S"],["C",1.0,0.0,3.75,0.0,0.05,"Y"]],"ref":[1.0,-3.75],"val":[1.0,3.75]},"C_Disc_D5.0mm_W2.5mm_P5.00mm":{"lib":"Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm","pads":[["1","circle",0.0,0.0,1.6,1.6,0.8,0],["2","circle",5.0,0.0,1.6,1.6,0.8,0]],"g":[["L",-0.12,-1.37,5.12,-1.37,0.12,"S"],["L",-0.12,-1.033,-0.12,-1.37,0.12,"S"],["L",-0.12,1.37,-0.12,1.033,0.12,"S"],["L",5.12,-1.37,5.12,-1.033,0.12,"S"],["L",5.12,1.033,5.12,1.37,0.12,"S"],["L",5.12,1.37,-0.12,1.37,0.12,"S"],["R",-1.05,-1.5,6.05,1.5,0.05,"Y"]],"ref":[2.5,-2.5],"val":[2.5,2.5]},"DIP-8_W7.62mm":{"lib":"Package_DIP:DIP-8_W7.62mm","pads":[["1","roundrect",0.0,0.0,1.6,1.6,0.8,0.15625],["2","circle",0.0,2.54,1.6,1.6,0.8,0],["3","circle",0.0,5.08,1.6,1.6,0.8,0],["4","circle",0.0,7.62,1.6,1.6,0.8,0],["5","circle",7.62,7.62,1.6,1.6,0.8,0],["6","circle",7.62,5.08,1.6,1.6,0.8,0],["7","circle",7.62,2.54,1.6,1.6,0.8,0],["8","circle",7.62,0.0,1.6,1.6,0.8,0]],"g":[["L",1.16,-1.33,1.16,8.95,0.12,"S"],["L",1.16,8.95,6.46,8.95,0.12,"S"],["L",2.81,-1.33,1.16,-1.33,0.12,"S"],["L",6.46,-1.33,4.81,-1.33,0.12,"S"],["L",6.46,8.95,6.46,-1.33,0.12,"S"],["A",4.81,-1.33,3.81,-0.33,2.81,-1.33,0.12,"S"],["R",-1.06,-1.52,8.67,9.14,0.05,"Y"]],"ref":[3.81,-2.33],"val":[3.81,9.95]},"D_DO-35_SOD27_P7.62mm_Horizontal":{"lib":"Diode_THT:D_DO-35_SOD27_P7.62mm_Horizontal","pads":[["1","roundrect",0.0,0.0,1.6,1.6,0.8,0.15625],["2","circle",7.62,0.0,1.6,1.6,0.8,0]],"g":[["L",1.04,0.0,1.69,0.0,0.12,"S"],["L",2.29,-1.12,2.29,1.12,0.12,"S"],["L",2.41,-1.12,2.41,1.12,0.12,"S"],["L",2.53,-1.12,2.53,1.12,0.12,"S"],["L",6.58,0.0,5.93,0.0,0.12,"S"],["R",1.69,-1.12,5.93,1.12,0.12,"S"],["R",-1.05,-1.25,8.67,1.25,0.05,"Y"]],"ref":[3.81,-2.12],"val":[3.81,2.12]},"LED_D5.0mm":{"lib":"LED_THT:LED_D5.0mm","pads":[["1","rect",0.0,0.0,1.8,1.8,0.9,0],["2","circle",2.54,0.0,1.8,1.8,0.9,0]],"g":[["L",-1.29,-1.545,-1.29,1.545,0.12,"S"],["A",-1.29,-1.545,2.072,-2.88,4.26,0.0,0.12,"S"],["A",4.26,0.0,2.072,2.88,-1.29,1.545,0.12,"S"],["C",1.27,0.0,3.77,0.0,0.12,"S"],["R",-1.94,-3.21,4.49,3.21,0.05,"Y"]],"ref":[1.27,-3.96],"val":[1.27,3.96]},"L_Axial_L5.3mm_D2.2mm_P10.16mm_Horizontal_Vishay_IM-1":{"lib":"Inductor_THT:L_Axial_L5.3mm_D2.2mm_P10.16mm_Horizontal_Vishay_IM-1","pads":[["1","circle",0.0,0.0,1.6,1.6,0.8,0],["2","circle",10.16,0.0,1.6,1.6,0.8,0]],"g":[["L",1.04,0.0,2.31,0.0,0.12,"S"],["L",9.12,0.0,7.85,0.0,0.12,"S"],["R",2.31,-1.22,7.85,1.22,0.12,"S"],["R",-1.05,-1.35,11.21,1.35,0.05,"Y"]],"ref":[5.08,-2.22],"val":[5.08,2.22]},"PinHeader_1x02_P2.54mm_Vertical":{"lib":"Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical","pads":[["1","rect",0.0,0.0,1.7,1.7,1.0,0],["2","circle",0.0,2.54,1.7,1.7,1.0,0]],"g":[["L",-1.38,-1.38,0.0,-1.38,0.12,"S"],["L",-1.38,0.0,-1.38,-1.38,0.12,"S"],["L",-1.38,1.27,-1.38,3.92,0.12,"S"],["L",-1.38,1.27,1.38,1.27,0.12,"S"],["L",-1.38,3.92,1.38,3.92,0.12,"S"],["L",1.38,1.27,1.38,3.92,0.12,"S"],["R",-1.77,-1.77,1.77,4.32,0.05,"Y"]],"ref":[0.0,-2.38],"val":[0.0,4.92]},"PinHeader_1x03_P2.54mm_Vertical":{"lib":"Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical","pads":[["1","rect",0.0,0.0,1.7,1.7,1.0,0],["2","circle",0.0,2.54,1.7,1.7,1.0,0],["3","circle",0.0,5.08,1.7,1.7,1.0,0]],"g":[["L",-1.38,-1.38,0.0,-1.38,0.12,"S"],["L",-1.38,0.0,-1.38,-1.38,0.12,"S"],["L",-1.38,1.27,-1.38,6.46,0.12,"S"],["L",-1.38,1.27,1.38,1.27,0.12,"S"],["L",-1.38,6.46,1.38,6.46,0.12,"S"],["L",1.38,1.27,1.38,6.46,0.12,"S"],["R",-1.77,-1.77,1.77,6.85,0.05,"Y"]],"ref":[0.0,-2.38],"val":[0.0,7.46]},"Potentiometer_Bourns_3386P_Vertical":{"lib":"Potentiometer_THT:Potentiometer_Bourns_3386P_Vertical","pads":[["1","circle",0.0,0.0,1.44,1.44,0.8,0],["2","circle",2.54,-2.54,1.44,1.44,0.8,0],["3","circle",0.0,-5.08,1.44,1.44,0.8,0]],"g":[["L",-4.89,-7.415,4.86,-7.415,0.12,"S"],["L",-4.89,2.335,-4.89,-7.415,0.12,"S"],["L",4.86,-7.415,4.86,2.335,0.12,"S"],["L",4.86,2.335,-4.89,2.335,0.12,"S"],["R",-5.03,-7.56,5.0,2.48,0.05,"Y"]],"ref":[-0.015,-8.555],"val":[-0.015,3.475]},"R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal":{"lib":"Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal","pads":[["1","circle",0.0,0.0,1.6,1.6,0.8,0],["2","circle",10.16,0.0,1.6,1.6,0.8,0]],"g":[["L",1.04,0.0,1.81,0.0,0.12,"S"],["L",9.12,0.0,8.35,0.0,0.12,"S"],["R",1.81,-1.37,8.35,1.37,0.12,"S"],["R",-1.05,-1.5,11.21,1.5,0.05,"Y"]],"ref":[5.08,-2.37],"val":[5.08,2.37]},"SW_Slide_SPDT_Straight_CK_OS102011MS2Q":{"lib":"Button_Switch_THT:SW_Slide_SPDT_Straight_CK_OS102011MS2Q","pads":[["","oval",-2.1,0.0,2.2,3.5,1.5,0],["","oval",6.1,0.0,2.2,3.5,1.5,0],["1","rect",0.0,0.0,1.5,2.5,0.8,0],["2","oval",2.0,0.0,1.5,2.5,0.8,0],["3","oval",4.0,0.0,1.5,2.5,0.8,0]],"g":[["L",-2.41,-2.26,6.41,-2.26,0.12,"S"],["L",-2.41,-1.95,-2.41,-2.26,0.12,"S"],["L",-2.41,2.26,-2.41,1.95,0.12,"S"],["L",-0.5,-2.96,0.0,-2.46,0.12,"S"],["L",0.0,-2.46,0.5,-2.96,0.12,"S"],["L",0.5,-2.96,-0.5,-2.96,0.12,"S"],["L",6.41,-2.26,6.41,-1.95,0.12,"S"],["L",6.41,2.26,-2.41,2.26,0.12,"S"],["L",6.41,2.26,6.41,1.95,0.12,"S"]],"ref":[3.99,-2.99],"val":[2.0,3.0]},"TO-92_Inline_Wide":{"lib":"Package_TO_SOT_THT:TO-92_Inline_Wide","pads":[["1","rect",0.0,0.0,1.5,1.5,0.8,0],["2","circle",2.54,0.0,1.5,1.5,0.8,0],["3","circle",5.08,0.0,1.5,1.5,0.8,0]],"g":[["L",0.74,1.85,4.34,1.85,0.12,"S"],["A",0.184,-1.099,1.143,-2.193,2.54,-2.6,0.12,"S"],["A",0.74,1.85,0.446,1.509,0.216,1.123,0.12,"S"],["A",2.54,-2.6,3.937,-2.193,4.896,-1.099,0.12,"S"],["A",4.864,1.123,4.634,1.509,4.34,1.85,0.12,"S"],["L",-1.01,-2.73,-1.01,2.01,0.05,"Y"],["L",-1.01,-2.73,6.09,-2.73,0.05,"Y"],["L",6.09,2.01,-1.01,2.01,0.05,"Y"],["L",6.09,2.01,6.09,-2.73,0.05,"Y"]],"ref":[2.54,-3.56],"val":[2.54,2.79]},"TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal":{"lib":"TerminalBlock_Phoenix:TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal","pads":[["1","roundrect",0.0,0.0,2.6,2.6,1.3,0.096154],["2","circle",5.0,0.0,2.6,2.6,1.3,0]],"g":[["L",-2.62,-5.32,7.62,-5.32,0.12,"S"],["L",-2.62,-2.3,7.62,-2.3,0.12,"S"],["L",-2.62,2.6,7.62,2.6,0.12,"S"],["L",-2.62,4.1,7.62,4.1,0.12,"S"],["L",-2.62,4.72,-2.62,-5.32,0.12,"S"],["L",-0.3,4.72,-2.62,4.72,0.12,"S"],["L",7.62,-5.32,7.62,4.72,0.12,"S"],["L",7.62,4.72,0.3,4.72,0.12,"S"],["P",[0.0,4.72,0.44,5.33,-0.44,5.33],0.12,"S",1],["R",-3.0,-5.71,8.0,5.1,0.05,"Y"]],"ref":[2.5,-6.32],"val":[2.5,5.72]}};
+/* part → [footprint, [[symbol pin, pad], …]]; the first and last pair set the footprint's direction */
+const PCB={R:['R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal',[['1','1'],['2','2']]],
+ POT:['Potentiometer_Bourns_3386P_Vertical',[['1','1'],['W','2'],['2','3']]],
+ C:['C_Disc_D5.0mm_W2.5mm_P5.00mm',[['1','1'],['2','2']]],
+ CP:['CP_Radial_D5.0mm_P2.00mm',[['+','1'],['-','2']]],
+ L:['L_Axial_L5.3mm_D2.2mm_P10.16mm_Horizontal_Vishay_IM-1',[['1','1'],['2','2']]],
+ D:['D_DO-35_SOD27_P7.62mm_Horizontal',[['K','1'],['A','2']]],
+ ZD:['D_DO-35_SOD27_P7.62mm_Horizontal',[['K','1'],['A','2']]],
+ LED:['LED_D5.0mm',[['K','1'],['A','2']]],
+ NPN:['TO-92_Inline_Wide',[['C','1'],['B','2'],['E','3']]],
+ PNP:['TO-92_Inline_Wide',[['C','1'],['B','2'],['E','3']]],
+ OPAMP:['DIP-8_W7.62mm',[['OUT','1'],['-','2'],['+','3']]],
+ U555:['DIP-8_W7.62mm',[['GND','1'],['TRIG','2'],['OUT','3'],['RST','4'],['CV','5'],['THR','6'],['DIS','7'],['VCC','8']]],
+ J2:['PinHeader_1x02_P2.54mm_Vertical',[['1','1'],['2','2']]],
+ BAT:['TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal',[['+','1'],['-','2']]],
+ LAMP:['TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal',[['1','1'],['2','2']]],
+ SW:['SW_Slide_SPDT_Straight_CK_OS102011MS2Q',[['1','2'],['2','1']]]};
+const rotV=(v,a)=>{const r=a*Math.PI/180,c=Math.round(Math.cos(r)),s=Math.round(Math.sin(r));return [v[0]*c+v[1]*s,-v[0]*s+v[1]*c]};
+function fpBox(fp){let b=null;const add=(x,y)=>{if(!b)b=[x,y,x,y];else{b[0]=Math.min(b[0],x);b[1]=Math.min(b[1],y);b[2]=Math.max(b[2],x);b[3]=Math.max(b[3],y)}};
+  fp.g.forEach(g=>{if(g[g[0]==='P'?3:g.length-1]!=='Y')return;if(g[0]==='C'){const r=Math.hypot(g[3]-g[1],g[4]-g[2]);add(g[1]-r,g[2]-r);add(g[1]+r,g[2]+r)}else if(g[0]==='P'){for(let i=0;i<g[1].length;i+=2)add(g[1][i],g[1][i+1])}else{add(g[1],g[2]);add(g[g.length-4],g[g.length-3])}});
+  if(!b)fp.pads.forEach(p=>{add(p[2]-p[4]/2-.5,p[3]-p[5]/2-.5);add(p[2]+p[4]/2+.5,p[3]+p[5]/2+.5)});return b}
+function pcbModel(){
+  A=analyze();const U=0.254*0.7,notes=[],fps=[],sws=[];// 10 schematic units = 0.1 in = 2.54 mm, drawn 30% tighter (the overlap pass below spreads parts that collide)
+  const netAt=pt=>{const n=A.netOfRoot.get(A.find(K(pt[0],pt[1])));return n?n.name:null};
+  const rails=[...new Set(S.parts.filter(p=>p.k==='VCC').map(p=>String(p.val).trim()).filter(Boolean))].sort((a,b)=>parseSI(b)-parseSI(a));
+  const gnd=S.parts.some(p=>p.k==='GND')?'GND':null,bat=S.parts.find(p=>p.k==='BAT');
+  const vplus=rails.find(r=>parseSI(r)>0)||(bat?netAt(pinsOf(bat)[0].pt):null),vminus=rails.find(r=>parseSI(r)<0)||gnd||(bat?netAt(pinsOf(bat)[1].pt):null);
+  const place=(ref,val,name,pads,c,axis,descr)=>{const fp=FP[name];let ang=0;
+    if(axis){const pa=fp.pads.find(x=>x[0]===axis[0][1]),pb=fp.pads.find(x=>x[0]===axis[1][1]);
+      const want=Math.atan2(axis[1][2][1]-axis[0][2][1],axis[1][2][0]-axis[0][2][0]),have=Math.atan2(pb[3]-pa[3],pb[2]-pa[2]);
+      ang=((Math.round((have-want)*2/Math.PI)*90)%360+360)%360}
+    const pb=fp.pads.reduce((b,p)=>[Math.min(b[0],p[2]),Math.min(b[1],p[3]),Math.max(b[2],p[2]),Math.max(b[3],p[3])],[1e9,1e9,-1e9,-1e9]),mid=rotV([(pb[0]+pb[2])/2,(pb[1]+pb[3])/2],ang);
+    const at=[c[0]-mid[0],c[1]-mid[1]],lb=fpBox(fp),cs=[[lb[0],lb[1]],[lb[2],lb[1]],[lb[0],lb[3]],[lb[2],lb[3]]].map(v=>rotV(v,ang));
+    fps.push({ref,val,name,pads,ang,at,descr,box:[Math.min(...cs.map(v=>v[0])),Math.min(...cs.map(v=>v[1])),Math.max(...cs.map(v=>v[0])),Math.max(...cs.map(v=>v[1]))]})};
+  S.parts.forEach(p=>{const m=PCB[p.k];if(!m)return;const fp=FP[m[0]],pins=pinsOf(p);
+    const pads=fp.pads.map(x=>({n:x[0],net:null}));const padOf=n=>pads.find(x=>x.n===n);
+    m[1].forEach(([pin,pad])=>{const pn=pins.find(x=>x.n===pin);if(pn&&padOf(pad))padOf(pad).net=netAt(pn.pt)});
+    let axis=null,descr=nm(p.k);
+    if(p.k==='OPAMP'){padOf('8').net=vplus;padOf('4').net=vminus;descr='LM358 / dual op-amp';
+      notes.push(vplus&&vminus?L(`${p.ref} memakai IC op-amp ganda DIP-8 (mis. LM358): pin 8 ke ${vplus}, pin 4 ke ${vminus}. Pin 5–7 (op-amp kedua) dibiarkan kosong.`,`${p.ref} uses a DIP-8 dual op-amp (e.g. LM358): pin 8 to ${vplus}, pin 4 to ${vminus}. Pins 5–7 (second op-amp) are left open.`)
+        :L(`${p.ref}: pin daya op-amp (8 dan 4) belum tersambung karena tidak ada sumber daya. Tambahkan simbol VCC dan Ground.`,`${p.ref}: the op-amp power pins (8 and 4) are not connected because there is no supply. Add VCC and Ground symbols.`))}
+    else if(p.k!=='U555'){const a=m[1][0],b=m[1][m[1].length-1],pa=pins.find(x=>x.n===a[0]),pb=pins.find(x=>x.n===b[0]);axis=[[a[0],a[1],pa.pt],[b[0],b[1],pb.pt]]}
+    if(p.k==='SW')sws.push(p.ref);
+    place(p.ref,p.val,m[0],pads,[p.x*U,p.y*U],axis,descr)});
+  if(sws.length)notes.push(L(`${sws.join(', ')} dipasang sebagai saklar geser (pin tengah = kaki 1).`,`${sws.join(', ')} ${sws.length>1?'are':'is'} placed as a slide switch (middle pin = lead 1).`));
+  // supply rails are only labels on a schematic; on a board the power has to come in through a connector
+  if(rails.length){const pwr=[...rails.slice(0,2),vminus&&!rails.slice(0,2).includes(vminus)?vminus:null].filter(Boolean);
+    const name=pwr.length<=2?'TerminalBlock_Phoenix_MKDS-1,5-2_1x02_P5.00mm_Horizontal':'PinHeader_1x03_P2.54mm_Vertical';
+    const ref=nextRef('J'),v0=S.parts.find(p=>p.k==='VCC'),c=[(Math.min(...S.parts.map(p=>p.x))-30)*U,v0.y*U];
+    place(ref,L('Daya','Power'),name,FP[name].pads.map((x,i)=>({n:x[0],net:pwr[i]||null})),c,null,L('Masukan daya','Power input'));
+    if(!vminus)notes.push(L('Belum ada Ground, jadi pin 2 konektor daya belum tersambung. Tambahkan simbol Ground.','There is no Ground yet, so pin 2 of the power connector is not connected. Add a Ground symbol.'));
+    notes.unshift(L(`Konektor ${ref} ditambahkan sebagai masukan daya: `,`Connector ${ref} was added as the power input: `)+pwr.map((n,i)=>`pin ${i+1} = ${n}`).join(', ')+'.');
+    if(rails.length>2)notes.push(L(`Rail ${rails.slice(2).join(', ')} belum punya konektor. Tambahkan Konektor 2 pin di skematik.`,`Rail ${rails.slice(2).join(', ')} has no connector yet. Add a 2-pin header on the schematic.`))}
+  else if(!bat&&fps.length)notes.push(L('Tidak ada sumber daya (VCC atau baterai), jadi papan ini belum punya masukan daya.','There is no supply (VCC or battery), so the board has no power input yet.'));
+  if(A.unc.some(r=>PCB[r.p.k]))notes.push(L('Ada pin yang belum tersambung di skematik. Cek tab Cek dulu sebelum membuat PCB.','Some pins are not connected on the schematic. Check the Check tab before making a PCB.'));
+  // nets with a single pad carry nothing; leave those pads unconnected
+  const cnt=new Map();fps.forEach(f=>f.pads.forEach(p=>{if(p.net)cnt.set(p.net,(cnt.get(p.net)||0)+1)}));
+  fps.forEach(f=>f.pads.forEach(p=>{if(p.net&&cnt.get(p.net)<2)p.net=null}));
+  // push overlapping footprints apart (schematic symbols and real parts have different sizes)
+  const bx=f=>[f.at[0]+f.box[0],f.at[1]+f.box[1],f.at[0]+f.box[2],f.at[1]+f.box[3]],gap=1;
+  const placed=[],ovl2=(a,b)=>[Math.min(a[2],b[2])-Math.max(a[0],b[0])+gap,Math.min(a[3],b[3])-Math.max(a[1],b[1])+gap];
+  fps.forEach(f=>{for(let it=0;it<400;it++){const b=bx(f),hit=placed.find(o=>{const v=ovl2(bx(o),b);return v[0]>0&&v[1]>0});if(!hit)break;
+      const a=bx(hit),[ox,oy]=ovl2(a,b);// step aside along the shorter overlap; if that keeps colliding, slide down until free
+      if(it<40&&ox<oy)f.at[0]+=((b[0]+b[2])>=(a[0]+a[2])?1:-1)*ox;else f.at[1]+=(it<40&&(b[1]+b[3])<(a[1]+a[3])?-1:1)*oy}
+    placed.push(f)});
+  // move everything onto the page and draw the board edge 4 mm around it
+  let bb=null;fps.forEach(f=>{const b=bx(f);bb=bb?[Math.min(bb[0],b[0]),Math.min(bb[1],b[1]),Math.max(bb[2],b[2]),Math.max(bb[3],b[3])]:b});
+  if(!bb)return {fps,nets:[],notes,edge:null};
+  const dx=50-bb[0]+4,dy=50-bb[1]+4;fps.forEach(f=>{f.at=[+(f.at[0]+dx).toFixed(3),+(f.at[1]+dy).toFixed(3)]});
+  const edge=[50,50,50+Math.ceil(bb[2]-bb[0]+8),50+Math.ceil(bb[3]-bb[1]+8)];
+  const nets=[...new Set(fps.flatMap(f=>f.pads.map(p=>p.net)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));
+  return {fps,nets,notes,edge};
+}
+function kicadPCB(M){
+  const q=s=>'"'+String(s).replace(/\\/g,'\\\\').replace(/"/g,'\\"')+'"',n=v=>+(+v).toFixed(4),st=(w)=>`(stroke (width ${w}) (type solid))`;
+  const LY={S:'F.SilkS',Y:'F.CrtYd'},nid=new Map(M.nets.map((x,i)=>[x,i+1]));
+  const font='(effects (font (size 1 1) (thickness 0.15)))';
+  const out=[`(kicad_pcb (version 20221018) (generator rangkai)`,`  (general (thickness 1.6))`,`  (paper "A4")`,
+    `  (title_block (title ${q(S.name)}) (date ${q(new Date().toISOString().slice(0,10))}) (comment 1 ${q('Rangkai — https://zakycahyohadi.github.io/Rangkai/')}))`,
+    `  (layers (0 "F.Cu" signal) (31 "B.Cu" signal) (32 "B.Adhes" user "B.Adhesive") (33 "F.Adhes" user "F.Adhesive") (34 "B.Paste" user) (35 "F.Paste" user) (36 "B.SilkS" user "B.Silkscreen") (37 "F.SilkS" user "F.Silkscreen") (38 "B.Mask" user) (39 "F.Mask" user) (40 "Dwgs.User" user "User.Drawings") (41 "Cmts.User" user "User.Comments") (42 "Eco1.User" user "User.Eco1") (43 "Eco2.User" user "User.Eco2") (44 "Edge.Cuts" user) (45 "Margin" user) (46 "B.CrtYd" user "B.Courtyard") (47 "F.CrtYd" user "F.Courtyard") (48 "B.Fab" user) (49 "F.Fab" user))`,
+    `  (setup (pad_to_mask_clearance 0))`,`  (net 0 "")`,...M.nets.map((x,i)=>`  (net ${i+1} ${q(x)})`)];
+  M.fps.forEach(f=>{const fp=FP[f.name],a=f.ang;
+    out.push(`  (footprint ${q(fp.lib)} (layer "F.Cu") (at ${n(f.at[0])} ${n(f.at[1])} ${a})`,`    (descr ${q(f.descr)})`,`    (attr through_hole)`,
+      `    (fp_text reference ${q(f.ref)} (at ${n(fp.ref[0])} ${n(fp.ref[1])} ${a}) (layer "F.SilkS") ${font})`,
+      `    (fp_text value ${q(f.val)} (at ${n(fp.val[0])} ${n(fp.val[1])} ${a}) (layer "F.Fab") ${font})`);
+    fp.g.forEach(g=>{switch(g[0]){
+      case 'L':out.push(`    (fp_line (start ${g[1]} ${g[2]}) (end ${g[3]} ${g[4]}) ${st(g[5])} (layer "${LY[g[6]]}"))`);break;
+      case 'R':out.push(`    (fp_rect (start ${g[1]} ${g[2]}) (end ${g[3]} ${g[4]}) ${st(g[5])} (fill none) (layer "${LY[g[6]]}"))`);break;
+      case 'C':out.push(`    (fp_circle (center ${g[1]} ${g[2]}) (end ${g[3]} ${g[4]}) ${st(g[5])} (fill none) (layer "${LY[g[6]]}"))`);break;
+      case 'A':out.push(`    (fp_arc (start ${g[1]} ${g[2]}) (mid ${g[3]} ${g[4]}) (end ${g[5]} ${g[6]}) ${st(g[7])} (layer "${LY[g[8]]}"))`);break;
+      case 'P':{const pts=[];for(let i=0;i<g[1].length;i+=2)pts.push(`(xy ${g[1][i]} ${g[1][i+1]})`);out.push(`    (fp_poly (pts ${pts.join(' ')}) ${st(g[2])} (fill ${g[4]?'solid':'none'}) (layer "${LY[g[3]]}"))`);break}}});
+    fp.pads.forEach((p,i)=>{const net=f.pads[i].net,dr=Array.isArray(p[6])?`(drill oval ${p[6][0]} ${p[6][1]})`:`(drill ${p[6]})`;
+      out.push(`    (pad ${q(p[0])} thru_hole ${p[1]} (at ${p[2]} ${p[3]} ${a}) (size ${p[4]} ${p[5]}) ${dr} (layers "*.Cu" "*.Mask")${p[1]==='roundrect'?` (roundrect_rratio ${p[7]||0.25})`:''}${net?` (net ${nid.get(net)} ${q(net)})`:''})`)});
+    out.push('  )')});
+  if(M.edge)out.push(`  (gr_rect (start ${M.edge[0]} ${M.edge[1]}) (end ${M.edge[2]} ${M.edge[3]}) (stroke (width 0.1) (type default)) (fill none) (layer "Edge.Cuts"))`);
+  out.push(')');return out.join('\n')+'\n';
+}
+/* top view of the board: outline, part bodies, pads and ratsnest lines */
+function pcbPreview(M){
+  if(!M.edge)return '';const [x0,y0,x1,y1]=M.edge,pad=3,world=(f,v)=>{const r=rotV(v,f.ang);return [f.at[0]+r[0],f.at[1]+r[1]]};
+  let h=`<rect class="pb" x="${x0}" y="${y0}" width="${x1-x0}" height="${y1-y0}" rx="1"/>`;const pos=new Map();
+  M.fps.forEach(f=>{const fp=FP[f.name];
+    fp.g.forEach(g=>{if(g[0]==='P'||g[g.length-1]!=='S')return;
+      if(g[0]==='L'){const a=world(f,[g[1],g[2]]),b=world(f,[g[3],g[4]]);h+=`<line class="ps" x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}"/>`}
+      else if(g[0]==='R'){const a=world(f,[g[1],g[2]]),b=world(f,[g[3],g[4]]);h+=`<rect class="ps" x="${Math.min(a[0],b[0])}" y="${Math.min(a[1],b[1])}" width="${Math.abs(a[0]-b[0])}" height="${Math.abs(a[1]-b[1])}"/>`}
+      else if(g[0]==='C'){const c=world(f,[g[1],g[2]]);h+=`<circle class="ps" cx="${c[0]}" cy="${c[1]}" r="${Math.hypot(g[3]-g[1],g[4]-g[2])}"/>`}});
+    fp.pads.forEach((p,i)=>{const c=world(f,[p[2],p[3]]),r=rotV([p[4],p[5]],f.ang).map(Math.abs),net=f.pads[i].net;
+      h+=p[1]==='circle'?`<circle class="pp" cx="${c[0]}" cy="${c[1]}" r="${p[4]/2}"/>`:`<rect class="pp" x="${c[0]-r[0]/2}" y="${c[1]-r[1]/2}" width="${r[0]}" height="${r[1]}" rx="${p[1]==='rect'?0:Math.min(r[0],r[1])/(p[1]==='oval'?2:4)}"/>`;
+      if(net){if(!pos.has(net))pos.set(net,[]);pos.get(net).push(c)}});
+    const t=world(f,FP[f.name].ref);h+=`<text class="pt" x="${t[0]}" y="${t[1]}">${esc(f.ref)}</text>`});
+  pos.forEach(pts=>{const left=pts.slice(1),done=[pts[0]];while(left.length){let bi=0,bj=0,bd=1e9;left.forEach((p,i)=>done.forEach((d,j)=>{const dd=Math.hypot(p[0]-d[0],p[1]-d[1]);if(dd<bd){bd=dd;bi=i;bj=j}}));
+    const p=left.splice(bi,1)[0],d=done[bj];h+=`<line class="pr" x1="${d[0]}" y1="${d[1]}" x2="${p[0]}" y2="${p[1]}"/>`;done.push(p)}});
+  return `<svg class="pcbv" viewBox="${x0-pad} ${y0-pad} ${x1-x0+pad*2} ${y1-y0+pad*2}" role="img" aria-label="${L('Pratinjau PCB','PCB preview')}">${h}</svg>`;
+}
+function download(name,text,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([text],{type:type||'text/plain'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1000)}
+
 /* ---------- modal, menus, toast ---------- */
 let tt;function toast(m){const t=$('#toast');t.className='toast';t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
 function toastAction(m,acts,kind){const t=$('#toast');t.className='toast '+(kind||'');t.innerHTML=`<i class="tdot"></i><span>${esc(m)}</span>`+(acts||[]).map(a=>`<button class="tbtn" ${a.act?`data-act="${a.act}"`:''} ${a.fix?`data-fix="${esc(a.fix)}"`:''} ${a.go?`data-goto="${a.go}"`:''}>${esc(a.label)}</button>`).join('');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,acts&&acts.length?8000:2600)}
 function openModal(html,wide){$('#dlg').className='dlg'+(wide?' wide':'');$('#dlg').innerHTML=html;$('#modal').hidden=false}
 function closeModal(){$('#modal').hidden=true;$('#dlg').innerHTML=''}
 async function copyText(t,ta){try{await navigator.clipboard.writeText(t);toast(L('Tersalin ke clipboard.','Copied to clipboard.'))}catch(e){if(ta){ta.focus();ta.select()}toast(L('Teks sudah dipilih. Tekan Ctrl+C untuk menyalin.','Text selected. Press Ctrl+C to copy.'))}}
-let expTab='spice';
+let expTab='pcb';
 function openExport(t){
-  expTab=t||expTab;const tabs=[['spice','SPICE'],['bom','BOM (CSV)'],['json','JSON'],['svg','SVG'],['import',L('Impor','Import')]];
+  expTab=t||expTab;const tabs=[['pcb','PCB (KiCad)'],['spice','SPICE'],['bom','BOM (CSV)'],['json','JSON'],['svg','SVG'],['import',L('Impor','Import')]];
+  if(expTab==='pcb')return openPCB(tabs);
   const txt=expTab==='spice'?spice():expTab==='bom'?bomCSV():expTab==='json'?JSON.stringify(S,null,1):expTab==='svg'?exportSVG():'';
   const desc={spice:L('Netlist SPICE untuk LTspice, ngspice, atau KiCad. Salin lalu simpan sebagai file .cir.','SPICE netlist for LTspice, ngspice or KiCad. Copy it and save as a .cir file.'),
     bom:L('Daftar belanja komponen. Tempel ke Excel atau Google Sheets.','Parts list for ordering. Paste into Excel or Google Sheets.'),
@@ -1157,7 +1285,23 @@ function openExport(t){
   openModal(`<div class="dh"><h2>${L('Ekspor & impor','Export & import')}</h2><button class="ib" data-act="modal-close" aria-label="Tutup">${ic('x')}</button></div>
    <div class="db"><div class="dtabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-exp="${k}" aria-selected="${k===expTab}">${l}</button>`).join('')}</div>
    <p class="hintline">${desc}</p><textarea id="expta" spellcheck="false" ${expTab==='import'?`placeholder='{"parts":[…],"wires":[…]}'`:'readonly'}>${esc(txt)}</textarea>
-   <div class="btns">${expTab==='import'?`<button class="btn pri" data-act="do-import">${ic('check')}${L('Buka sebagai proyek','Open as project')}</button>`:`<button class="btn pri" data-act="copy-exp">${ic('copy')}${L('Salin','Copy')}</button>`}</div><p class="hintline" id="experr" style="color:var(--danger)"></p></div>`,true);
+   <div class="btns">${expTab==='import'?`<button class="btn pri" data-act="do-import">${ic('check')}${L('Buka sebagai proyek','Open as project')}</button>`:`<button class="btn pri" data-act="copy-exp">${ic('copy')}${L('Salin','Copy')}</button><button class="btn" data-act="dl-exp">${ic('export')}${L('Unduh','Download')}</button>`}</div><p class="hintline" id="experr" style="color:var(--danger)"></p></div>`,true);
+}
+const EXT={pcb:['kicad_pcb','application/octet-stream'],spice:['cir','text/plain'],bom:['csv','text/csv'],json:['json','application/json'],svg:['svg','image/svg+xml']};
+function fileName(ext){return (String(S.name||'rangkai').normalize('NFKD').replace(/[^\w\s-]/g,'').trim().replace(/\s+/g,'-').toLowerCase()||'rangkai')+'.'+ext}
+function openPCB(tabs){
+  const M=pcbModel(),n=M.fps.length;
+  const steps=[L('Unduh file <b>.kicad_pcb</b> di bawah, lalu buka di <b>KiCad</b> (gratis, kicad.org) lewat PCB Editor → File → Open.','Download the <b>.kicad_pcb</b> file below and open it in <b>KiCad</b> (free, kicad.org) via PCB Editor → File → Open.'),
+    L('Komponen sudah tersusun dengan footprint lubang tembus standar. Garis tipis (ratsnest) menunjukkan pin mana yang harus disambung.','Parts are already placed with standard through-hole footprints. The thin ratsnest lines show which pins to connect.'),
+    L('Rapikan posisinya, lalu tarik jalur dengan <kbd>X</kbd> (Route Tracks). Cek dengan Inspect → Design Rules Checker.','Tidy up the placement, then draw tracks with <kbd>X</kbd> (Route Tracks). Check with Inspect → Design Rules Checker.'),
+    L('File → Fabrication Outputs → Gerbers, zip foldernya, lalu unggah ke JLCPCB atau PCBWay.','File → Fabrication Outputs → Gerbers, zip the folder and upload it to JLCPCB or PCBWay.')];
+  openModal(`<div class="dh"><h2>${L('Ekspor & impor','Export & import')}</h2><button class="ib" data-act="modal-close" aria-label="Tutup">${ic('x')}</button></div>
+   <div class="db"><div class="dtabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-exp="${k}" aria-selected="${k===expTab}">${l}</button>`).join('')}</div>
+   ${n?`<p class="hintline">${L(`Papan ${M.edge[2]-M.edge[0]} × ${M.edge[3]-M.edge[1]} mm · ${n} komponen · ${M.nets.length} net. Susunannya mengikuti skematik.`,`Board ${M.edge[2]-M.edge[0]} × ${M.edge[3]-M.edge[1]} mm · ${n} parts · ${M.nets.length} nets. Laid out like the schematic.`)}</p>${pcbPreview(M)}
+   ${M.notes.length?`<div class="list">${M.notes.map(t=>`<div class="issue info"><i class="dot"></i><div><small style="color:var(--text)">${esc(t)}</small></div></div>`).join('')}</div>`:''}
+   <div class="btns"><button class="btn pri" data-act="dl-exp">${ic('export')}${L('Unduh file KiCad','Download KiCad file')}</button></div>
+   <ol class="steps">${steps.map(t=>`<li>${t}</li>`).join('')}</ol>`
+   :`<p class="hintline">${L('Belum ada komponen untuk dijadikan PCB.','There are no parts to put on a PCB yet.')}</p>`}</div>`,true);
 }
 function openProjects(){
   IDX.list.sort((a,b)=>(b.t||0)-(a.t||0));
@@ -1177,7 +1321,7 @@ function openSamples(){
 let palSel=0,palItems=[];
 function palCommands(){return [
   ['tool-wire','wire',L('Alat kabel','Wire tool'),'W'],['label','label',L('Taruh label net','Place net label'),'N'],[simOn?'mode-design':'mode-sim','play',simOn?L('Matikan simulasi','Stop simulation'):L('Jalankan simulasi','Run simulation'),'S'],
-  ['fit','fit',L('Muat semua ke layar','Fit everything'),'F'],['samples','book',L('Buka contoh rangkaian','Open example circuits'),''],['export','export',L('Ekspor SPICE / BOM / SVG','Export SPICE / BOM / SVG'),''],
+  ['fit','fit',L('Muat semua ke layar','Fit everything'),'F'],['samples','book',L('Buka contoh rangkaian','Open example circuits'),''],['export','export',L('Ekspor PCB / SPICE / BOM / SVG','Export PCB / SPICE / BOM / SVG'),''],
   ['projects','folder',L('Kelola proyek','Manage projects'),''],['new-proj','plus',L('Proyek kosong baru','New blank project'),''],['theme','moon',L('Ganti tema terang/gelap','Toggle light/dark theme'),''],['lang','globe',L('Switch to English','Ganti ke Bahasa Indonesia'),''],
   ['selall','select',L('Pilih semua','Select all'),'Ctrl A']]}
 function openPalette(){openModal(`<div class="pal-in">${ic('search')}<input id="palq" placeholder="${L('Ketik nama komponen atau perintah…','Type a part or command…')}" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div><div class="pal-list" id="pallist" role="listbox"></div>`);palSel=0;palRender('');{const q=$('#palq');if(q)q.focus()}}
@@ -1272,6 +1416,7 @@ function act(a,el){
     case 'modal-close':closeModal();break;
     case 'new-proj':closeModal();newProj(null,L('Proyek baru','New project'));render();fit();toast(L('Proyek baru dibuat.','New project created.'));break;
     case 'copy-exp':copyText($('#expta').value,$('#expta'));break;
+    case 'dl-exp':{const e=EXT[expTab];if(!e)break;track('unduh-'+expTab);download(fileName(e[0]),expTab==='pcb'?kicadPCB(pcbModel()):$('#expta').value,e[1]);toast(L('File diunduh.','File downloaded.'));break}
     case 'copy-bom':copyText(bomCSV());break;
     case 'do-import':{try{const o=JSON.parse($('#expta').value);if(!valid(o))throw 0;closeModal();newProj(o,o.name||L('Proyek impor','Imported project'));render();fit();toast(L('Proyek diimpor.','Project imported.'))}catch(e){$('#experr').textContent=L('JSON tidak bisa dibaca. Pastikan isinya hasil ekspor JSON dari Rangkai.','Could not read that JSON. Make sure it was exported from Rangkai.')}break}
     case 'fixall':fixAll();break;
