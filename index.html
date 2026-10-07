@@ -1,0 +1,1475 @@
+<title>Rangkai Skematik</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: full-bleed drafting sheet; floating glass panels (tool rail, library, inspector) on desktop; bottom dock + sheets on phone */
+:root{
+  --bg:#f2f4f6; --grid:rgba(23,37,58,.15); --grid2:rgba(23,37,58,.055);
+  --panel:rgba(255,255,255,.86); --solid:#ffffff; --raise:#f6f8fa; --line:rgba(23,37,58,.12); --line2:rgba(23,37,58,.2);
+  --text:#101925; --muted:#5a6676; --ink:#1d2a3c; --wire:#0e8a78; --net:#2c58a8;
+  --accent:#d4612a; --accent-ink:#ffffff; --accent-soft:rgba(212,97,42,.12);
+  --volt:#0fa58c; --neg:#4b66e8; --ok:#1d8753; --warn:#a86a0c; --warn-soft:rgba(168,106,12,.12); --danger:#cf2539; --danger-soft:rgba(207,37,57,.1);
+  --shadow:0 1px 2px rgba(16,25,37,.06),0 8px 28px rgba(16,25,37,.09);
+  --ui:'Plus Jakarta Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0a0e13; --grid:rgba(190,212,236,.14); --grid2:rgba(190,212,236,.045);
+  --panel:rgba(17,23,31,.84); --solid:#121821; --raise:#18202b; --line:rgba(190,212,236,.1); --line2:rgba(190,212,236,.2);
+  --text:#e5ecf3; --muted:#8c99a9; --ink:#c6d3e1; --wire:#33c2aa; --net:#8db3ff;
+  --accent:#f08a4b; --accent-ink:#1b0d03; --accent-soft:rgba(240,138,75,.16);
+  --volt:#3ee0c1; --neg:#8d9dff; --ok:#4ccf8a; --warn:#f0b54a; --warn-soft:rgba(240,181,74,.13); --danger:#ff5a6d; --danger-soft:rgba(255,90,109,.13);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0a0e13; --grid:rgba(190,212,236,.14); --grid2:rgba(190,212,236,.045);
+  --panel:rgba(17,23,31,.84); --solid:#121821; --raise:#18202b; --line:rgba(190,212,236,.1); --line2:rgba(190,212,236,.2);
+  --text:#e5ecf3; --muted:#8c99a9; --ink:#c6d3e1; --wire:#33c2aa; --net:#8db3ff;
+  --accent:#f08a4b; --accent-ink:#1b0d03; --accent-soft:rgba(240,138,75,.16);
+  --volt:#3ee0c1; --neg:#8d9dff; --ok:#4ccf8a; --warn:#f0b54a; --warn-soft:rgba(240,181,74,.13); --danger:#ff5a6d; --danger-soft:rgba(255,90,109,.13);
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35); color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font:14px/1.45 var(--ui);overflow:hidden;-webkit-font-smoothing:antialiased;overscroll-behavior:none}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.i{width:18px;height:18px;flex:none;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+kbd{font:500 10.5px var(--mono);color:var(--muted);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:var(--solid)}
+
+#app{display:flex;flex-direction:column;height:100%}
+
+/* top bar */
+.top{display:flex;align-items:center;gap:8px;padding:8px 16px;background:var(--solid);border-bottom:1px solid var(--line);position:relative;z-index:6;min-height:56px}
+.brand{display:flex;align-items:center;gap:9px;font-weight:800;font-size:17px;letter-spacing:-.01em;flex:none}
+.logo{width:30px;height:30px;border-radius:9px;background:var(--text);color:var(--bg);display:grid;place-items:center}
+.logo .i{width:20px;height:20px;stroke-width:1.9}
+.proj{display:flex;align-items:center;gap:6px;border:0;background:transparent;padding:6px 8px;border-radius:8px;min-width:0;max-width:220px;color:var(--muted);font-weight:600}
+.proj span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.proj:hover{background:var(--raise);color:var(--text)}
+.proj .i{width:14px;height:14px}
+.seg{display:flex;padding:3px;border-radius:11px;background:var(--raise);border:1px solid var(--line);margin-left:6px;flex:none}
+.seg button{display:flex;align-items:center;gap:7px;border:0;background:transparent;padding:6px 13px;border-radius:8px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--solid);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg button[data-mode="sim"][aria-pressed="true"]{color:var(--volt)}
+.seg .i{width:15px;height:15px}
+.grow{flex:1;min-width:0}
+.search{display:flex;align-items:center;gap:9px;border:1px solid var(--line);background:var(--raise);border-radius:10px;padding:7px 10px 7px 11px;color:var(--muted);min-width:0;width:300px}
+.search span{flex:1;text-align:left;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.search:hover{border-color:var(--line2)}
+.ib{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;min-width:36px;padding:0 8px;border:0;border-radius:9px;background:transparent;font-weight:600;flex:none}
+.ib:hover{background:var(--raise)}
+.ib:disabled{opacity:.35;cursor:default;background:transparent}
+.ib.text{padding:0 11px}
+.sep{width:1px;height:22px;background:var(--line);flex:none}
+.only-phone{display:none!important}
+
+/* work area */
+.work{position:relative;flex:1;min-height:0}
+.stage{position:absolute;inset:0;overflow:hidden;background-color:var(--bg);
+  background-image:radial-gradient(circle,var(--grid) 1px,transparent 1.25px),linear-gradient(to right,var(--grid2) 1px,transparent 1px),linear-gradient(to bottom,var(--grid2) 1px,transparent 1px)}
+#sv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;user-select:none;-webkit-user-select:none}
+.stage.t-wire #sv,.stage.t-place #sv{cursor:crosshair}
+.stage.panning #sv{cursor:grabbing}
+.stage.over-pin #sv{cursor:crosshair}
+
+.glass{background:var(--panel);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
+
+/* rail */
+.rail{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:2px;padding:5px;z-index:4}
+.rail .ib{width:40px;height:40px;position:relative}
+.rail .ib[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.rail [data-act="lib"][aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.rail .rs{height:1px;background:var(--line);margin:4px 6px}
+.tip{position:relative}
+.tip::after{content:attr(data-tip);position:absolute;left:calc(100% + 10px);top:50%;transform:translateY(-50%);background:var(--text);color:var(--bg);font:600 12px var(--ui);padding:5px 9px;border-radius:7px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s .25s}
+.tip:hover::after{opacity:1}
+
+/* panels */
+.panel{position:absolute;display:flex;flex-direction:column;z-index:3;min-height:0}
+.lib{left:70px;top:12px;bottom:12px;width:250px}
+.insp{right:12px;top:12px;bottom:12px;width:316px}
+.app-lib-closed .lib{display:none}
+.phead{display:flex;align-items:center;gap:8px;padding:12px 12px 8px 16px}
+.phead h2{margin:0;font-size:14px;font-weight:700;flex:1}
+.phead .ib{height:30px;min-width:30px}
+.handle{display:none}
+.lsearch{margin:0 12px 6px;display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:10px;background:var(--solid);padding:0 10px}
+.lsearch input{flex:1;border:0;background:transparent;padding:8px 0;outline:none;min-width:0}
+.lsearch .i{color:var(--muted);width:16px;height:16px}
+.lbody{overflow:auto;padding:4px 12px 14px;display:flex;flex-direction:column;gap:6px;min-height:0;flex:1}
+.lbody h4{margin:8px 4px 2px;font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.lgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 3px 6px;border:1px solid var(--line);border-radius:10px;background:var(--solid);color:var(--ink);touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.item:hover{border-color:var(--line2);transform:translateY(-1px)}
+.item[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.item svg{width:100%;height:28px;pointer-events:none}
+.item svg path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.item svg path.f{fill:currentColor;stroke:none}
+.item span{font-size:11.5px;font-weight:600;color:var(--text);line-height:1.15;text-align:center;pointer-events:none}
+.item{transition:transform .12s,border-color .12s}
+
+/* inspector */
+.tabs{display:flex;gap:2px;padding:10px 10px 0;border-bottom:1px solid var(--line)}
+.tab{border:0;background:transparent;padding:7px 10px 9px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;display:flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{color:var(--text);border-color:var(--accent)}
+.badge{font:700 10px var(--mono);min-width:18px;height:18px;padding:0 5px;border-radius:9px;display:inline-grid;place-items:center;background:var(--warn-soft);color:var(--warn)}
+.badge.ok{background:var(--accent-soft);color:var(--ok)}
+.badge.bad{background:var(--danger-soft);color:var(--danger)}
+.ibody{overflow:auto;padding:14px 16px 20px;display:flex;flex-direction:column;gap:16px;min-height:0;flex:1}
+.ibody section{display:flex;flex-direction:column;gap:9px;min-width:0}
+.ibody h3{margin:0;font:600 10.5px var(--mono);letter-spacing:.09em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.ph{display:flex;gap:12px;align-items:center}
+.ph .sym-ic{width:52px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--solid);display:grid;place-items:center;color:var(--ink);flex:none}
+.ph .sym-ic svg{width:44px;height:30px}
+.ph .sym-ic path{fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ph .sym-ic path.f{fill:currentColor;stroke:none}
+.ph b{display:block;font-size:17px;font-weight:700;letter-spacing:-.01em}
+.ph small{display:block;font:500 11px var(--mono);color:var(--muted);margin-top:2px}
+.fields{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.field{display:flex;flex-direction:column;gap:4px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label{font-size:12px;color:var(--muted);font-weight:500}
+.field input[type=text],.field select{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:var(--solid);font:500 13px var(--mono);min-width:0}
+.field input[type=text]:focus{border-color:var(--accent);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}
+.hintline{font-size:12px;color:var(--muted);margin:0}
+.btns{display:flex;gap:6px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--solid);border-radius:9px;padding:7px 11px;font-weight:600;font-size:13px}
+.btn:hover{border-color:var(--line2)}
+.btn .i{width:15px;height:15px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.dng:hover{border-color:var(--danger);color:var(--danger)}
+.btn.sm{padding:5px 9px;font-size:12px}
+.readout{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.ro{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--solid);min-width:0}
+.ro span{display:block;font-size:11px;color:var(--muted)}
+.ro b{display:block;font:600 14px var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ro.warn{border-color:var(--warn);background:var(--warn-soft)}
+.ro.bad{border-color:var(--danger);background:var(--danger-soft)}
+.bands{display:flex;align-items:center;gap:10px}
+.rbody{position:relative;width:118px;height:30px;flex:none}
+.rbody::before{content:"";position:absolute;left:0;right:0;top:14px;height:2px;background:var(--muted)}
+.rbody i{position:absolute;left:20px;right:20px;top:5px;bottom:5px;border-radius:9px;background:#d8c3a0;display:flex;gap:7px;padding:0 12px;align-items:stretch}
+.rbody i em{width:6px;display:block}
+.rbody i em:last-child{margin-left:auto}
+.swt{display:flex;align-items:center;gap:10px}
+.sw{width:46px;height:26px;border-radius:13px;border:0;background:var(--line2);position:relative;flex:none}
+.sw::after{content:"";position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:var(--solid);transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.sw[aria-checked="true"]{background:var(--volt)}
+.sw[aria-checked="true"]::after{transform:translateX(20px)}
+input[type=range]{width:100%;accent-color:var(--accent)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--solid);border-radius:20px;padding:4px 10px 4px 7px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.chip i{width:10px;height:10px;border-radius:50%;display:block}
+.chip[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--solid)}
+.lrow{display:grid;grid-template-columns:minmax(0,74px) minmax(0,1fr) auto;gap:10px;align-items:baseline;padding:8px 11px;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;font:500 12px var(--mono);width:100%}
+.lrow:first-child{border-top:0}
+.lrow:hover{background:var(--raise)}
+.lrow.on{background:var(--accent-soft);box-shadow:inset 3px 0 0 var(--accent)}
+.lrow b{color:var(--net);font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lrow span{overflow-wrap:anywhere;color:var(--text)}
+.lrow em{font-style:normal;color:var(--volt);font-weight:600;font-variant-numeric:tabular-nums}
+.issue{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;padding:10px 11px;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;width:100%;font-size:13px}
+.issue:first-child{border-top:0}
+.issue .btns{margin-top:7px}
+.ilink{border:0;background:transparent;padding:0;font-weight:700;text-align:left;color:var(--text);text-decoration:underline;text-decoration-color:var(--line2);text-underline-offset:3px}
+.ilink:hover{text-decoration-color:var(--accent)}
+.autorow{display:flex;gap:12px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:11px;background:var(--solid)}
+.autorow b{display:block;font-size:13px}.autorow small{display:block;color:var(--muted);font-size:12px}
+
+.issue .dot{width:9px;height:9px;border-radius:50%;margin-top:5px}
+.issue.bad .dot{background:var(--danger)} .issue.warn .dot{background:var(--warn)} .issue.info .dot{background:var(--net)}
+.issue b{display:block;font-weight:700}
+.issue small{display:block;color:var(--muted);font-size:12.5px;margin-top:1px}
+table.bom{width:100%;border-collapse:collapse;font:500 12px var(--mono)}
+table.bom th{text-align:left;font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--line)}
+table.bom td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.bom td:first-child{font-weight:700;font-variant-numeric:tabular-nums}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:11px;background:var(--solid)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px;align-items:center}
+.keys kbd{justify-self:start}
+
+/* hud & sim bar */
+.hud{position:absolute;bottom:12px;left:332px;right:340px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;pointer-events:none;z-index:2}
+.app-lib-closed .hud{left:70px}
+.hud .c{font:500 11.5px var(--mono);color:var(--muted);background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:4px 8px;font-variant-numeric:tabular-nums;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.hud .hint{font:500 12.5px var(--ui);color:var(--text)}
+.simbar{position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:9px;padding:7px 14px 7px 11px;border-radius:30px;z-index:4;font-weight:600;font-size:13px;max-width:calc(100% - 32px);white-space:nowrap}
+.simbar span{overflow:hidden;text-overflow:ellipsis}
+.pulse{width:9px;height:9px;border-radius:50%;background:var(--volt);flex:none;box-shadow:0 0 0 0 var(--volt);animation:pulse 1.8s infinite}
+.simbar.err .pulse{background:var(--danger);animation:none}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(62,224,193,.5)}70%{box-shadow:0 0 0 8px rgba(62,224,193,0)}100%{box-shadow:0 0 0 0 rgba(62,224,193,0)}}
+
+/* svg drawing */
+.sym{fill:none;stroke:var(--ink);stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.symf{fill:var(--ink);stroke:none}
+.hit{fill:transparent;stroke:none}
+.part{cursor:move}
+.part:hover .sym{stroke-width:1.85}
+.part.sel .sym,.ghost .sym{stroke:var(--accent)}
+.part.sel .symf,.ghost .symf{fill:var(--accent)}
+.part.sel .hit{fill:var(--accent-soft);stroke:var(--accent);stroke-width:.5;stroke-dasharray:2 2}
+.ghost{opacity:.75;pointer-events:none}
+.pin{fill:transparent;stroke:none;pointer-events:none}
+.stage.t-wire .pin,.part:hover .pin{fill:var(--bg);stroke:var(--accent);stroke-width:.9}
+.wl{stroke:var(--wire);stroke-width:1.5;stroke-linecap:round;fill:none}
+.whit{stroke:transparent;stroke-width:8;cursor:pointer}
+.wire.sel .wl{stroke:var(--accent);stroke-width:2.2}
+.wire.hl .wl{stroke-width:3.4}
+.simon .wl{stroke:var(--volt)}
+.simon .wire.g0 .wl{stroke:var(--muted)}
+.simon .wire.neg .wl{stroke:var(--neg)}
+.simon .wire.sel .wl{stroke:var(--accent)}
+.jdot{fill:var(--wire)}
+.simon .jdot{fill:var(--volt)}
+.ref{font:600 7px var(--mono);fill:var(--text)}
+.val{font:500 6.5px var(--mono);fill:var(--muted)}
+.net{font:700 7px var(--mono);fill:var(--net)}
+.pn{font:500 4.6px var(--mono);fill:var(--muted)}
+.prev{stroke:var(--accent);stroke-width:1.4;stroke-dasharray:3 2;fill:none}
+.cross{stroke:var(--muted);stroke-width:.6}
+.pinring{fill:none;stroke:var(--accent);stroke-width:1.2}
+.unc{fill:none;stroke:var(--warn);stroke-width:.9}
+.box{fill:var(--accent-soft);stroke:var(--accent);stroke-width:.8;stroke-dasharray:3 2}
+.vchip rect{fill:var(--solid);stroke:var(--volt);stroke-width:.7}
+.vchip text{font:600 6px var(--mono);fill:var(--text)}
+.vchip.neg rect{stroke:var(--neg)}
+.flag{cursor:pointer}
+.flag circle{fill:var(--danger);stroke:var(--bg);stroke-width:1.2}
+.flag.warn circle{fill:var(--warn)}
+.flag text{font:800 7px var(--ui);fill:var(--bg);pointer-events:none}
+.dangle{fill:none;stroke:var(--warn);stroke-width:1.3;stroke-dasharray:2 1.5}
+.glow{pointer-events:none}
+
+/* phone dock & context bar */
+.dock{display:none}
+.cbar{display:none}
+
+/* context menu */
+.ctx{position:fixed;z-index:30;min-width:200px;padding:6px;display:flex;flex-direction:column;gap:1px}
+.ctx button{display:flex;align-items:center;gap:10px;border:0;background:transparent;padding:8px 10px;border-radius:8px;text-align:left;font-weight:500}
+.ctx button:hover,.ctx button:focus-visible{background:var(--raise)}
+.ctx button kbd{margin-left:auto}
+.ctx hr{border:0;height:1px;background:var(--line);margin:4px 2px}
+.ctx .dng{color:var(--danger)}
+
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(6,10,15,.42);display:flex;align-items:flex-start;justify-content:center;padding:max(64px,8vh) 16px 16px;z-index:40}
+.dlg{width:min(640px,100%);max-height:calc(100% - 20px);display:flex;flex-direction:column;background:var(--solid);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.dlg.wide{width:min(880px,100%)}
+.dh{display:flex;align-items:center;gap:10px;padding:16px 18px 10px}
+.dh h2{margin:0;font-size:18px;font-weight:700;flex:1;letter-spacing:-.01em}
+.db{padding:4px 18px 18px;overflow:auto;display:flex;flex-direction:column;gap:12px;min-height:0}
+.db textarea{width:100%;min-height:240px;resize:vertical;border:1px solid var(--line);border-radius:11px;background:var(--raise);padding:11px;font:12px/1.5 var(--mono)}
+.dtabs{display:flex;gap:6px;flex-wrap:wrap}
+.dtabs button{border:1px solid var(--line);background:var(--raise);border-radius:20px;padding:6px 13px;font-weight:600;font-size:13px}
+.dtabs button[aria-selected="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.card{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--raise);text-align:left;padding:0}
+.card:hover{border-color:var(--accent)}
+.card .pv{height:130px;background:var(--bg);display:grid;place-items:center;border-bottom:1px solid var(--line)}
+.card .pv svg{width:100%;height:100%}
+.card div.t{padding:10px 12px 12px}
+.card b{display:block;font-size:14px}
+.card small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
+.pal-in{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
+.pal-in input{flex:1;border:0;background:transparent;font-size:16px;outline:none;min-width:0}
+.pal-list{overflow:auto;padding:6px;max-height:min(420px,60vh)}
+.pal-item{display:flex;align-items:center;gap:12px;width:100%;border:0;background:transparent;padding:9px 10px;border-radius:9px;text-align:left}
+.pal-item[aria-selected="true"]{background:var(--accent-soft)}
+.pal-item .pic{width:34px;height:24px;color:var(--ink);display:grid;place-items:center;flex:none}
+.pal-item .pic svg{width:34px;height:22px}
+.pal-item .pic path{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.pal-item .pic path.f{fill:currentColor;stroke:none}
+.pal-item span{flex:1}
+.pal-item small{color:var(--muted);font:500 11px var(--mono)}
+.prow{display:flex;align-items:center;gap:10px;padding:10px 12px;border-top:1px solid var(--line)}
+.prow:first-child{border-top:0}
+.prow input{flex:1;min-width:0;border:1px solid transparent;background:transparent;padding:6px 8px;border-radius:8px;font-weight:600}
+.prow input:hover,.prow input:focus{border-color:var(--line);background:var(--solid);outline:none}
+.prow small{color:var(--muted);font:500 11px var(--mono);white-space:nowrap}
+.prow.cur{background:var(--accent-soft)}
+
+/* welcome */
+.welcome{position:absolute;left:50%;bottom:58px;transform:translateX(-50%);width:min(520px,calc(100% - 32px));padding:16px 18px;z-index:5;display:flex;flex-direction:column;gap:10px}
+.welcome h3{margin:0;font-size:16px;font-weight:800;letter-spacing:-.01em}
+.welcome ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px;color:var(--muted);font-size:13px}
+.welcome ul b{color:var(--text)}
+
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--text);color:var(--bg);padding:9px 10px 9px 15px;border-radius:12px;font-weight:600;font-size:13px;z-index:50;max-width:calc(100% - 32px);width:max-content;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px}
+.toast span{min-width:0}
+.tdot{display:none;width:9px;height:9px;border-radius:50%;flex:none}
+.toast.bad .tdot{display:block;background:var(--danger)}
+.toast.ok .tdot{display:block;background:var(--ok)}
+.tbtn{border:1px solid currentColor;background:transparent;color:inherit;border-radius:8px;padding:5px 10px;font-weight:700;font-size:12.5px;white-space:nowrap;opacity:.95;flex:none}
+.tbtn:first-of-type{background:var(--bg);color:var(--text);border-color:var(--bg)}
+
+@media (max-width:1180px){
+  .lib{width:232px}
+  .insp{width:290px}
+  .hud{left:314px;right:314px}
+  .search{width:220px}
+}
+@media (max-width:1000px){
+  .search span,.search kbd{display:none}
+  .search{width:auto}
+  .ib.text .lbl{display:none}
+  .app-lib-open .hud{left:70px}
+  .lib{box-shadow:0 20px 60px rgba(0,0,0,.25)}
+}
+/* phone */
+@media (max-width:760px){
+  .top{padding:6px 10px;gap:4px;min-height:52px}
+  .brand .wm,.seg .lbl,.only-wide{display:none!important}
+  .only-phone{display:inline-flex!important}
+  .seg{margin-left:2px}
+  .seg button{padding:6px 10px}
+  .proj{max-width:none;flex:1;padding:6px 6px}
+  .rail{display:none}
+  .hud{left:12px;right:12px;bottom:auto;top:10px}
+  .hud .hint{display:none}
+  .simbar{top:46px;font-size:12px}
+  .panel{position:fixed;left:0;right:0;top:auto;bottom:0;width:auto;border-radius:20px 20px 0 0;max-height:68%;height:68%;z-index:20;transform:translateY(105%);transition:transform .25s cubic-bezier(.2,.8,.2,1);border-bottom:0;padding-bottom:env(safe-area-inset-bottom,0px)}
+  .app-lib-closed .lib{display:flex}
+  .panel.open{transform:none}
+  .handle{display:block;width:40px;height:4px;border-radius:2px;background:var(--line2);margin:8px auto 0}
+  .lgrid{grid-template-columns:repeat(auto-fill,minmax(82px,1fr))}
+  .item{padding:10px 3px 8px}
+  .item svg{height:32px}
+  .dock{display:flex;position:relative;z-index:8;background:var(--solid);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));gap:4px}
+  .dock button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;border:0;background:transparent;padding:6px 2px;border-radius:12px;font-size:11px;font-weight:600;color:var(--muted);position:relative}
+  .dock button .i{width:22px;height:22px}
+  .dock button[aria-pressed="true"]{color:var(--accent);background:var(--accent-soft)}
+  .dock .badge{position:absolute;top:2px;right:calc(50% - 22px)}
+  .cbar{display:flex;position:absolute;left:10px;right:10px;bottom:10px;z-index:6;padding:6px;gap:4px;align-items:center;border-radius:16px}
+  .cbar:empty{display:none}
+  .cbar .msg{flex:1;font-size:12.5px;font-weight:600;padding:0 6px;min-width:0;line-height:1.25}
+  .cbar button{display:flex;flex-direction:column;align-items:center;gap:2px;border:0;background:transparent;border-radius:10px;padding:6px 8px;font-size:10.5px;font-weight:600;min-width:52px}
+  .cbar button:hover{background:var(--raise)}
+  .cbar button.pri{background:var(--accent);color:var(--accent-ink)}
+  .cbar button.dng{color:var(--danger)}
+  .welcome{bottom:12px}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom,0px));flex-wrap:wrap}
+  .scrim{padding:12px;align-items:flex-end}
+  .dlg{max-height:88%;border-radius:20px}
+  .readout{grid-template-columns:repeat(2,1fr)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div id="app" class="app-lib-open">
+  <header class="top" id="top"></header>
+  <div class="work" id="work">
+    <div class="stage" id="stage">
+      <svg id="sv" xmlns="http://www.w3.org/2000/svg">
+        <defs><filter id="blur" x="-1" y="-1" width="3" height="3"><feGaussianBlur stdDeviation="4.5"/></filter></defs>
+        <g id="world"><g id="gglow"></g><g id="gw"></g><g id="gp"></g><g id="gd"></g><g id="gv"></g><g id="go"></g></g>
+      </svg>
+    </div>
+    <nav class="rail glass" id="rail" aria-label="Alat"></nav>
+    <section class="panel lib glass" id="lib" aria-label="Komponen"></section>
+    <section class="panel insp glass" id="insp" aria-label="Inspektor"></section>
+    <div class="hud" id="hud"></div>
+    <div class="simbar glass" id="simbar" hidden></div>
+    <div class="cbar glass" id="cbar"></div>
+    <div class="welcome glass" id="welcome" hidden></div>
+  </div>
+  <nav class="dock" id="dock" aria-label="Menu bawah"></nav>
+</div>
+<div class="ctx glass" id="ctx" hidden role="menu"></div>
+<div class="scrim" id="modal" hidden><div class="dlg" id="dlg" role="dialog" aria-modal="true"></div></div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+'use strict';
+/* =========================================================
+   Rangkai — schematic editor + live DC simulator
+   ========================================================= */
+const G=10, VT=0.025852;
+let lang='id';
+try{lang=localStorage.getItem('rangkai2.lang')||'id'}catch(e){}
+const L=(id,en)=>lang==='id'?id:en;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const snap=v=>Math.round(v/G)*G;
+const K=(x,y)=>x+','+y;
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ---------- icons ---------- */
+const IC={
+ logo:'M1 9h3l1.6-5 3 10 1.8-5H15',
+ select:'M3.5 2.5l9 4.6-4 1.2-1.4 4.2z',
+ wire:'M2 12.5h6v-9h6M8 12.5h.01',
+ label:'M2 8h2.5l2-3.5H14v7H6.5L4.5 8',
+ rotate:'M13.5 8a5.5 5.5 0 1 1-2.2-4.4M11.6 1v3h3',
+ mirror:'M8 1.5v13M6 4L2 12h4zM10 4l4 8h-4z',
+ del:'M2.5 4h11M6 4V2.2h4V4M4 4l.8 10h6.4L12 4',
+ dup:'M5.5 5.5h8v8h-8zM2.5 10.5v-8h8',
+ undo:'M5 3L2 6l3 3M2 6h8a4 4 0 0 1 0 8H7',
+ redo:'M11 3l3 3-3 3M14 6H6a4 4 0 0 0 0 8h3',
+ zin:'M8 3.5v9M3.5 8h9',
+ zout:'M3.5 8h9',
+ fit:'M2 6V2h4M10 2h4v4M14 10v4h-4M6 14H2v-4',
+ lib:'M2 2h5v5H2zM9 2h5v5H9zM2 9h5v5H2zM11.5 9v5M9 11.5h5',
+ search:'M11.5 7a4.5 4.5 0 1 1-9 0a4.5 4.5 0 1 1 9 0M10.3 10.3L14 14',
+ moon:'M13.5 9.8A6 6 0 0 1 6.2 2.5a6 6 0 1 0 7.3 7.3z',
+ sun:'M8 10.8a2.8 2.8 0 1 0 0-5.6a2.8 2.8 0 1 0 0 5.6zM8 1v1.6M8 13.4V15M1 8h1.6M13.4 8H15M3 3l1.1 1.1M11.9 11.9L13 13M3 13l1.1-1.1M11.9 4.1L13 3',
+ play:'M4.5 2.8l9 5.2-9 5.2z',
+ pen:'M2.5 13.5l.9-3.6 7.4-7.4 2.7 2.7-7.4 7.4zM9.3 4l2.7 2.7',
+ more:'M3 8h.01M8 8h.01M13 8h.01',
+ panel:'M2 2.5h12v11H2zM10 2.5v11',
+ export:'M8 1.5v8.5M5 7l3 3 3-3M2.5 11.5v2.5h11v-2.5',
+ folder:'M1.5 3.5h4.5l1.6 1.8h6.9v8.2h-13z',
+ book:'M3 2.5h8.5a1.5 1.5 0 0 1 1.5 1.5v10H4.5A1.5 1.5 0 0 1 3 12.5zM3 12.5A1.5 1.5 0 0 1 4.5 11H13',
+ x:'M4 4l8 8M12 4l-8 8',
+ bend:'M3 13.5V3h10.5',
+ check:'M3 8.5l3.2 3L13 4.5',
+ plus:'M8 3v10M3 8h10',
+ chev:'M4.5 6.5L8 10l3.5-3.5',
+ copy:'M5.5 5.5h8v8h-8zM2.5 10.5v-8h8',
+ bolt:'M9 1.5L3.5 9H8l-1 5.5L12.5 7H8z',
+ toggle:'M1.5 8h3M11.5 8h3M4.5 8l7-4',
+ globe:'M8 14.5a6.5 6.5 0 1 0 0-13a6.5 6.5 0 1 0 0 13zM1.5 8h13M8 1.5c2 2 2.7 4.2 2.7 6.5S10 12.5 8 14.5C6 12.5 5.3 10.3 5.3 8S6 3.5 8 1.5'
+};
+const ic=(n,cls)=>`<svg class="i ${cls||''}" viewBox="0 0 16 16" aria-hidden="true"><path d="${IC[n]}"/></svg>`;
+
+/* ---------- symbol library (units: 10 = 0.1 in grid) ---------- */
+const GROUPS={pas:['Pasif','Passive'],semi:['Semikonduktor','Semiconductors'],src:['Sumber & ground','Sources & ground'],ic:['IC & konektor','ICs & connectors']};
+const ZZ='M-30 0H-20L-16.7 -6L-10 6L-3.3 -6L3.3 6L10 -6L16.7 6L20 0H30';
+const SYM={
+ R:{n:['Resistor','Resistor'],g:'pas',pre:'R',v:'10k',kw:'hambatan ohm',pins:[['1',-30,0],['2',30,0]],d:ZZ,bb:[-30,-8,60,16],ref:[0,-14],val:[0,14]},
+ POT:{n:['Potensiometer','Potentiometer'],g:'pas',pre:'RV',v:'10k',kw:'pot trimpot variabel',pins:[['1',-30,0],['2',30,0],['W',0,-20]],d:ZZ+'M0 -20V-11',f:'M-3.5 -12L0 -7L3.5 -12Z',bb:[-30,-20,60,28],ref:[0,14],val:[0,23]},
+ C:{n:['Kapasitor','Capacitor'],g:'pas',pre:'C',v:'100n',kw:'kondensator keramik',pins:[['1',-20,0],['2',20,0]],d:'M-20 0H-3M-3 -9V9M3 -9V9M3 0H20',bb:[-20,-9,40,18],ref:[0,-15],val:[0,15]},
+ CP:{n:['Elco','Electrolytic'],g:'pas',pre:'C',v:'10µ',kw:'kapasitor elektrolit polar',pins:[['+',-20,0],['-',20,0]],d:'M-20 0H-3M-3 -9V9M6 -9Q1 0 6 9M2.6 0H20M-11 -9h5M-8.5 -11.5v5',bb:[-20,-12,40,21],ref:[0,-17],val:[0,15]},
+ L:{n:['Induktor','Inductor'],g:'pas',pre:'L',v:'10µH',kw:'kumparan coil',pins:[['1',-30,0],['2',30,0]],d:'M-30 0H-20a5 5 0 0 1 10 0a5 5 0 0 1 10 0a5 5 0 0 1 10 0a5 5 0 0 1 10 0H30',bb:[-30,-6,60,8],ref:[0,-13],val:[0,9]},
+ D:{n:['Dioda','Diode'],g:'semi',pre:'D',v:'1N4148',kw:'penyearah rectifier 1n4001',pins:[['A',-20,0],['K',20,0]],d:'M-20 0H-7M7 0H20M7 -7V7',f:'M-7 -7L7 0L-7 7Z',bb:[-20,-7,40,14],ref:[0,-14],val:[0,14]},
+ ZD:{n:['Zener','Zener'],g:'semi',pre:'D',v:'5V1',kw:'regulator dioda zener',pins:[['A',-20,0],['K',20,0]],d:'M-20 0H-7M7 0H20M4 -9L7 -7V7L10 9',f:'M-7 -7L7 0L-7 7Z',bb:[-20,-9,40,18],ref:[0,-15],val:[0,15]},
+ LED:{n:['LED','LED'],g:'semi',pre:'LED',v:'Merah',kw:'lampu dioda cahaya light',pins:[['A',-20,0],['K',20,0]],d:'M-20 0H-7M7 0H20M7 -7V7M0 -9L5 -14M5 -9L10 -14',f:'M-7 -7L7 0L-7 7ZM7 -16L2.5 -14.6L5.6 -11.5ZM12 -16L7.5 -14.6L10.6 -11.5Z',bb:[-20,-16,40,23],ref:[0,-21],val:[0,14]},
+ NPN:{n:['Transistor NPN','NPN transistor'],g:'semi',pre:'Q',v:'BC547',kw:'bjt 2n2222 bc547 tip31',pins:[['B',-20,0],['C',10,-20],['E',10,20]],d:'M-20 0H-5M-5 -10V10M-5 -4L10 -13V-20M-5 4L10 13V20M15 0a12 12 0 1 1 -24 0a12 12 0 1 1 24 0',f:'M8.95 12.37L2.27 11.86L5.35 6.72Z',bb:[-20,-20,35,40],ref:[20,-6],val:[20,6]},
+ PNP:{n:['Transistor PNP','PNP transistor'],g:'semi',pre:'Q',v:'BC557',kw:'bjt 2n3906 bc557',pins:[['B',-20,0],['E',10,-20],['C',10,20]],d:'M-20 0H-5M-5 -10V10M-5 -4L10 -13V-20M-5 4L10 13V20M15 0a12 12 0 1 1 -24 0a12 12 0 1 1 24 0',f:'M-0.5 -6.7L6.18 -7.21L3.1 -12.35Z',bb:[-20,-20,35,40],ref:[20,-6],val:[20,6]},
+ OPAMP:{n:['Op-amp','Op-amp'],g:'ic',pre:'U',v:'LM358',kw:'penguat amplifier lm741 komparator',pins:[['-',-30,-10],['+',-30,10],['OUT',30,0]],d:'M-30 -10H-20M-30 10H-20M20 0H30M-20 -20V20L20 0ZM-16 -10h6M-16 10h6M-13 7v6',bb:[-30,-20,60,40],ref:[0,-26],val:[0,26]},
+ U555:{n:['Timer 555','555 timer'],g:'ic',pre:'U',v:'NE555',kw:'ne555 astabil monostabil osilator',pins:[['GND',0,60],['TRIG',-50,-20],['OUT',50,-10],['RST',10,-60],['CV',50,10],['THR',-50,0],['DIS',-50,20],['VCC',-10,-60]],
+   d:'M-30 -40H30V40H-30ZM-50 -20H-30M-50 0H-30M-50 20H-30M-10 -60V-40M10 -60V-40M0 40V60M30 -10H50M30 10H50',
+   t:[[-27,-20,'TRIG','start'],[-27,0,'THR','start'],[-27,20,'DIS','start'],[27,-10,'OUT','end'],[27,10,'CV','end'],[-10,-35,'VCC'],[10,-35,'RST'],[0,35,'GND'],[-36,-23,'2'],[-36,-3,'6'],[-36,17,'7'],[36,-13,'3'],[36,7,'5'],[-13,-47,'8'],[7,-47,'4'],[3,48,'1']],
+   bb:[-50,-60,100,120],ref:[0,-14],val:[0,-5]},
+ J2:{n:['Konektor 2 pin','2-pin header'],g:'ic',pre:'J',v:'Header 2',kw:'terminal header jack',pins:[['1',20,-10],['2',20,10]],d:'M-10 -18H6V18H-10ZM6 -10H20M6 10H20M-4 -10h4M-4 10h4',bb:[-10,-18,30,36],ref:[-2,-24],val:[-2,24]},
+ BAT:{n:['Baterai','Battery'],g:'src',pre:'BT',v:'9V',kw:'aki sel sumber tegangan',pins:[['+',-20,0],['-',20,0]],d:'M-20 0H-3M-3 -10V10M3 -5V5M3 0H20M-12 -10h5M-9.5 -12.5v5',bb:[-20,-13,40,23],ref:[0,-18],val:[0,16]},
+ SW:{n:['Saklar','Switch'],g:'src',pre:'S',v:'SPST',kw:'tombol push button switch',pins:[['1',-20,0],['2',20,0]],d:'M-20 0H-12M12 0H20M-8 0a2 2 0 1 1 -4 0a2 2 0 1 1 4 0M12 0a2 2 0 1 1 -4 0a2 2 0 1 1 4 0M-8.4 -1.2L9 -10',don:'M-20 0H-12M12 0H20M-8 0a2 2 0 1 1 -4 0a2 2 0 1 1 4 0M12 0a2 2 0 1 1 -4 0a2 2 0 1 1 4 0M-8.4 -1.6L8.4 -1.6',bb:[-20,-10,40,13],ref:[0,-16],val:[0,9]},
+ LAMP:{n:['Lampu','Lamp'],g:'src',pre:'H',v:'12V 2W',kw:'bohlam pijar bulb',pins:[['1',-20,0],['2',20,0]],d:'M-20 0H-10M10 0H20M10 0a10 10 0 1 1 -20 0a10 10 0 1 1 20 0M-7 -7L7 7M-7 7L7 -7',bb:[-20,-10,40,20],ref:[0,-16],val:[0,16]},
+ GND:{n:['Ground','Ground'],g:'src',pre:'#GND',v:'GND',kw:'tanah 0v massa',pins:[['GND',0,-10]],d:'M0 -10V0M-10 0H10M-6 4H6M-2 8H2',bb:[-10,-10,20,18],noRef:1,noVal:1,net:'GND'},
+ VCC:{n:['Sumber VCC','Supply rail'],g:'src',pre:'#PWR',v:'+5V',kw:'vdd catu daya power supply 5v 12v 3v3',pins:[['V',0,10]],d:'M0 10V0M-8 0H8',bb:[-8,-12,16,22],noRef:1,val:[0,-7],net:'val'},
+ LBL:{n:['Label net','Net label'],g:'src',pre:'#NL',v:'NET',kw:'nama net tag',pins:[['1',0,0]],d:'M0 0H5',bb:[-2,-6,36,12],noRef:1,val:[8,0],net:'val'}
+};
+const LEDC={Merah:['#ff3b30',1.8,'Red'],Kuning:['#ffcc00',2.0,'Yellow'],Hijau:['#30d158',2.1,'Green'],Biru:['#0a84ff',3.0,'Blue'],Putih:['#f5f7ff',3.1,'White']};
+function ledInfo(v){const s=String(v||'').toLowerCase();for(const [k,a] of Object.entries(LEDC)){if(s.includes(k.toLowerCase())||s.includes(a[2].toLowerCase()))return {key:k,col:a[0],vf:a[1]}}return {key:'Merah',col:LEDC.Merah[0],vf:2.0}}
+const nm=k=>SYM[k].n[lang==='id'?0:1];
+
+/* ---------- values ---------- */
+function parseSI(s){
+  s=String(s==null?'':s).trim().replace(',','.').replace(/Ω|ohm/ig,'');
+  let m=s.match(/^([+-]?)(\d+)V(\d+)$/i); if(m) return (m[1]==='-'?-1:1)*parseFloat(m[2]+'.'+m[3]);
+  m=s.match(/^([+-]?)(\d*\.?\d+)\s*([pnuµmkKMGR])?(\d*)/); if(!m) return NaN;
+  let num=m[2]; if(m[4]) num=num+(num.includes('.')?'':'.')+m[4];
+  const mul={p:1e-12,n:1e-9,u:1e-6,'µ':1e-6,m:1e-3,k:1e3,K:1e3,M:1e6,G:1e9,R:1}[m[3]]||1;
+  return (m[1]==='-'?-1:1)*parseFloat(num)*mul;
+}
+function fmt(v,u){
+  if(!isFinite(v)) return '—';
+  const a=Math.abs(v); if(a<1e-10) return '0 '+u;
+  for(const [m,s] of [[1e9,'G'],[1e6,'M'],[1e3,'k'],[1,''],[1e-3,'m'],[1e-6,'µ'],[1e-9,'n'],[1e-12,'p']]){
+    if(a>=m*0.9995){const x=v/m,ax=Math.abs(x);return (ax>=100?x.toFixed(0):ax>=10?x.toFixed(1):x.toFixed(2))+' '+s+u}
+  }
+  return v.toExponential(1)+' '+u;
+}
+function spiceNum(v){if(!isFinite(v))return '0';for(const [m,s] of [[1e9,'G'],[1e6,'Meg'],[1e3,'k'],[1,''],[1e-3,'m'],[1e-6,'u'],[1e-9,'n'],[1e-12,'p']]){if(Math.abs(v)>=m*0.9995)return +(v/m).toPrecision(4)+s}return String(v)}
+const E12=[1,1.2,1.5,1.8,2.2,2.7,3.3,3.9,4.7,5.6,6.8,8.2];
+function nearestE12(r){if(!(r>0))return NaN;const e=Math.floor(Math.log10(r));let best=0,bd=1e9;for(const d of [-1,0,1])for(const b of E12){const v=b*Math.pow(10,e+d);const dd=Math.abs(Math.log(v/r));if(dd<bd){bd=dd;best=v}}return +best.toPrecision(3)}
+const BANDC=['#111','#7b4a2a','#d6262b','#f07a1a','#f5d300','#2a9a3a','#2059d0','#7d3fc2','#8a8a8a','#f4f4f4'];
+function bandsFor(r){if(!(r>0))return null;let e=Math.floor(Math.log10(r))-1;let d=Math.round(r/Math.pow(10,e));if(d>=100){d=Math.round(d/10);e++}
+  const mul=e===-1?'#c9a227':e===-2?'#b8bcc4':BANDC[e]; if(e<-2||e>9)return null;
+  return [BANDC[Math.floor(d/10)],BANDC[d%10],mul,'#c9a227'];}
+
+/* ---------- state ---------- */
+let S=null, IDX=null;
+let sel=new Set(), tool='select', placeK=null, ghost={r:0,m:false}, wireStart=null, wireFromSelect=false, bendV=false;
+let hlNet=null, simOn=false, tab='props', libOpen=true, sheet=null;
+let view={x:0,y:0,k:2}, cur=[0,0], hoverPin=null;
+let undoS=[],redoS=[],last='', clip=null, pasteN=0;
+let A=null, SIM=null;
+const isPhone=()=>matchMedia('(max-width:760px)').matches;
+const isNarrow=()=>matchMedia('(max-width:1000px)').matches;
+
+function store(k,v){try{localStorage.setItem(k,typeof v==='string'?v:JSON.stringify(v))}catch(e){}}
+function fetchStore(k){try{const t=localStorage.getItem(k);return t?JSON.parse(t):null}catch(e){return null}}
+function valid(o){return o&&Array.isArray(o.parts)&&Array.isArray(o.wires)&&o.parts.every(p=>p&&SYM[p.k]&&isFinite(p.x)&&isFinite(p.y))&&o.wires.every(w=>[w.x1,w.y1,w.x2,w.y2].every(isFinite))}
+function normalize(o){o.n=o.n||1000;o.parts.forEach(p=>{if(!p.id)p.id='p'+(++o.n);p.r=p.r||0;p.m=!!p.m});o.wires.forEach(w=>{if(!w.id)w.id='w'+(++o.n)});o.name=o.name||L('Tanpa judul','Untitled');return o}
+function saveProj(){if(!S||!IDX)return;S.t=Date.now();store('rangkai2.p.'+S.id,S);const e=IDX.list.find(x=>x.id===S.id);if(e){e.name=S.name;e.t=S.t}store('rangkai2.index',IDX)}
+function openProj(id){prevBad=new Set(['__reset__']);const o=fetchStore('rangkai2.p.'+id);if(!o||!valid(o))return false;S=normalize(o);IDX.cur=id;store('rangkai2.index',IDX);undoS=[];redoS=[];last=JSON.stringify(S);sel.clear();hlNet=null;wireStart=null;return true}
+function newProj(data,name){const id='pr'+Date.now().toString(36)+Math.random().toString(36).slice(2,5);const o=normalize(data||{parts:[],wires:[],n:1000});o.id=id;o.name=name||o.name;IDX.list.unshift({id,name:o.name,t:Date.now()});store('rangkai2.p.'+id,o);IDX.cur=id;store('rangkai2.index',IDX);openProj(id);return id}
+
+function changed(opt){opt=opt||{};const now=JSON.stringify(S);if(now!==last){undoS.push(last);if(undoS.length>400)undoS.shift();redoS=[];last=now;saveProj()}render(opt);if(!opt.noSim)proactive(!!opt.fromFix)}
+function undo(){if(!undoS.length)return;redoS.push(last);last=undoS.pop();S=JSON.parse(last);sel.clear();saveProj();render()}
+function redo(){if(!redoS.length)return;undoS.push(last);last=redoS.pop();S=JSON.parse(last);sel.clear();saveProj();render()}
+
+/* ---------- geometry ---------- */
+function xf(p,lx,ly){let x=p.m?-lx:lx,y=ly;for(let i=0;i<(p.r||0);i++){const t=x;x=-y;y=t}return [p.x+x,p.y+y]}
+function pinsOf(p){return SYM[p.k].pins.map(([n,x,y],i)=>({n,i,pt:xf(p,x,y)}))}
+function onSeg(x,y,w){
+  if(w.x1===w.x2) return x===w.x1&&y>Math.min(w.y1,w.y2)&&y<Math.max(w.y1,w.y2);
+  if(w.y1===w.y2) return y===w.y1&&x>Math.min(w.x1,w.x2)&&x<Math.max(w.x1,w.x2);
+  return false;
+}
+function netName(p){const s=SYM[p.k];if(!s.net)return null;return s.net==='val'?(String(p.val||'').trim()||null):s.net}
+function lPath(a,b,v){if(a[0]===b[0]||a[1]===b[1])return [a,b];return [a,(v?[a[0],b[1]]:[b[0],a[1]]),b]}
+function routeScore(pts,o){let sc=0;for(let i=0;i<pts.length-1;i++){const s={x1:pts[i][0],y1:pts[i][1],x2:pts[i+1][0],y2:pts[i+1][1]};
+    o.parts.forEach(p=>{pinsOf(p).forEach(pn=>{if(onSeg(pn.pt[0],pn.pt[1],s))sc+=10});const b=partBox(p),mnx=Math.min(s.x1,s.x2),mxx=Math.max(s.x1,s.x2),mny=Math.min(s.y1,s.y2),mxy=Math.max(s.y1,s.y2);
+      if(mxx>b[0]+2&&mnx<b[2]-2&&mxy>b[1]+2&&mny<b[3]-2)sc+=3});
+    o.wires.forEach(w=>{if(w.x1===w.x2&&s.x1===s.x2&&w.x1===s.x1&&Math.min(w.y1,w.y2)<Math.max(s.y1,s.y2)&&Math.max(w.y1,w.y2)>Math.min(s.y1,s.y2))sc+=5;if(w.y1===w.y2&&s.y1===s.y2&&w.y1===s.y1&&Math.min(w.x1,w.x2)<Math.max(s.x1,s.x2)&&Math.max(w.x1,w.x2)>Math.min(s.x1,s.x2))sc+=5})}return sc}
+function smartPath(a,b,v,o){o=o||S;const p1=lPath(a,b,v);if(p1.length<3)return p1;const p2=lPath(a,b,!v);return routeScore(p2,o)<routeScore(p1,o)?p2:p1}
+function addWireTo(o,a,b,v,smart){const pts=smart?smartPath(a,b,v,o):lPath(a,b,v);for(let i=0;i<pts.length-1;i++){const p=pts[i],q=pts[i+1];if(p[0]!==q[0]||p[1]!==q[1])o.wires.push({id:'w'+(++o.n),x1:p[0],y1:p[1],x2:q[0],y2:q[1]})}}
+function partBox(p){const [x,y,w,h]=SYM[p.k].bb;const cs=[[x,y],[x+w,y],[x,y+h],[x+w,y+h]].map(c=>xf(p,c[0],c[1]));return [Math.min(...cs.map(c=>c[0])),Math.min(...cs.map(c=>c[1])),Math.max(...cs.map(c=>c[0])),Math.max(...cs.map(c=>c[1]))]}
+function boundsOf(o){let b=null;const add=(x,y)=>{if(!b)b=[x,y,x,y];else{b[0]=Math.min(b[0],x);b[1]=Math.min(b[1],y);b[2]=Math.max(b[2],x);b[3]=Math.max(b[3],y)}};
+  o.parts.forEach(p=>{const q=partBox(p);add(q[0],q[1]);add(q[2],q[3])});o.wires.forEach(w=>{add(w.x1,w.y1);add(w.x2,w.y2)});return b}
+
+/* ---------- connectivity ---------- */
+function analyze(){
+  const par=new Map();
+  const find=k=>{if(!par.has(k)){par.set(k,k);return k}let r=k;while(par.get(r)!==r)r=par.get(r);while(par.get(k)!==r){const n=par.get(k);par.set(k,r);k=n}return r};
+  const uni=(a,b)=>{a=find(a);b=find(b);if(a!==b)par.set(a,b)};
+  const cnt=new Map(),inc=(k,n=1)=>cnt.set(k,(cnt.get(k)||0)+n);
+  const pts=new Map();
+  S.wires.forEach(w=>{const a=K(w.x1,w.y1),b=K(w.x2,w.y2);uni(a,b);inc(a);inc(b);pts.set(a,[w.x1,w.y1]);pts.set(b,[w.x2,w.y2])});
+  const pinRecs=[];
+  S.parts.forEach(p=>pinsOf(p).forEach(pn=>{const k=K(pn.pt[0],pn.pt[1]);find(k);inc(k);pts.set(k,pn.pt);pinRecs.push({p,pn,k});const nn=netName(p);if(nn)uni(k,'net:'+nn)}));
+  pts.forEach(([x,y],k)=>S.wires.forEach(w=>{if(onSeg(x,y,w)){uni(k,K(w.x1,w.y1));inc(k,2)}}));
+  const dots=[];pts.forEach((pt,k)=>{if((cnt.get(k)||0)>=3)dots.push(pt)});
+  const groups=new Map(),names=new Map();
+  pinRecs.forEach(r=>{const root=find(r.k);if(!groups.has(root))groups.set(root,[]);groups.get(root).push(r);const nn=netName(r.p);if(nn&&!names.has(root))names.set(root,nn)});
+  let auto=0;const nets=[];
+  [...groups.entries()].sort((a,b)=>{const pa=a[1][0].pn.pt,pb=b[1][0].pn.pt;return pa[0]-pb[0]||pa[1]-pb[1]}).forEach(([root,recs])=>{
+    const real=recs.filter(r=>!SYM[r.p.k].net);
+    const name=names.get(root)||('N$'+(++auto));
+    if(real.length||names.has(root))nets.push({root,name,members:real.map(r=>r.p.ref+'-'+r.pn.n),recs,named:names.has(root)});
+  });
+  nets.sort((a,b)=>(b.named-a.named)||a.name.localeCompare(b.name,undefined,{numeric:true}));
+  const netOfRoot=new Map(nets.map(n=>[n.root,n]));
+  const unc=pinRecs.filter(r=>(cnt.get(r.k)||0)<2);
+  return {find,dots,nets,unc,netOfRoot,pinRecs,cnt};
+}
+
+/* ---------- DC simulator (modified nodal analysis + Newton-Raphson) ---------- */
+function exl(x){if(x>80){const e=Math.exp(80);return [e*(1+x-80),e]}const e=Math.exp(x);return [e,e]}
+function dio(v,Is,nvt){const [e,de]=exl(v/nvt);return [Is*(e-1),Is*de/nvt]}
+function pnjlim(vn,vo,vt,vc){if(vn>vc&&Math.abs(vn-vo)>2*vt){if(vo>0){const a=1+(vn-vo)/vt;vn=a>0?vo+vt*Math.log(a):vc}else vn=vt*Math.log(vn/vt)}return vn}
+function lsolve(M,b){const n=b.length;for(let c=0;c<n;c++){let p=c,mx=Math.abs(M[c][c]);for(let r=c+1;r<n;r++){const v=Math.abs(M[r][c]);if(v>mx){mx=v;p=r}}if(mx<1e-30)return null;if(p!==c){const t=M[p];M[p]=M[c];M[c]=t;const u=b[p];b[p]=b[c];b[c]=u}
+  const pv=M[c][c],Mc=M[c];for(let r=c+1;r<n;r++){const Mr=M[r],f=Mr[c]/pv;if(f===0)continue;for(let k=c;k<n;k++)Mr[k]-=f*Mc[k];b[r]-=f*b[c]}}
+  const x=new Float64Array(n);for(let r=n-1;r>=0;r--){let s=b[r];const Mr=M[r];for(let k=r+1;k<n;k++)s-=Mr[k]*x[k];x[r]=s/Mr[r]}return x}
+const SIMK=new Set(['R','POT','C','CP','L','D','ZD','LED','NPN','PNP','OPAMP','BAT','SW','LAMP','VCC']);
+const RATE={R:0.25,POT:0.5};
+function lampParams(v){const s=String(v||'');const V=parseFloat((s.match(/([\d.]+)\s*V/i)||[])[1])||12;const W=parseFloat((s.match(/([\d.]+)\s*W/i)||[])[1])||2;return {V,W,R:V*V/W}}
+function simulate(){
+  const R={ok:false,err:null,iters:0,nodeV:new Map(),parts:new Map(),issues:[],gRoot:null,vmax:0};
+  const iss=(lv,p,t,d,code)=>R.issues.push({lv,id:p?p.id:null,t,d,code});
+  if(!S.parts.some(p=>SIMK.has(p.k))){R.err='empty';return R}
+  let gRoot=null;
+  if(S.parts.some(p=>p.k==='GND'))gRoot=A.find('net:GND');
+  else{const b=S.parts.find(p=>p.k==='BAT');if(b){gRoot=A.find(K(...pinsOf(b)[1].pt));iss('info',b,L('Tidak ada simbol Ground','No ground symbol'),L(`Kutub − ${b.ref} dipakai sebagai 0 V.`,`${b.ref} negative terminal is used as 0 V.`),'gndbat')}
+    else{R.err='noGround';return R}}
+  R.gRoot=gRoot;
+  const idx=new Map(),intern=new Map();let N=0;
+  const nodeOf=pt=>{const r=A.find(K(pt[0],pt[1]));if(r===gRoot)return -1;if(!idx.has(r))idx.set(r,N++);return idx.get(r)};
+  const els=[];
+  // supply rails for op-amps
+  let vhi=0,vlo=0;
+  S.parts.forEach(p=>{if(p.k==='VCC'){const v=parseSI(p.val);if(isFinite(v)){vhi=Math.max(vhi,v);vlo=Math.min(vlo,v)}}if(p.k==='BAT'){const v=parseSI(p.val);if(isFinite(v))vhi=Math.max(vhi,v)}});
+  if(vhi===0&&vlo===0)vhi=5;R.vhi=vhi;
+  S.parts.forEach(p=>{
+    if(!SIMK.has(p.k)){if(p.k==='U555')iss('info',p,L(`${p.ref} tidak disimulasikan`,`${p.ref} is not simulated`),L('Simulasi DC belum mendukung IC 555; pin-pinnya dianggap terbuka.','DC simulation does not model the 555 yet; its pins are left open.'),'nosim');return}
+    const nd=pinsOf(p).map(pn=>nodeOf(pn.pt)),val=parseSI(p.val);
+    const bad=()=>iss('warn',p,L(`Nilai ${p.ref} tidak terbaca`,`Can't read ${p.ref} value`),L(`"${p.val}" bukan angka. Contoh: 4k7, 330, 100n.`,`"${p.val}" is not a number. Try 4k7, 330, 100n.`),'badval');
+    switch(p.k){
+      case 'R':{let r=val;if(!(r>0)){bad();r=1e3}els.push({t:'G',a:nd[0],b:nd[1],g:1/Math.max(r,1e-3),p});break}
+      case 'POT':{let r=val;if(!(r>0)){bad();r=1e4}const pos=p.pos==null?.5:p.pos;els.push({t:'G',a:nd[0],b:nd[2],g:1/Math.max(r*(1-pos),.5)});els.push({t:'G',a:nd[2],b:nd[1],g:1/Math.max(r*pos,.5)});break}
+      case 'C':case 'CP':break;
+      case 'L':els.push({t:'G',a:nd[0],b:nd[1],g:1e3});break;
+      case 'LAMP':{const lp=lampParams(p.val);els.push({t:'G',a:nd[0],b:nd[1],g:1/lp.R});break}
+      case 'SW':if(p.on)els.push({t:'G',a:nd[0],b:nd[1],g:100});break;
+      case 'BAT':{let v=val;if(!isFinite(v)){bad();v=9}const g=1/0.5;els.push({t:'G',a:nd[0],b:nd[1],g});els.push({t:'I',a:nd[0],b:nd[1],i:v*g});break}
+      case 'VCC':{let v=val;if(!isFinite(v)){bad();v=5}const g=100;els.push({t:'G',a:nd[0],b:-1,g});els.push({t:'I',a:nd[0],b:-1,i:v*g});break}
+      case 'D':{const Is=2.52e-9,n=1.752,ni=N++;intern.set(p.id,[ni,0.6]);els.push({t:'G',a:ni,b:nd[1],g:1/0.6});els.push({t:'D',a:nd[0],b:ni,Is,nvt:n*VT,off:0,vo:0,vc:n*VT*Math.log(n*VT/(Math.SQRT2*Is))});break}
+      case 'LED':{const li=ledInfo(p.val),n=2,Is=0.02/Math.exp(li.vf/(n*VT)),ni=N++;intern.set(p.id,[ni,2]);els.push({t:'G',a:ni,b:nd[1],g:0.5});els.push({t:'D',a:nd[0],b:ni,Is,nvt:n*VT,off:0,vo:0,vc:n*VT*Math.log(n*VT/(Math.SQRT2*Is))});break}
+      case 'ZD':{let vz=val;if(!(vz>0)){bad();vz=5.1}const Is=1e-12,n=1.2,Isr=5e-3,nr=1.5;
+        els.push({t:'D',a:nd[0],b:nd[1],Is,nvt:n*VT,off:0,vo:0,vc:n*VT*Math.log(n*VT/(Math.SQRT2*Is))});
+        els.push({t:'D',a:nd[1],b:nd[0],Is:Isr,nvt:nr*VT,off:vz,vo:0,vc:nr*VT*Math.log(nr*VT/(Math.SQRT2*Isr))});break}
+      case 'NPN':case 'PNP':{const Is=1e-14;els.push({t:'Q',b:nd[0],c:p.k==='NPN'?nd[1]:nd[2],e:p.k==='NPN'?nd[2]:nd[1],s:p.k==='NPN'?1:-1,Is,bf:250,br:3,obe:0,obc:0,vc:VT*Math.log(VT/(Math.SQRT2*Is))});break}
+      case 'OPAMP':{const hi=vhi>0?vhi-1.2:0.05,lo=vlo<0?vlo+1.2:0.02;els.push({t:'OA',n:nd[0],p:nd[1],o:nd[2],A:1e5,ro:20,mid:(hi+lo)/2,half:Math.max((hi-lo)/2,.05)});break}
+    }
+  });
+  const x=new Float64Array(N);
+  const V=i=>i<0?0:x[i];
+  let conv=false,it;
+  for(it=0;it<400&&N>0;it++){
+    const M=[];for(let i=0;i<N;i++){const r=new Float64Array(N);r[i]=1e-9;M.push(r)}
+    const b=new Float64Array(N);let limited=false;
+    const addG=(a,c,g)=>{if(a>=0)M[a][a]+=g;if(c>=0)M[c][c]+=g;if(a>=0&&c>=0){M[a][c]-=g;M[c][a]-=g}};
+    for(const el of els){switch(el.t){
+      case 'G':addG(el.a,el.b,el.g);break;
+      case 'I':if(el.a>=0)b[el.a]+=el.i;if(el.b>=0)b[el.b]-=el.i;break;
+      case 'D':{const vd=V(el.a)-V(el.b)-el.off,vl=pnjlim(vd,el.vo,el.nvt,el.vc);if(Math.abs(vl-vd)>1e-9)limited=true;el.vo=vl;
+        const [I,g0]=dio(vl,el.Is,el.nvt),g=g0+1e-12;addG(el.a,el.b,g);const c=I-g*(vl+el.off);if(el.a>=0)b[el.a]-=c;if(el.b>=0)b[el.b]+=c;break}
+      case 'Q':{const s=el.s,vbe=s*(V(el.b)-V(el.e)),vbc=s*(V(el.b)-V(el.c));
+        const lbe=pnjlim(vbe,el.obe,VT,el.vc),lbc=pnjlim(vbc,el.obc,VT,el.vc);if(Math.abs(lbe-vbe)>1e-9||Math.abs(lbc-vbc)>1e-9)limited=true;el.obe=lbe;el.obc=lbc;
+        const [ef,def]=exl(lbe/VT),[er,der]=exl(lbc/VT),Is=el.Is,bf=el.bf,br=el.br;
+        const Ic=Is*(ef-er)-Is/br*(er-1),Ib=Is/bf*(ef-1)+Is/br*(er-1),Ie=-(Ic+Ib);
+        const gf=Is*def/VT+1e-12,gr=Is*der/VT+1e-12;
+        const D={c:[gf,-gr-gr/br],b:[gf/bf,gr/br]};D.e=[-(D.c[0]+D.b[0]),-(D.c[1]+D.b[1])];
+        const I0={c:Ic,b:Ib,e:Ie},abe=s*lbe,abc=s*lbc;
+        for(const t of ['c','b','e']){const k=el[t];if(k<0)continue;const [dbe,dbc]=D[t];
+          if(el.b>=0)M[k][el.b]+=dbe+dbc;if(el.e>=0)M[k][el.e]-=dbe;if(el.c>=0)M[k][el.c]-=dbc;
+          b[k]-=s*I0[t]-dbe*abe-dbc*abc}
+        break}
+      case 'OA':{if(el.o<0)break;const vd=V(el.p)-V(el.n),th=Math.tanh(el.A*vd/el.half),F=el.mid+el.half*th,Fp=el.A*(1-th*th),go=1/el.ro;
+        M[el.o][el.o]+=go;if(el.p>=0)M[el.o][el.p]-=go*Fp;if(el.n>=0)M[el.o][el.n]+=go*Fp;b[el.o]-=go*(-F+Fp*vd);break}
+    }}
+    const xn=lsolve(M,b);if(!xn){R.err='singular';break}
+    let md=0;for(let i=0;i<N;i++)md=Math.max(md,Math.abs(xn[i]-x[i]));
+    const sc=md>(it<10?4:25)?(it<10?4:25)/md:1;
+    for(let i=0;i<N;i++)x[i]+=(xn[i]-x[i])*sc;
+    if(md<1e-7&&!limited&&it>0){conv=true;break}
+  }
+  if(N===0)conv=true;
+  R.iters=it;
+  if(!conv&&!R.err)R.err='noconv';
+  if(R.err)return R;
+  R.ok=true;
+  idx.forEach((i,root)=>{R.nodeV.set(root,x[i])});R.nodeV.set(gRoot,0);
+  R.nodeV.forEach(v=>{R.vmax=Math.max(R.vmax,Math.abs(v))});
+  const Vp=pt=>{const r=A.find(K(pt[0],pt[1]));return R.nodeV.has(r)?R.nodeV.get(r):0};
+  S.parts.forEach(p=>{
+    if(!SIMK.has(p.k)||p.k==='VCC'&&false)return;
+    const pv=pinsOf(p).map(pn=>Vp(pn.pt)),val=parseSI(p.val),res={};
+    switch(p.k){
+      case 'R':{const r=val>0?val:1e3,rt=ratingOf(p);res.V=pv[0]-pv[1];res.I=res.V/r;res.P=res.I*res.I*r;res.rate=rt;
+        if(res.P>rt)iss('bad',p,L(`${p.ref} kepanasan`,`${p.ref} is overheating`),L(`Daya ${fmt(res.P,'W')} melewati rating ${rt} W.`,`It dissipates ${fmt(res.P,'W')}, above its ${rt} W rating.`),'rheat');break}
+      case 'POT':{const r=val>0?val:1e4,pos=p.pos==null?.5:p.pos,r1=Math.max(r*(1-pos),.5),r2=Math.max(r*pos,.5);const i1=(pv[0]-pv[2])/r1,i2=(pv[2]-pv[1])/r2;res.V=pv[2];res.I=i1;res.P=i1*i1*r1+i2*i2*r2;
+        if(res.P>RATE.POT)iss('bad',p,L(`${p.ref} kepanasan`,`${p.ref} is overheating`),L(`Daya ${fmt(res.P,'W')} terlalu besar untuk potensio.`,`${fmt(res.P,'W')} is too much for a potentiometer.`),'potheat');break}
+      case 'C':case 'CP':res.V=pv[0]-pv[1];if(p.k==='CP'&&res.V<-0.5)iss('bad',p,L(`${p.ref} terpasang terbalik`,`${p.ref} is reverse-biased`),L(`Elco mendapat ${fmt(res.V,'V')}. Kaki + harus di tegangan lebih tinggi.`,`The electrolytic sees ${fmt(res.V,'V')}. The + lead must be at the higher voltage.`),'cprev');break;
+      case 'L':res.I=(pv[0]-pv[1])*1e3;break;
+      case 'LAMP':{const lp=lampParams(p.val);res.V=pv[0]-pv[1];res.I=res.V/lp.R;res.P=res.I*res.I*lp.R;res.glow=clamp(res.P/lp.W,0,1.3);
+        if(res.P>lp.W*1.4)iss('bad',p,L(`${p.ref} bisa putus`,`${p.ref} may burn out`),L(`Lampu ${lp.V} V mendapat ${fmt(res.V,'V')}.`,`The ${lp.V} V lamp gets ${fmt(res.V,'V')}.`),'lamp');break}
+      case 'SW':res.V=pv[0]-pv[1];res.I=p.on?res.V*100:0;break;
+      case 'BAT':{const v=isFinite(val)?val:9;res.V=pv[0]-pv[1];res.I=(v-res.V)/0.5;res.P=v*res.I;
+        if(res.I>2)iss('bad',p,L(`Korsleting di ${p.ref}`,`Short circuit on ${p.ref}`),L(`Arus ${fmt(res.I,'A')} mengalir. Cek kabel yang langsung menyambung + ke −.`,`${fmt(res.I,'A')} is flowing. Look for a wire tying + straight to −.`),'short');break}
+      case 'VCC':{const v=isFinite(val)?val:5;res.V=pv[0];res.I=(v-pv[0])*100;res.P=v*res.I;
+        if(res.I>1.5)iss('bad',p,L(`Korsleting di rail ${p.val}`,`Short circuit on ${p.val}`),L(`Sumber menarik ${fmt(res.I,'A')}. Ada jalur tanpa hambatan ke ground.`,`The supply delivers ${fmt(res.I,'A')}. Something connects it to ground with no resistance.`),'short');break}
+      case 'D':case 'LED':case 'ZD':{const vd=pv[0]-pv[1];let I;
+        const it=intern.get(p.id),Iint=it?(x[it[0]]-pv[1])/it[1]:null;
+        if(p.k==='LED'){const li=ledInfo(p.val);I=Iint;res.glow=clamp(I/0.02,0,1.3);res.col=li.col;
+          if(I>0.03)iss('bad',p,L(`${p.ref} kelebihan arus`,`${p.ref} is over-driven`),L(`Arus ${fmt(I,'A')} (maks ±20 mA). Tambahkan resistor seri sekitar ${fmt(nearestE12(Math.max((vhi-li.vf)/0.015,10))||330,'Ω')}.`,`${fmt(I,'A')} flows (max ≈20 mA). Add a series resistor around ${fmt(nearestE12(Math.max((vhi-li.vf)/0.015,10))||330,'Ω')}.`),'ledover');
+          if(vd<-0.3)iss(vd<-5?'bad':'warn',p,L(`${p.ref} terpasang terbalik`,`${p.ref} is in backwards`),L(`Katoda ${fmt(-vd,'V')} lebih tinggi dari anoda, jadi LED tidak menyala${vd<-5?' dan bisa rusak':''}.`,`The cathode is ${fmt(-vd,'V')} above the anode, so it stays dark${vd<-5?' and may be damaged':''}.`),'ledrev')}
+        else if(p.k==='D'){I=Iint;if(I>0.3)iss('bad',p,L(`${p.ref} kelebihan arus`,`${p.ref} is over-driven`),L(`Arus ${fmt(I,'A')}; 1N4148 hanya ±300 mA.`,`${fmt(I,'A')}; a 1N4148 handles ≈300 mA.`),'dover')}
+        else{const vz=val>0?val:5.1;I=dio(vd,1e-12,1.2*VT)[0]-dio(-vd-vz,5e-3,1.5*VT)[0];const P=Math.abs(I*vd);if(P>0.5)iss('bad',p,L(`${p.ref} kepanasan`,`${p.ref} is overheating`),L(`Zener membuang ${fmt(P,'W')} (maks 0,5 W). Perbesar resistor seri.`,`The zener dissipates ${fmt(P,'W')} (max 0.5 W). Increase the series resistor.`),'zheat')}
+        res.V=vd;res.I=I;break}
+      case 'NPN':case 'PNP':{const s=p.k==='NPN'?1:-1,vb=pv[0],vc=p.k==='NPN'?pv[1]:pv[2],ve=p.k==='NPN'?pv[2]:pv[1];
+        const vbe=s*(vb-ve),vbc=s*(vb-vc),[ef]=exl(vbe/VT),[er]=exl(vbc/VT),Is=1e-14;
+        const Ic=Is*(ef-er)-Is/3*(er-1),Ib=Is/250*(ef-1)+Is/3*(er-1);res.Ic=Ic;res.Ib=Ib;res.Vce=s*(vc-ve);res.Vbe=vbe;
+        res.region=vbe<0.45?L('Mati (cut-off)','Cut-off'):res.Vce<0.25?L('Saturasi (ON)','Saturated (on)'):L('Aktif','Active');
+        if(Ic>0.1)iss('bad',p,L(`${p.ref} kelebihan arus`,`${p.ref} is over-driven`),L(`Ic = ${fmt(Ic,'A')}; ${p.val} biasanya maks 100 mA.`,`Ic = ${fmt(Ic,'A')}; a ${p.val} is usually rated 100 mA.`),'qover');
+        if(Ib>0.02)iss('warn',p,L(`Arus basis ${p.ref} besar`,`${p.ref} base current is high`),L(`Ib = ${fmt(Ib,'A')}. Tambahkan resistor basis.`,`Ib = ${fmt(Ib,'A')}. Add a base resistor.`),'qbase');break}
+      case 'OPAMP':{res.V=pv[2];res.Vd=pv[1]-pv[0];const hi=vhi>0?vhi-1.2:0.05,lo=vlo<0?vlo+1.2:0.02;res.rail=[lo,hi];if(pv[2]>hi-0.05||pv[2]<lo+0.05)iss('info',p,L(`${p.ref} saturasi`,`${p.ref} is saturated`),L(`Output mentok di ${fmt(pv[2],'V')} (rail ${fmt(lo,'V')} … ${fmt(hi,'V')}).`,`Output is pinned at ${fmt(pv[2],'V')} (rails ${fmt(lo,'V')} … ${fmt(hi,'V')}).`),'oasat');break}
+    }
+    R.parts.set(p.id,res);
+  });
+  return R;
+}
+
+
+/* ---------- diagnostics & auto-fix ---------- */
+let ISS=[],prevBad=new Set(),inFix=false,autoFix=false;
+try{autoFix=localStorage.getItem('rangkai2.autofix')==='1'}catch(e){}
+const TWO=new Set(['R','C','CP','L','D','ZD','LED','LAMP','BAT']);
+const RATINGS=[0.25,0.5,1,2,3,5,10];
+function ratingOf(p){const m=String(p.val||'').match(/(\d*\.?\d+)\s*W\b/i);return m?parseFloat(m[1]):(p.k==='POT'?0.5:0.25)}
+function e12Up(r){if(!(r>0))return NaN;const e=Math.floor(Math.log10(r));for(let k=0;k<2;k++)for(const b of E12){const v=+(b*Math.pow(10,e+k)).toPrecision(3);if(v>=r*0.98)return v}return r}
+function rStr(v){if(!(v>0))return String(v);const f=(x,u)=>{const s=+x.toPrecision(3);return Number.isInteger(s)?s+u:String(s).replace('.',u)};if(v>=1e6)return f(v/1e6,'M');if(v>=1e3)return f(v/1e3,'k');const s=+v.toPrecision(3);return Number.isInteger(s)?String(s):f(v,'R')}
+const ovl=(a,b)=>a[0]<b[2]-1&&a[2]>b[0]+1&&a[1]<b[3]-1&&a[3]>b[1]+1;
+function segInBox(w,b){const mnx=Math.min(w.x1,w.x2),mxx=Math.max(w.x1,w.x2),mny=Math.min(w.y1,w.y2),mxy=Math.max(w.y1,w.y2);return mxx>b[0]+1&&mnx<b[2]-1&&mxy>b[1]+1&&mny<b[3]-1}
+function ptBusy(pt,o){return o.wires.some(w=>(w.x1===pt[0]&&w.y1===pt[1])||(w.x2===pt[0]&&w.y2===pt[1])||onSeg(pt[0],pt[1],w))||o.parts.some(q=>pinsOf(q).some(pn=>pn.pt[0]===pt[0]&&pn.pt[1]===pt[1]))}
+function seriesR(p,pinName){const pn=pinsOf(p).find(x=>x.n===pinName);if(!pn)return null;const root=A.find(K(pn.pt[0],pn.pt[1]));const recs=A.pinRecs.filter(r=>r.p!==p&&A.find(r.k)===root);return recs.length===1&&recs[0].p.k==='R'?recs[0].p:null}
+/* put a new resistor in series with one pin of a part, keeping the rest of the wiring */
+function insertSeries(p,pinName,val){
+  const pn=pinsOf(p).find(x=>x.n===pinName);if(!pn)return null;const P=pn.pt;
+  const w=S.wires.find(w=>(w.x1===P[0]&&w.y1===P[1])||(w.x2===P[0]&&w.y2===P[1]));if(!w)return null;
+  const Q=(w.x1===P[0]&&w.y1===P[1])?[w.x2,w.y2]:[w.x1,w.y1];
+  const rest=S.wires.filter(x=>x!==w),o={parts:S.parts,wires:rest};
+  const base={id:'p'+(S.n+1),k:'R',x:0,y:0,r:0,m:false,ref:nextRef('R'),val:String(val)};
+  const free=C=>{const b=partBox(C);return !S.parts.some(q=>ovl(b,partBox(q)))&&!rest.some(x=>segInBox(x,b))};
+  const dx=Math.sign(Q[0]-P[0]),dy=Math.sign(Q[1]-P[1]),len=Math.abs(Q[0]-P[0])+Math.abs(Q[1]-P[1]);
+  if(len>=60){const C=Object.assign({},base,{r:dy?1:0,x:P[0]+dx*30,y:P[1]+dy*30});let ok=free(C);
+    for(let t=10;t<60&&ok;t+=10)if(ptBusy([P[0]+dx*t,P[1]+dy*t],o))ok=false;
+    if(ok){S.n++;S.wires=rest;S.parts.push(C);if(len>60)S.wires.push({id:'w'+(++S.n),x1:P[0]+dx*60,y1:P[1]+dy*60,x2:Q[0],y2:Q[1]});return C}}
+  let best=null;const dist=(a,b)=>Math.abs(a[0]-b[0])+Math.abs(a[1]-b[1]);
+  for(const r of [0,1])for(let ox=-90;ox<=90;ox+=10)for(let oy=-90;oy<=90;oy+=10){
+    const C=Object.assign({},base,{r,x:P[0]+ox,y:P[1]+oy});const pts=pinsOf(C).map(x=>x.pt);
+    if(pts.some(pt=>ptBusy(pt,o))||!free(C))continue;
+    const [a,b]=dist(pts[0],P)<=dist(pts[1],P)?[pts[0],pts[1]]:[pts[1],pts[0]];const oo={parts:[...S.parts,C],wires:rest};
+    const t1=smartPath(P,a,false,oo),t2=smartPath(b,Q,false,oo),r1=routeScore(t1,oo),r2=routeScore(t2,oo);if(r1>=10||r2>=10)continue;
+    const sc=r1+r2+(dist(P,a)+dist(b,Q))/20;if(!best||sc<best.sc)best={sc,C,a,b}}
+  if(!best)return null;
+  S.n++;S.wires=rest;S.parts.push(best.C);addWireTo(S,P,best.a,false,true);addWireTo(S,best.b,Q,false,true);return best.C;
+}
+/* a two-pin part dropped onto a wire gets spliced in: cut the wire between its pins */
+function splicePart(p){
+  if(!TWO.has(p.k))return false;const [a,b]=pinsOf(p).map(x=>x.pt);
+  const on=(pt,w)=>onSeg(pt[0],pt[1],w)||(w.x1===pt[0]&&w.y1===pt[1])||(w.x2===pt[0]&&w.y2===pt[1]);
+  const s=S.wires.find(w=>onSeg(a[0],a[1],w)&&onSeg(b[0],b[1],w));if(!s)return false;
+  const s1=[s.x1,s.y1],s2=[s.x2,s.y2],d=(u,v)=>Math.abs(u[0]-v[0])+Math.abs(u[1]-v[1]);const [near,far]=d(s1,a)<=d(s1,b)?[a,b]:[b,a];
+  S.wires=S.wires.filter(w=>w!==s);
+  if(d(s1,near)>0)S.wires.push({id:'w'+(++S.n),x1:s1[0],y1:s1[1],x2:near[0],y2:near[1]});
+  if(d(far,s2)>0)S.wires.push({id:'w'+(++S.n),x1:far[0],y1:far[1],x2:s2[0],y2:s2[1]});
+  return true;
+}
+/* a wire that runs straight through a pin gets a small detour around it */
+function detourAt(pt){
+  const s=S.wires.find(w=>onSeg(pt[0],pt[1],w));if(!s)return false;const rest=S.wires.filter(w=>w!==s),o={parts:S.parts,wires:rest};const hor=s.y1===s.y2;let best=null;
+  for(const d of [20,-20,30,-30,40,-40,50,-50,70,-70,90,-90]){
+    const pts=hor?[[s.x1,s.y1],[s.x1,s.y1+d],[s.x2,s.y2+d],[s.x2,s.y2]]:[[s.x1,s.y1],[s.x1+d,s.y1],[s.x2+d,s.y2],[s.x2,s.y2]];
+    let sc=routeScore(pts,o);if(ptBusy(pts[1],o)||ptBusy(pts[2],o))sc+=20;if(!best||sc<best.sc)best={sc,pts};if(sc===0)break}
+  if(!best||best.sc>=10)return false;
+  S.wires=rest;for(let i=0;i<3;i++){const a=best.pts[i],b=best.pts[i+1];S.wires.push({id:'w'+(++S.n),x1:a[0],y1:a[1],x2:b[0],y2:b[1]})}return true;
+}
+function nearTarget(pt,exW,exP,maxD){let best=null;const c=(q,d)=>{if(d>0&&d<=maxD&&(!best||d<best.d))best={pt:q,d}};
+  S.parts.forEach(p=>{if(p.id===exP)return;pinsOf(p).forEach(pn=>c(pn.pt,Math.hypot(pn.pt[0]-pt[0],pn.pt[1]-pt[1])))});
+  S.wires.forEach(w=>{if(w.id===exW)return;c([w.x1,w.y1],Math.hypot(w.x1-pt[0],w.y1-pt[1]));c([w.x2,w.y2],Math.hypot(w.x2-pt[0],w.y2-pt[1]));
+    if(w.x1===w.x2&&pt[1]>Math.min(w.y1,w.y2)&&pt[1]<Math.max(w.y1,w.y2))c([w.x1,pt[1]],Math.abs(w.x1-pt[0]));
+    if(w.y1===w.y2&&pt[0]>Math.min(w.x1,w.x2)&&pt[0]<Math.max(w.x1,w.x2))c([pt[0],w.y1],Math.abs(w.y1-pt[1]))});
+  return best}
+function addGround(){
+  const unc=A.unc.filter(r=>!SYM[r.p.k].net).sort((a,b)=>b.pn.pt[1]-a.pn.pt[1]);
+  const g={id:'p'+(++S.n),k:'GND',x:0,y:0,r:0,m:false,ref:nextRef('#GND'),val:'GND'};
+  if(unc.length){const pt=unc[0].pn.pt;g.x=pt[0];g.y=pt[1]+30;S.parts.push(g);addWireTo(S,pt,[pt[0],pt[1]+20]);return true}
+  const bb=boundsOf(S);if(!bb)return false;g.x=snap((bb[0]+bb[2])/2);g.y=snap(bb[3]+40);S.parts.push(g);
+  setTimeout(()=>toast(L('Ground ditambahkan di bawah. Sambungkan ke kutub negatif rangkaian.','Ground added below. Wire it to the negative side of the circuit.')),50);return true;
+}
+function movePart(p,dx,dy){const sv0=sel;sel=new Set([p.id]);const sn=dragSnap();sel=sv0;sn.parts.forEach(o=>{o.p.x+=dx;o.p.y+=dy});sn.wires.forEach(o=>{if(o.e1){o.w.x1+=dx;o.w.y1+=dy}if(o.e2){o.w.x2+=dx;o.w.y2+=dy}});fixDiagonals(sn);S.wires=S.wires.filter(x=>x.x1!==x.x2||x.y1!==x.y2);return true}
+function nudge(p){const b0=partBox(p);for(let k=2;k<=40;k++)for(const [dx,dy] of [[k*10,0],[0,k*10],[-k*10,0],[0,-k*10]]){const b=[b0[0]+dx-6,b0[1]+dy-6,b0[2]+dx+6,b0[3]+dy+6];if(!S.parts.some(q=>q!==p&&ovl(b,partBox(q))))return movePart(p,dx,dy)}return false}
+
+function simFix(code,p){
+  const vhi=(SIM&&SIM.vhi)||5;
+  const chg=(sr,rec)=>({label:L(`Ubah ${sr.ref} jadi ${rStr(rec)}`,`Change ${sr.ref} to ${rStr(rec)}`),auto:true,run:()=>{sr.val=rStr(rec)}});
+  switch(code){
+    case 'ledover':{const li=ledInfo(p.val),rec=e12Up(Math.max((vhi-li.vf)/0.015,10)),sr=seriesR(p,'A')||seriesR(p,'K');
+      if(sr&&(parseSI(sr.val)||0)<rec)return chg(sr,rec);
+      return {label:L(`Sisipkan resistor ${rStr(rec)}`,`Insert a ${rStr(rec)} resistor`),auto:true,run:()=>!!(insertSeries(p,'A',rStr(rec))||insertSeries(p,'K',rStr(rec)))}}
+    case 'qbase':{const rec=e12Up(Math.max((vhi-0.7)/0.002,100)),sr=seriesR(p,'B');if(sr&&(parseSI(sr.val)||0)<rec)return chg(sr,rec);
+      return {label:L(`Sisipkan resistor basis ${rStr(rec)}`,`Insert a ${rStr(rec)} base resistor`),auto:true,run:()=>!!insertSeries(p,'B',rStr(rec))}}
+    case 'rheat':{const r=SIM.parts.get(p.id);const need=RATINGS.find(x=>x>=r.P*1.5)||10;
+      return {label:L(`Pakai resistor ${need} W`,`Use a ${need} W resistor`),auto:true,run:()=>{p.val=String(p.val).replace(/\s*\d*\.?\d+\s*W\b/i,'').trim()+' '+need+'W'}}}
+    case 'cprev':case 'ledrev':return {label:L('Balik arah pemasangan','Flip it around'),auto:true,run:()=>{p.r=((p.r||0)+2)%4}};
+    case 'badval':{const v=SYM[p.k].v;return {label:L(`Pakai nilai ${v}`,`Use ${v}`),auto:true,run:()=>{p.val=v}}}
+    case 'short':return undoS.length?{label:L('Urungkan langkah terakhir','Undo last step'),run(){undo();return 'skip'}}:null;
+  }
+  return null;
+}
+function diagnose(){
+  const out=[],seen=new Set();
+  const add=(lv,code,p,t,d,fix,x,pt)=>{const key=code+':'+(p?p.id:'')+(x||'');if(seen.has(key))return;seen.add(key);out.push({lv,code,id:p?p.id:null,key,t,d,fix:fix||null,pt})};
+  const undoFix=undoS.length?{label:L('Urungkan langkah terakhir','Undo last step'),run(){undo();return 'skip'}}:null;
+  const gnd=S.parts.some(p=>p.k==='GND')?A.find('net:GND'):null,vccRoots=new Map(),refs=new Map();
+  S.parts.forEach(p=>{
+    const s=SYM[p.k];
+    if(p.k==='VCC'){const r=A.find(K(...pinsOf(p)[0].pt));
+      if(gnd&&r===gnd)add('bad','vccgnd',p,L(`Rail ${p.val} tersambung langsung ke GND`,`${p.val} rail is wired straight to GND`),L('Ini korsleting total, biasanya karena kabel atau label yang salah sambung.','That is a dead short, usually a stray wire or label.'),undoFix);
+      const v=parseSI(p.val);if(vccRoots.has(r)&&vccRoots.get(r).v!==v)add('bad','vccmix',p,L(`${vccRoots.get(r).val} dan ${p.val} tersambung`,`${vccRoots.get(r).val} and ${p.val} are joined`),L('Dua sumber tegangan berbeda dihubungkan langsung.','Two different supply voltages are tied together.'),undoFix);else vccRoots.set(r,{v,val:p.val})}
+    if(TWO.has(p.k)){const ps=pinsOf(p),k0=K(...ps[0].pt);
+      if(A.find(k0)===A.find(K(...ps[1].pt))&&(A.cnt.get(k0)||0)>=2){
+        const on=(pt,w)=>onSeg(pt[0],pt[1],w)||(w.x1===pt[0]&&w.y1===pt[1])||(w.x2===pt[0]&&w.y2===pt[1]);let fix;
+        if(S.wires.some(w=>onSeg(ps[0].pt[0],ps[0].pt[1],w)&&onSeg(ps[1].pt[0],ps[1].pt[1],w)))fix={label:L('Sisipkan ke kabel','Insert it into the wire'),auto:true,run:()=>splicePart(p)};
+        else{const pin=ps.find(pn=>S.wires.some(w=>onSeg(pn.pt[0],pn.pt[1],w)));fix=pin?{label:L('Belokkan kabel yang menembus pin','Reroute the wire through the pin'),auto:true,run:()=>detourAt(pin.pt)}:undoFix}
+        add(p.k==='BAT'?'bad':'warn','shorted',p,L(`${p.ref} terhubung singkat`,`${p.ref} is shorted out`),L('Kedua kakinya ada di net yang sama, jadi komponen ini tidak bekerja.','Both leads sit on the same net, so the part does nothing.'),fix)}}
+    if((p.k==='R'||p.k==='POT')&&/\d\s*m/.test(p.val||'')&&parseSI(p.val)<1){const v=String(p.val).replace(/m/,'M');
+      add('warn','rmilli',p,L(`${p.ref} bernilai ${fmt(parseSI(p.val),'Ω')}`,`${p.ref} is ${fmt(parseSI(p.val),'Ω')}`),L('Huruf m kecil berarti mili. Maksudnya mega (M)?','Lower-case m means milli. Did you mean mega (M)?'),{label:L(`Ganti jadi ${v}`,`Change to ${v}`),auto:true,run:()=>{p.val=v}})}
+    if(!s.noRef){const r=String(p.ref).trim().toUpperCase();if(refs.has(r)){const nr=nextRef(s.pre);add('warn','dupref',p,L(`Nama ${p.ref} dipakai dua kali`,`${p.ref} is used twice`),L('BOM dan netlist jadi rancu.','The BOM and netlist become ambiguous.'),{label:L(`Ganti jadi ${nr}`,`Rename to ${nr}`),auto:true,run:()=>{p.ref=nextRef(s.pre)}})}else refs.set(r,p)}
+  });
+  const real=S.parts.filter(p=>!SYM[p.k].net);
+  for(let i=0;i<real.length;i++)for(let j=i+1;j<real.length;j++){const a=partBox(real[i]),b=partBox(real[j]),ix=Math.min(a[2],b[2])-Math.max(a[0],b[0]),iy=Math.min(a[3],b[3])-Math.max(a[1],b[1]);
+    if(ix>4&&iy>4&&ix*iy>0.3*Math.min((a[2]-a[0])*(a[3]-a[1]),(b[2]-b[0])*(b[3]-b[1]))){const q=real[j];add('warn','overlap',q,L(`${q.ref} menumpuk dengan ${real[i].ref}`,`${q.ref} overlaps ${real[i].ref}`),L('Komponen yang bertumpuk bisa tersambung tanpa sengaja.','Stacked parts can connect by accident.'),{label:L('Geser ke tempat kosong','Move to free space'),auto:true,run:()=>nudge(q)})}}
+  A.unc.forEach(r=>{const who=SYM[r.p.k].noRef?nm(r.p.k)+' '+(r.p.val||''):r.p.ref,tg=nearTarget(r.pn.pt,null,r.p.id,20);
+    const fix=tg?{label:L('Sambungkan ke titik terdekat','Connect to the nearest point'),auto:tg.d<=10,run:()=>{addWireTo(S,r.pn.pt,tg.pt,false,true)}}
+      :{label:L('Tarik kabel dari pin ini','Draw a wire from this pin'),run:()=>{gotoPart(r.p.id);sel.clear();tool='wire';wireStart=r.pn.pt;wireFromSelect=true;render({noSim:true});return 'skip'}};
+    add('warn','unc',r.p,L(`${who} pin ${r.pn.n} belum tersambung`,`${who} pin ${r.pn.n} is unconnected`),tg?L(`Ada titik sambungan ${Math.max(1,Math.round(tg.d/10))} grid di dekatnya. Sepertinya hampir nyambung.`,`A connection point is ${Math.max(1,Math.round(tg.d/10))} grid away. Looks like a near miss.`):L('Tarik kabel ke pin ini, atau hapus komponennya jika tidak dipakai.','Draw a wire to this pin, or delete the part if unused.'),fix,':'+r.pn.n)});
+  S.wires.forEach(w=>{const ends=[[w.x1,w.y1],[w.x2,w.y2]],dang=ends.map(pt=>(A.cnt.get(K(pt[0],pt[1]))||0)===1&&!(tool==='wire'&&wireStart&&wireStart[0]===pt[0]&&wireStart[1]===pt[1]));
+    ends.forEach((pt,ei)=>{if(!dang[ei]||(ei===1&&dang[0]))return;const tg=nearTarget(pt,w.id,null,20),both=dang[0]&&dang[1];
+      const fix=tg?{label:L('Sambungkan ujungnya','Connect the loose end'),auto:tg.d<=10,run:()=>{addWireTo(S,pt,tg.pt,false,true)}}
+        :{label:both?L('Hapus kabel lepas','Delete the loose wire'):L('Hapus potongan ini','Delete this segment'),auto:both,run:()=>{S.wires=S.wires.filter(x=>x!==w)}};
+      add('warn','dangle',null,both?L('Ada kabel yang tidak tersambung ke apa pun','A wire is not connected to anything'):L('Ujung kabel menggantung','A wire end is left hanging'),tg?L('Ujungnya hampir menyentuh titik sambungan.','Its end almost touches a connection point.'):L('Kabel ini tidak membawa arus ke mana pun.','This wire does not carry current anywhere.'),fix,w.id+':'+ei,pt)})});
+  if(SIM){
+    if(SIM.err==='noGround')add('bad','nognd',null,L('Tidak ada titik 0 V','No 0 V reference'),L('Tambahkan simbol Ground supaya tegangan bisa dihitung.','Add a Ground symbol so voltages can be computed.'),{label:L('Tambah Ground','Add Ground'),auto:true,run:addGround});
+    else if(SIM.err==='singular'||SIM.err==='noconv')add('bad','simfail',null,L('Simulasi gagal','Simulation failed'),SIM.err==='singular'?L('Ada bagian yang mengambang. Cek kabel yang terputus.','Part of the circuit is floating. Check for broken wires.'):L('Coba periksa nilai komponen yang ekstrem.','Check for extreme component values.'),undoFix);
+    const quiet=out.some(i=>i.code==='vccgnd')||SIM.issues.some(i=>i.code==='ledover');
+    const cause=new Set();SIM.issues.filter(i=>i.code==='ledover'||i.code==='qbase').forEach(i=>{const p=S.parts.find(q=>q.id===i.id);if(!p)return;['A','K','B'].forEach(n=>{const r=seriesR(p,n);if(r)cause.add(r.id)})});
+    const simOrd={ledover:0,qbase:0,qover:1};SIM.issues.sort((a,b)=>(simOrd[a.code]??2)-(simOrd[b.code]??2));
+    SIM.issues.forEach(i=>{const p=i.id?S.parts.find(q=>q.id===i.id):null;if(i.code==='short'&&quiet)return;if(i.code==='rheat'&&cause.has(i.id))return;add(i.lv,i.code||'sim',p,i.t,i.d,p?simFix(i.code,p):null)});
+  }
+  const ord={bad:0,warn:1,info:2};out.sort((a,b)=>ord[a.lv]-ord[b.lv]);return out;
+}
+function runFix(key){const i=ISS.find(x=>x.key===key);if(!i||!i.fix)return;inFix=true;let r;try{r=i.fix.run()}finally{inFix=false}
+  if(r==='skip')return;if(r===false){toast(L('Belum bisa diperbaiki otomatis di posisi ini. Coba geser komponennya sedikit.','Could not fix this automatically here. Try moving the part a little.'));return}
+  changed({fromFix:true});toastAction(L('Diperbaiki: ','Fixed: ')+i.t,[{label:L('Batalkan','Undo'),act:'undo'}],'ok')}
+function fixAll(){const tried=new Set(),names=[];inFix=true;
+  try{for(let k=0;k<24;k++){A=analyze();SIM=simulate();ISS=diagnose();const f=ISS.find(i=>i.fix&&i.fix.auto&&!tried.has(i.key));if(!f)break;tried.add(f.key);const r=f.fix.run();if(r!==false&&r!=='skip')names.push(f.t)}}finally{inFix=false}
+  if(!names.length){toast(L('Tidak ada yang bisa diperbaiki otomatis. Sisanya perlu dicek manual.','Nothing can be fixed automatically. The rest needs a manual look.'));return}
+  changed({fromFix:true});const left=ISS.filter(i=>i.lv!=='info').length;
+  toastAction(L(`${names.length} masalah diperbaiki.`,`${names.length} issues fixed.`)+(left?L(` ${left} perlu dicek manual.`,` ${left} need a manual look.`):''),[{label:L('Batalkan','Undo'),act:'undo'}],'ok')}
+function proactive(silent){
+  const bad=ISS.filter(i=>i.lv==='bad'),keys=new Set(bad.map(i=>i.key)),fresh=bad.filter(i=>!prevBad.has(i.key));prevBad=keys;
+  if(silent||inFix||!fresh.length)return;
+  if(autoFix&&fresh.some(i=>i.fix&&i.fix.auto)){const names=[],tried=new Set(),fk=new Set(fresh.map(i=>i.key));inFix=true;
+    try{for(let k=0;k<8;k++){const f=ISS.find(i=>fk.has(i.key)&&i.fix&&i.fix.auto&&!tried.has(i.key));if(!f)break;tried.add(f.key);const r=f.fix.run();if(r!==false&&r!=='skip')names.push(f.fix.label);A=analyze();SIM=simulate();ISS=diagnose()}}finally{inFix=false}
+    if(names.length){changed({fromFix:true});toastAction(L('Diperbaiki otomatis: ','Auto-fixed: ')+names.join(' · '),[{label:L('Batalkan','Undo'),act:'undo'}],'ok');return}}
+  const i=fresh[0];toastAction(i.t,[i.fix?{label:i.fix.label,fix:i.key}:null,i.id?{label:L('Lihat','Show'),go:i.id}:null].filter(Boolean),'bad');
+}
+function issueHTML(i){return `<div class="issue ${i.lv}"><i class="dot"></i><div>${i.id?`<button class="ilink" data-goto="${i.id}">${esc(i.t)}</button>`:`<b>${esc(i.t)}</b>`}<small>${esc(i.d)}</small>${i.fix?`<div class="btns"><button class="btn sm ${i.lv==='bad'?'pri':''}" data-fix="${esc(i.key)}">${ic('bolt')}${esc(i.fix.label)}</button></div>`:''}</div></div>`}
+
+/* ---------- rendering ---------- */
+function lbl(p,off,txt,cls){const [x,y]=xf(p,off[0],off[1]),ox=x-p.x,oy=y-p.y;const a=Math.abs(ox)>Math.abs(oy)?(ox>0?'start':'end'):'middle';
+  return `<text class="${cls}" data-id="${p.id}" x="${x}" y="${y}" text-anchor="${a}" dominant-baseline="middle">${esc(txt)}</text>`}
+function partMarkup(p,extra,noText){
+  const s=SYM[p.k],[bx,by,bw,bh]=s.bb;const d=(p.k==='SW'&&p.on)?s.don:s.d;
+  let h=`<g class="part ${extra||''}" data-id="${p.id}" transform="translate(${p.x} ${p.y}) rotate(${(p.r||0)*90}) scale(${p.m?-1:1} 1)">`;
+  h+=`<rect class="hit" x="${bx-3}" y="${by-3}" width="${bw+6}" height="${bh+6}" rx="3"/>`;
+  h+=`<path class="sym" d="${d}"/>`;if(s.f)h+=`<path class="symf" d="${s.f}"/>`;
+  (s.t||[]).forEach(([x,y,t,a])=>h+=`<text class="pn" x="${x}" y="${y}" text-anchor="${a||'middle'}" dominant-baseline="middle">${t}</text>`);
+  s.pins.forEach(([n,x,y])=>h+=`<circle class="pin" cx="${x}" cy="${y}" r="2.4"/>`);
+  h+='</g>';
+  if(!noText){let ro=s.ref,vo=s.val;if(ro&&vo&&!s.noRef&&!s.noVal){const a=xf(p,ro[0],ro[1]),b=xf(p,vo[0],vo[1]),sa=Math.sign(a[0]-p.x),sb=Math.sign(b[0]-p.x);if(Math.abs(a[1]-b[1])<7&&sa===sb&&sa!==0&&Math.abs(a[0]-p.x)>Math.abs(a[1]-p.y)){const loc=(pt,dy)=>{let X=pt[0]-p.x,Y=pt[1]-p.y+dy;for(let i=0;i<(4-(p.r||0))%4;i++){const t=X;X=Y;Y=-t}return [p.m?-X:X,Y]};const xa=Math.abs(a[0]-p.x)<Math.abs(b[0]-p.x)?a:b;ro=loc([xa[0],xa[1]],-4.5);vo=loc([xa[0],xa[1]],4.5)}}
+    if(!s.noRef)h+=lbl(p,ro,p.ref,'ref');if(!s.noVal)h+=lbl(p,vo,p.k==='LED'&&lang==='en'?(LEDC[ledInfo(p.val).key]||[])[2]||p.val:p.val,(p.k==='LBL'||p.k==='VCC')?'net':'val')}
+  return h;
+}
+function symIcon(k){const s=SYM[k],[x,y,w,h]=s.bb,pad=4;return `<svg viewBox="${x-pad} ${y-pad} ${w+pad*2} ${h+pad*2}" preserveAspectRatio="xMidYMid meet" aria-hidden="true"><path d="${s.d}"/>${s.f?`<path class="f" d="${s.f}"/>`:''}</svg>`}
+
+function render(opt={}){
+  A=analyze();
+  if(!opt.noSim)SIM=simulate();
+  ISS=diagnose();
+  const st=$('#stage');st.classList.toggle('simon',simOn&&SIM&&SIM.ok);
+  st.classList.toggle('t-wire',tool==='wire');st.classList.toggle('t-place',tool==='place');
+  const hlRoot=hlNet?(A.nets.find(n=>n.name===hlNet)||{}).root:null;
+  const showSim=simOn&&SIM&&SIM.ok;
+  $('#gw').innerHTML=S.wires.map(w=>{const root=A.find(K(w.x1,w.y1));let c=sel.has(w.id)?'sel':'';if(hlRoot&&root===hlRoot)c+=' hl';let st='';
+    if(showSim){const v=SIM.nodeV.get(root)||0;if(root===SIM.gRoot||Math.abs(v)<1e-3)c+=' g0';else{if(v<0)c+=' neg';st=` style="stroke-opacity:${(0.4+0.6*Math.min(1,Math.abs(v)/(SIM.vmax||1))).toFixed(2)}"`}}
+    return `<g class="wire ${c}" data-wid="${w.id}"><line class="whit" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}"/><line class="wl"${st} x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}"/></g>`}).join('');
+  $('#gp').innerHTML=S.parts.map(p=>partMarkup(p,sel.has(p.id)?'sel':'')).join('');
+  $('#gd').innerHTML=A.dots.map(([x,y])=>`<circle class="jdot" cx="${x}" cy="${y}" r="2.4"/>`).join('')+(showSim?'':A.unc.map(r=>`<rect class="unc" x="${r.pn.pt[0]-2.2}" y="${r.pn.pt[1]-2.2}" width="4.4" height="4.4"/>`).join(''));
+  // glow + voltage chips
+  let gl='',vc='';
+  if(showSim){
+    S.parts.forEach(p=>{const r=SIM.parts.get(p.id);if(!r)return;const [cx,cy]=xf(p,0,0);
+      if(p.k==='LED'&&r.glow>0.02)gl+=`<circle class="glow" cx="${cx}" cy="${cy}" r="${10+r.glow*6}" fill="${r.col}" opacity="${Math.min(.95,.25+r.glow*.7).toFixed(2)}" filter="url(#blur)"/>`;
+      if(p.k==='LAMP'&&r.glow>0.02)gl+=`<circle class="glow" cx="${cx}" cy="${cy}" r="${12+r.glow*8}" fill="#ffd34d" opacity="${Math.min(.95,.2+r.glow*.7).toFixed(2)}" filter="url(#blur)"/>`;
+      if((p.k==='R'||p.k==='POT')&&r.P>(r.rate||RATE[p.k]||1))gl+=`<circle class="glow" cx="${cx}" cy="${cy}" r="16" fill="#ff4d2e" opacity=".55" filter="url(#blur)"/>`;
+    });
+    const best=new Map();
+    S.wires.forEach(w=>{const root=A.find(K(w.x1,w.y1));if(root===SIM.gRoot)return;const nt=A.netOfRoot.get(root);if(nt&&nt.recs.some(r=>r.p.k==='VCC'))return;const len=Math.abs(w.x2-w.x1)+Math.abs(w.y2-w.y1);const b=best.get(root);if(!b||len>b.len)best.set(root,{w,len})});
+    best.forEach(({w},root)=>{const v=SIM.nodeV.get(root);if(v==null)return;const t=fmt(v,'V'),tw=t.length*3.65+6;const hor=w.y1===w.y2;
+      const mx=(w.x1+w.x2)/2,my=(w.y1+w.y2)/2;const x=hor?mx-tw/2:mx+4,y=hor?my-12:my-4.5;
+      vc+=`<g class="vchip${v<0?' neg':''}" pointer-events="none"><rect x="${x}" y="${y}" width="${tw}" height="9" rx="4.5"/><text x="${x+tw/2}" y="${y+4.8}" text-anchor="middle" dominant-baseline="middle">${t}</text></g>`});
+  }
+  const flagged=new Set();
+  ISS.forEach(i=>{if(i.lv==='info'||i.code==='unc')return;
+    if(i.id&&!flagged.has(i.id)){const p=S.parts.find(q=>q.id===i.id);if(!p)return;flagged.add(i.id);const b=partBox(p);
+      vc+=`<g class="flag ${i.lv}" data-goto="${p.id}"><title>${esc(i.t)}</title><circle cx="${b[2]+3}" cy="${b[1]-3}" r="5.5"/><text x="${b[2]+3}" y="${b[1]-2.6}" text-anchor="middle" dominant-baseline="middle">!</text></g>`}
+    else if(i.pt)vc+=`<circle class="dangle" cx="${i.pt[0]}" cy="${i.pt[1]}" r="3.6"><title>${esc(i.t)}</title></circle>`});
+  $('#gglow').innerHTML=gl;$('#gv').innerHTML=vc;
+  overlay();renderInsp();renderChrome();
+}
+function overlay(){
+  let h='';const cx=snap(cur[0]),cy=snap(cur[1]);
+  if(tool==='place'&&placeK){const p={id:'ghost',k:placeK,x:cx,y:cy,r:ghost.r,m:ghost.m,ref:nextRef(SYM[placeK].pre),val:SYM[placeK].v};h+=partMarkup(p,'ghost')}
+  if(gest&&gest.type==='box'){const [a,b]=[gest.a,gest.b];h+=`<rect class="box" x="${Math.min(a[0],b[0])}" y="${Math.min(a[1],b[1])}" width="${Math.abs(a[0]-b[0])}" height="${Math.abs(a[1]-b[1])}"/>`}
+  const ws=(gest&&gest.type==='wire'&&downInfo&&downInfo.moved)?gest.start:wireStart;
+  if(tool==='wire'||(gest&&gest.type==='wire')){const end=hoverPin?hoverPin.pt:[cx,cy];if(ws){const pts=smartPath(ws,end,bendV);h+=`<polyline class="prev" points="${pts.map(p=>p.join(',')).join(' ')}"/>`}}
+  if(hoverPin)h+=`<circle class="pinring" cx="${hoverPin.pt[0]}" cy="${hoverPin.pt[1]}" r="4.2"/>`;
+  if((tool==='wire'||tool==='place')&&lastPtrType==='mouse')h+=`<path class="cross" d="M${cx-7} ${cy}H${cx+7}M${cx} ${cy-7}V${cy+7}"/>`;
+  $('#go').innerHTML=h;
+}
+function applyView(){
+  $('#world').setAttribute('transform',`translate(${view.x} ${view.y}) scale(${view.k})`);
+  const st=$('#stage'),g=G*view.k,M=100*view.k;
+  st.style.backgroundSize=`${g}px ${g}px, ${M}px ${M}px, ${M}px ${M}px`;
+  st.style.backgroundPosition=`${view.x-g/2}px ${view.y-g/2}px, ${view.x}px ${view.y}px, ${view.x}px ${view.y}px`;
+  st.style.backgroundImage=g<5?'linear-gradient(to right,var(--grid2) 1px,transparent 1px),linear-gradient(to bottom,var(--grid2) 1px,transparent 1px)':'';
+  if(g<5){st.style.backgroundSize=`${M}px ${M}px, ${M}px ${M}px`;st.style.backgroundPosition=`${view.x}px ${view.y}px, ${view.x}px ${view.y}px`}
+  hud();
+}
+
+/* ---------- chrome (header, rail, dock, hud, sim bar, context bar) ---------- */
+let lastPtrType='mouse';
+function renderChrome(){
+  const dark=document.documentElement.dataset.theme?document.documentElement.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;
+  $('#top').innerHTML=`
+    <div class="brand"><div class="logo">${ic('logo')}</div><span class="wm">Rangkai</span></div>
+    <button class="proj" data-act="projects" title="${L('Proyek','Projects')}"><span>${esc(S.name)}</span>${ic('chev')}</button>
+    <div class="seg" role="group" aria-label="Mode">
+      <button data-act="mode-design" aria-pressed="${!simOn}">${ic('pen')}<span class="lbl">${L('Desain','Design')}</span></button>
+      <button data-mode="sim" data-act="mode-sim" aria-pressed="${simOn}">${ic('play')}<span class="lbl">${L('Simulasi','Simulate')}</span></button>
+    </div>
+    <div class="grow"></div>
+    <button class="search only-wide" data-act="palette">${ic('search')}<span>${L('Cari komponen atau perintah','Search parts or commands')}</span><kbd>Ctrl K</kbd></button>
+    <button class="ib" data-act="undo" title="${L('Urungkan','Undo')} (Ctrl+Z)" ${undoS.length?'':'disabled'}>${ic('undo')}</button>
+    <button class="ib" data-act="redo" title="${L('Ulangi','Redo')} (Ctrl+Y)" ${redoS.length?'':'disabled'}>${ic('redo')}</button>
+    <span class="sep only-wide"></span>
+    <button class="ib text only-wide" data-act="samples">${ic('book')}<span class="lbl">${L('Contoh','Examples')}</span></button>
+    <button class="ib text only-wide" data-act="export">${ic('export')}<span class="lbl">${L('Ekspor','Export')}</span></button>
+    <button class="ib only-wide" data-act="theme" title="${L('Ganti tema','Toggle theme')}">${ic(dark?'sun':'moon')}</button>
+    <button class="ib text only-wide" data-act="lang" title="${L('Bahasa','Language')}">${ic('globe')}<span>${lang.toUpperCase()}</span></button>
+    <button class="ib only-phone" data-act="menu" aria-label="${L('Menu','Menu')}">${ic('more')}</button>`;
+  const rb=(t,n,label,k,pressed)=>`<button class="ib tip" ${t} data-tip="${label}${k?' · '+k:''}" aria-label="${label}" ${pressed!=null?`aria-pressed="${pressed}"`:''}>${ic(n)}</button>`;
+  $('#rail').innerHTML=rb('data-act="lib"','lib',L('Komponen','Components'),'',libOpen)+'<div class="rs"></div>'+
+    rb('data-act="tool-select"','select',L('Pilih & pindah','Select & move'),'V',tool==='select')+rb('data-act="tool-wire"','wire',L('Kabel','Wire'),'W',tool==='wire')+rb('data-act="label"','label',L('Label net','Net label'),'N',tool==='place'&&placeK==='LBL')+
+    '<div class="rs"></div>'+rb('data-act="rot"','rotate',L('Putar 90°','Rotate 90°'),'R')+rb('data-act="mir"','mirror',L('Cermin','Mirror'),'M')+rb('data-act="dup"','dup',L('Duplikat','Duplicate'),'Ctrl D')+rb('data-act="del"','del',L('Hapus','Delete'),'Del')+
+    '<div class="rs"></div>'+rb('data-act="zin"','zin',L('Perbesar','Zoom in'),'+')+rb('data-act="zout"','zout',L('Perkecil','Zoom out'),'−')+rb('data-act="fit"','fit',L('Muat semua','Fit all'),'F');
+  const nIss=ISS.filter(i=>i.lv!=='info').length;
+  const db=(act,n,label,pressed,badge)=>`<button data-act="${act}" aria-pressed="${!!pressed}">${ic(n)}<span>${label}</span>${badge?`<em class="badge">${badge}</em>`:''}</button>`;
+  $('#dock').innerHTML=db('lib','plus',L('Komponen','Parts'),sheet==='lib')+db('tool-select','select',L('Pilih','Select'),tool==='select')+db('tool-wire','wire',L('Kabel','Wire'),tool==='wire')+
+    db(simOn?'mode-design':'mode-sim','play',L('Simulasi','Simulate'),simOn)+db('insp','panel',L('Panel','Panel'),sheet==='insp',nIss||'');
+  document.getElementById('app').classList.toggle('app-lib-closed',!libOpen&&!isPhone());
+  document.getElementById('app').classList.toggle('app-lib-open',libOpen&&!isPhone());
+  $('#lib').classList.toggle('open',sheet==='lib');$('#insp').classList.toggle('open',sheet==='insp');
+  document.querySelectorAll('.item').forEach(b=>b.setAttribute('aria-pressed',String(tool==='place'&&b.dataset.k===placeK)));
+  // sim bar
+  const sb=$('#simbar');
+  if(simOn&&SIM){sb.hidden=false;sb.classList.toggle('err',!SIM.ok);
+    const msg=SIM.ok?L(`Simulasi DC aktif · ${SIM.iters} iterasi`,`DC simulation live · ${SIM.iters} iterations`)+(S.parts.some(p=>p.k==='SW')?L(' · ketuk saklar untuk menyalakan',' · tap a switch to flip it'):'')
+      :SIM.err==='noGround'?L('Tambahkan simbol Ground atau baterai sebagai titik 0 V','Add a Ground symbol or a battery as the 0 V reference')
+      :SIM.err==='empty'?L('Belum ada komponen yang bisa disimulasikan','Nothing to simulate yet')
+      :SIM.err==='singular'?L('Rangkaian tidak bisa dipecahkan. Cek bagian yang mengambang.','The circuit cannot be solved. Look for floating parts.')
+      :L('Simulasi tidak konvergen. Cek nilai komponen.','Simulation did not converge. Check component values.');
+    sb.innerHTML=`<i class="pulse"></i><span>${msg}</span>`}else sb.hidden=true;
+  cbar();hud();
+}
+function hud(){
+  const c=snap(cur[0]),d=snap(cur[1]);
+  const hint=tool==='wire'?(wireStart?L('Klik untuk menekuk · klik pin/kabel untuk selesai · B ganti arah · Esc batal','Click to bend · click a pin or wire to finish · B flips the bend · Esc cancels'):L('Klik atau seret dari titik awal kabel','Click or drag from where the wire starts'))
+    :tool==='place'?L(`Klik untuk menaruh ${nm(placeK)} · R putar · M cermin · Esc selesai`,`Click to place ${nm(placeK)} · R rotate · M mirror · Esc to finish`)
+    :sel.size?L(`${sel.size} dipilih · seret untuk memindah · Del hapus`,`${sel.size} selected · drag to move · Del deletes`):L('Seret komponen dari library · klik ujung pin untuk menarik kabel · seret area kosong untuk memilih banyak','Drag parts from the library · click a pin end to draw a wire · drag on empty space to box-select');
+  $('#hud').innerHTML=`<span class="c">X ${(c/100).toFixed(2)}  Y ${(d/100).toFixed(2)} in</span><span class="c">${Math.round(view.k*50)}%</span><span class="c hint">${hint}</span>`;
+}
+function cbar(){
+  const el=$('#cbar');if(!isPhone()||sheet){el.innerHTML='';return}
+  const b=(act,n,label,cls)=>`<button data-act="${act}" class="${cls||''}">${ic(n)}<span>${label}</span></button>`;
+  if(tool==='place')el.innerHTML=`<span class="msg">${L('Ketuk kanvas untuk menaruh','Tap the canvas to place')} ${esc(nm(placeK))}</span>`+b('rot','rotate',L('Putar','Rotate'))+b('mir','mirror',L('Cermin','Mirror'))+b('done','check',L('Selesai','Done'),'pri');
+  else if(tool==='wire')el.innerHTML=`<span class="msg">${wireStart?L('Ketuk tujuan, atau ketuk pin untuk selesai','Tap the next point, or a pin to finish'):L('Ketuk atau geser dari titik awal','Tap or drag from the start point')}</span>`+b('bend','bend',L('Tekukan','Bend'))+b('done','check',L('Selesai','Done'),'pri');
+  else if(sel.size)el.innerHTML=`<span class="msg">${sel.size} ${L('dipilih','selected')}</span>`+b('rot','rotate',L('Putar','Rotate'))+b('mir','mirror',L('Cermin','Mirror'))+b('dup','dup',L('Duplikat','Copy'))+b('del','del',L('Hapus','Delete'),'dng')+b('insp','panel',L('Detail','Details'));
+  else el.innerHTML='';
+}
+
+/* ---------- library ---------- */
+let libFilter='';
+function renderLib(){
+  const f=libFilter.trim().toLowerCase();const groups={};
+  Object.entries(SYM).forEach(([k,s])=>{if(f&&!(s.n.join(' ')+' '+k+' '+s.v+' '+(s.kw||'')).toLowerCase().includes(f))return;(groups[s.g]=groups[s.g]||[]).push(k)});
+  const body=Object.entries(groups).map(([g,ks])=>`<h4>${GROUPS[g][lang==='id'?0:1]}</h4><div class="lgrid">${ks.map(k=>`<button class="item" data-k="${k}" title="${esc(nm(k))} · ${esc(SYM[k].v)}">${symIcon(k)}<span>${esc(nm(k))}</span></button>`).join('')}</div>`).join('')||`<p class="hintline">${L('Tidak ada komponen yang cocok.','No matching parts.')}</p>`;
+  const el=$('#lib');
+  if(!el.firstChild){el.innerHTML=`<div class="handle"></div><div class="phead"><h2></h2><button class="ib" data-act="lib-close" aria-label="Tutup">${ic('x')}</button></div><label class="lsearch">${ic('search')}<input id="lq" type="search" autocomplete="off"></label><div class="lbody" id="lbody"></div>`;
+    $('#lq').addEventListener('input',e=>{libFilter=e.target.value;renderLib()})}
+  el.querySelector('h2').textContent=L('Komponen','Components');$('#lq').placeholder=L('Cari: resistor, LED, 555…','Search: resistor, LED, 555…');
+  $('#lbody').innerHTML=`<p class="hintline">${isPhone()?L('Ketuk komponen, lalu ketuk kanvas.','Tap a part, then tap the canvas.'):L('Seret ke kanvas, atau klik lalu klik di kanvas.','Drag onto the canvas, or click it then click the canvas.')}</p>`+body;
+  renderChrome();
+}
+function nextRef(pre,o){o=o||S;let mx=0;o.parts.forEach(p=>{if(SYM[p.k].pre===pre){const n=parseInt(String(p.ref).slice(pre.length));if(n>mx)mx=n}});return pre+(mx+1)}
+function newPart(k,x,y,r,m){const s=SYM[k];const p={id:'p'+(++S.n),k,x,y,r:r||0,m:!!m,ref:nextRef(s.pre),val:s.v};if(k==='SW')p.on=false;if(k==='POT')p.pos=.5;return p}
+
+/* ---------- inspector ---------- */
+function setTab(t){tab=t;renderInsp()}
+function renderInsp(){
+  const el=$('#insp');
+  const nBad=ISS.filter(i=>i.lv==='bad').length,nWarn=ISS.filter(i=>i.lv==='warn').length;
+  const cb=nBad?`<span class="badge bad">${nBad+nWarn}</span>`:nWarn?`<span class="badge">${nWarn}</span>`:`<span class="badge ok">✓</span>`;
+  let h=`<div class="handle"></div><div class="tabs" role="tablist">
+    <button class="tab" role="tab" data-tab="props" aria-selected="${tab==='props'}">${L('Properti','Properties')}</button>
+    <button class="tab" role="tab" data-tab="nets" aria-selected="${tab==='nets'}">Net</button>
+    <button class="tab" role="tab" data-tab="check" aria-selected="${tab==='check'}">${L('Cek','Check')} ${cb}</button>
+    <button class="tab" role="tab" data-tab="bom" aria-selected="${tab==='bom'}">BOM</button>
+    <span class="grow"></span><button class="ib only-phone" data-act="sheet-close" aria-label="Tutup" style="height:32px;min-width:32px">${ic('x')}</button></div><div class="ibody">`;
+  if(tab==='props')h+=propsHTML();
+  else if(tab==='nets')h+=netsHTML();
+  else if(tab==='check')h+=checkHTML();
+  else h+=bomHTML();
+  h+='</div>';
+  const ae=document.activeElement,aid=ae&&ae.id&&el.contains(ae)?ae.id:null,ss=aid&&ae.selectionStart;
+  const sc=el.querySelector('.ibody')?el.querySelector('.ibody').scrollTop:0;
+  el.innerHTML=h;el.querySelector('.ibody').scrollTop=sc;
+  if(aid){const n=document.getElementById(aid);if(n){n.focus();try{n.setSelectionRange(ss,ss)}catch(e){}}}
+}
+function propsHTML(){
+  const ps=S.parts.filter(p=>sel.has(p.id)),ws=S.wires.filter(w=>sel.has(w.id));
+  if(ps.length===1&&!ws.length){
+    const p=ps[0],s=SYM[p.k],r=SIM&&SIM.ok?SIM.parts.get(p.id):null;
+    let h=`<section><div class="ph"><div class="sym-ic">${symIcon(p.k)}</div><div><b>${esc(s.noRef?nm(p.k):p.ref)}</b><small>${esc(nm(p.k))} · ${(p.r||0)*90}°${p.m?' · '+L('cermin','mirrored'):''}</small></div></div>`;
+    h+='<div class="fields">';
+    if(!s.noRef)h+=`<div class="field"><label for="f-ref">${L('Nama','Designator')}</label><input type="text" id="f-ref" value="${esc(p.ref)}" spellcheck="false"></div>`;
+    if(p.k==='LED'){h+=`</div><div class="field full"><label>${L('Warna','Colour')}</label><div class="chips">${Object.entries(LEDC).map(([k,a])=>`<button class="chip" data-led="${k}" aria-pressed="${ledInfo(p.val).key===k}"><i style="background:${a[0]};box-shadow:inset 0 0 0 1px var(--line2)"></i>${lang==='id'?k:a[2]} <small style="color:var(--muted);font-weight:500">${a[1]} V</small></button>`).join('')}</div></div><div class="fields">`}
+    else if(p.k!=='GND')h+=`<div class="field${s.noRef?' full':''}"><label for="f-val">${s.net?L('Nama net','Net name'):p.k==='VCC'?L('Tegangan','Voltage'):L('Nilai','Value')}</label><input type="text" id="f-val" value="${esc(p.val)}" spellcheck="false"></div>`;
+    h+='</div>';
+    if(p.k==='R'){const v=parseSI(p.val),bd=bandsFor(v);
+      if(v>0)h+=`<div class="bands">${bd?`<div class="rbody" aria-hidden="true"><i>${bd.map(c=>`<em style="background:${c}"></em>`).join('')}</i></div>`:''}<p class="hintline">${fmt(v,'Ω')} · E12 ${L('terdekat','nearest')}: <b style="font-family:var(--mono)">${fmt(nearestE12(v),'Ω')}</b><br>${L('Tulis seperti 4k7, 2R2, 1M.','Write it like 4k7, 2R2, 1M.')}</p></div>`;
+      else h+=`<p class="hintline" style="color:var(--warn)">${L('Nilai tidak terbaca. Contoh: 330, 4k7, 1M.','Value not recognised. Try 330, 4k7, 1M.')}</p>`}
+    if(p.k==='POT')h+=`<div class="field"><label for="f-pos">${L('Posisi wiper','Wiper position')} · ${Math.round((p.pos==null?.5:p.pos)*100)}%</label><input type="range" id="f-pos" min="0" max="100" value="${Math.round((p.pos==null?.5:p.pos)*100)}"></div>`;
+    if(p.k==='SW')h+=`<div class="swt"><button class="sw" role="switch" aria-checked="${!!p.on}" data-act="toggle-sw" aria-label="${L('Saklar','Switch')}"></button><span>${p.on?L('Tertutup (ON)','Closed (on)'):L('Terbuka (OFF)','Open (off)')}</span></div>`;
+    if(p.k==='VCC')h+=`<p class="hintline">${L('Semua simbol VCC dengan nilai sama otomatis tersambung.','Every supply symbol with the same value is connected automatically.')}</p>`;
+    if(p.k==='LBL')h+=`<p class="hintline">${L('Label dengan nama sama tersambung tanpa kabel.','Labels with the same name connect without a wire.')}</p>`;
+    if(p.k==='LAMP')h+=`<p class="hintline">${L('Format: tegangan dan daya, mis. 12V 2W.','Format: voltage and power, e.g. 12V 2W.')}</p>`;
+    h+=`<div class="btns"><button class="btn" data-act="rot">${ic('rotate')}${L('Putar','Rotate')}</button><button class="btn" data-act="mir">${ic('mirror')}${L('Cermin','Mirror')}</button><button class="btn" data-act="dup">${ic('dup')}${L('Duplikat','Duplicate')}</button><button class="btn dng" data-act="del">${ic('del')}${L('Hapus','Delete')}</button></div></section>`;
+    const mine=ISS.filter(i=>i.id===p.id);if(mine.length)h+=`<section><h3>${L('Masalah','Problems')}</h3><div class="list">${mine.map(issueHTML).join('')}</div></section>`;
+    if(r)h+=`<section><h3>${L('Hasil simulasi','Simulation')}</h3>${readout(p,r)}</section>`;
+    else if(SIMK.has(p.k)&&SIM&&!SIM.ok)h+=`<section><h3>${L('Hasil simulasi','Simulation')}</h3><p class="hintline">${L('Belum ada hasil. Lihat pesan di tab Cek.','No results yet. See the Check tab.')}</p></section>`;
+    h+=`<section><h3>Pin</h3><div class="list">${pinsOf(p).map(pn=>{const root=A.find(K(...pn.pt)),n=A.netOfRoot.get(root),v=SIM&&SIM.ok?SIM.nodeV.get(root):null;return `<button class="lrow" data-net="${n?esc(n.name):''}"><b>${esc(pn.n)}</b><span>${n?esc(n.name):'—'}</span><em>${v!=null?fmt(v,'V'):''}</em></button>`}).join('')}</div></section>`;
+    return h;
+  }
+  if(ps.length+ws.length>0){
+    if(ps.length===0&&ws.length===1){const w=ws[0],root=A.find(K(w.x1,w.y1)),n=A.netOfRoot.get(root),v=SIM&&SIM.ok?SIM.nodeV.get(root):null;const len=Math.abs(w.x2-w.x1)+Math.abs(w.y2-w.y1);
+      return `<section><div class="ph"><div class="sym-ic">${ic('wire')}</div><div><b>${L('Kabel','Wire')}</b><small>${(len/100).toFixed(2)} in · net ${n?esc(n.name):'—'}</small></div></div>${v!=null?`<div class="readout"><div class="ro"><span>${L('Tegangan','Voltage')}</span><b>${fmt(v,'V')}</b></div></div>`:''}<div class="btns"><button class="btn dng" data-act="del">${ic('del')}${L('Hapus kabel','Delete wire')}</button></div></section>`}
+    return `<section><div class="ph"><div class="sym-ic">${ic('select')}</div><div><b>${ps.length+ws.length} ${L('objek','objects')}</b><small>${ps.length} ${L('komponen','parts')} · ${ws.length} ${L('kabel','wires')}</small></div></div><div class="btns"><button class="btn" data-act="rot">${ic('rotate')}${L('Putar','Rotate')}</button><button class="btn" data-act="mir">${ic('mirror')}${L('Cermin','Mirror')}</button><button class="btn" data-act="dup">${ic('dup')}${L('Duplikat','Duplicate')}</button><button class="btn dng" data-act="del">${ic('del')}${L('Hapus','Delete')}</button></div></section>`;
+  }
+  const real=S.parts.filter(p=>!SYM[p.k].net).length;
+  return `<section><h3>${L('Lembar','Sheet')}</h3><div class="stats"><div class="ro"><span>${L('Komponen','Parts')}</span><b>${real}</b></div><div class="ro"><span>Net</span><b>${A.nets.length}</b></div><div class="ro"><span>${L('Kabel','Wires')}</span><b>${S.wires.length}</b></div></div></section>
+   ${S.parts.length?'':`<section><h3>${L('Mulai','Get started')}</h3><p class="hintline">${L('Lembar masih kosong. Ambil komponen dari library, atau buka contoh rangkaian.','The sheet is empty. Pick parts from the library or open an example circuit.')}</p><div class="btns"><button class="btn pri" data-act="samples">${ic('book')}${L('Buka contoh','Open an example')}</button></div></section>`}
+   <section><h3>${L('Cara pakai','How it works')}</h3><div class="keys">
+    ${isPhone()?`<b>1</b><span>${L('Ketuk <b>Komponen</b>, pilih, lalu ketuk kanvas.','Tap <b>Parts</b>, choose one, then tap the canvas.')}</span><b>2</b><span>${L('Pilih <b>Kabel</b>, lalu seret dari pin ke pin.','Choose <b>Wire</b>, then drag from pin to pin.')}</span><b>3</b><span>${L('Tekan <b>Simulasi</b> untuk melihat tegangan dan LED menyala.','Press <b>Simulate</b> to see voltages and LEDs light up.')}</span><b>✦</b><span>${L('Dua jari untuk zoom & geser. Tahan lama untuk menu.','Two fingers to zoom and pan. Long-press for a menu.')}</span>`
+    :`<kbd>V</kbd><span>${L('Pilih & pindah','Select & move')}</span><kbd>W</kbd><span>${L('Kabel (seret atau klik-klik)','Wire (drag or click-click)')}</span><kbd>N</kbd><span>${L('Label net','Net label')}</span><kbd>R</kbd><span>${L('Putar 90°','Rotate 90°')}</span><kbd>M</kbd><span>${L('Cermin','Mirror')}</span><kbd>B</kbd><span>${L('Ganti arah tekukan kabel','Flip the wire bend')}</span><kbd>S</kbd><span>${L('Simulasi on/off','Simulation on/off')}</span><kbd>Ctrl K</kbd><span>${L('Cari komponen & perintah','Search parts & commands')}</span><kbd>Ctrl D</kbd><span>${L('Duplikat','Duplicate')}</span><kbd>Shift</kbd><span>${L('Tambah ke pilihan','Add to selection')}</span><kbd>Space</kbd><span>${L('Tahan + seret untuk geser','Hold + drag to pan')}</span><kbd>F</kbd><span>${L('Muat semua','Fit all')}</span>`}
+   </div></section>`;
+}
+function readout(p,r){
+  const ro=(label,val,cls)=>`<div class="ro ${cls||''}"><span>${label}</span><b>${val}</b></div>`;
+  let h='<div class="readout">';
+  switch(p.k){
+    case 'R':h+=ro(L('Tegangan','Voltage'),fmt(Math.abs(r.V),'V'))+ro(L('Arus','Current'),fmt(Math.abs(r.I),'A'))+ro(L('Daya','Power'),fmt(r.P,'W'),r.P>r.rate?'bad':r.P>r.rate*.6?'warn':'');break;
+    case 'POT':h+=ro('V wiper',fmt(r.V,'V'))+ro(L('Arus','Current'),fmt(Math.abs(r.I),'A'))+ro(L('Daya','Power'),fmt(r.P,'W'),r.P>RATE.POT?'bad':'');break;
+    case 'LED':case 'D':case 'ZD':h+=ro('V',fmt(r.V,'V'))+ro(L('Arus','Current'),fmt(r.I,'A'),p.k==='LED'&&r.I>0.03?'bad':p.k==='LED'&&r.I>0.022?'warn':'')+(p.k==='LED'?ro(L('Nyala','Brightness'),Math.round(Math.min(r.glow,1)*100)+'%'):ro(L('Daya','Power'),fmt(Math.abs(r.V*r.I),'W')));break;
+    case 'NPN':case 'PNP':h+=ro('Ic',fmt(r.Ic,'A'),r.Ic>0.1?'bad':'')+ro('Ib',fmt(r.Ib,'A'))+ro('Vce',fmt(r.Vce,'V'))+`</div><p class="hintline">${L('Kondisi','State')}: <b>${r.region}</b> · Vbe ${fmt(r.Vbe,'V')}${r.Ib>1e-9?' · hFE '+Math.round(r.Ic/r.Ib):''}</p><div>`;break;
+    case 'BAT':case 'VCC':h+=ro(L('Tegangan','Voltage'),fmt(r.V,'V'))+ro(L('Arus','Current'),fmt(r.I,'A'),r.I>1.5?'bad':'')+ro(L('Daya','Power'),fmt(r.P,'W'));break;
+    case 'LAMP':h+=ro('V',fmt(r.V,'V'))+ro(L('Arus','Current'),fmt(r.I,'A'))+ro(L('Daya','Power'),fmt(r.P,'W'));break;
+    case 'SW':h+=ro('V',fmt(r.V,'V'))+ro(L('Arus','Current'),fmt(r.I,'A'));break;
+    case 'C':case 'CP':h+=ro(L('Tegangan','Voltage'),fmt(r.V,'V'))+ro(L('Muatan','Charge'),fmt(Math.abs(r.V*(parseSI(p.val)||0)),'C'));break;
+    case 'L':h+=ro(L('Arus','Current'),fmt(r.I,'A'));break;
+    case 'OPAMP':h+=ro('Vout',fmt(r.V,'V'))+ro('V+ − V−',fmt(r.Vd,'V'))+ro('Rail',`${r.rail[0].toFixed(1)}–${r.rail[1].toFixed(1)} V`);break;
+  }
+  return h+'</div>';
+}
+function netsHTML(){
+  if(!A.nets.length)return `<p class="hintline">${L('Belum ada net. Sambungkan komponen dengan kabel.','No nets yet. Connect parts with wires.')}</p>`;
+  return `<section><h3>${A.nets.length} net<span>${hlNet?`<button class="btn sm" data-act="clear-hl">${L('Hapus sorotan','Clear highlight')}</button>`:''}</span></h3><div class="list">${A.nets.map(n=>{const v=SIM&&SIM.ok?SIM.nodeV.get(n.root):null;return `<button class="lrow ${n.name===hlNet?'on':''}" data-net="${esc(n.name)}"><b title="${esc(n.name)}">${esc(n.name)}</b><span>${n.members.length?esc(n.members.join(', ')):'—'}</span><em>${v!=null?fmt(v,'V'):''}</em></button>`}).join('')}</div><p class="hintline">${L('Ketuk net untuk menyorot kabelnya. Nama N$ dibuat otomatis seperti di Eagle; beri Label net untuk menamainya.','Tap a net to highlight its wires. N$ names are automatic, as in Eagle; add a net label to name one.')}</p></section>`;
+}
+function checkHTML(){
+  const nAuto=ISS.filter(i=>i.fix&&i.fix.auto).length;
+  const head=`<h3>${L('Cek desain otomatis','Automatic design check')}</h3><p class="hintline">${L('Rangkai menjalankan simulasi di latar belakang untuk menemukan kesalahan: komponen yang bakal terbakar, korsleting, komponen terbalik, kabel yang hampir nyambung, dan lainnya. Tekan Perbaiki untuk membetulkannya.','Rangkai simulates in the background to catch mistakes: parts that would burn, shorts, parts put in backwards, near-miss wires and more. Press Fix to correct them.')}</p>
+   <div class="autorow"><button class="sw" role="switch" aria-checked="${autoFix}" data-act="autofix" aria-label="${L('Perbaiki otomatis','Auto-fix')}"></button><div><b>${L('Perbaiki otomatis','Auto-fix')}</b><small>${L('Saat kesalahan berat muncul, langsung dibetulkan. Ctrl+Z untuk membatalkan.','Serious mistakes are corrected as soon as they appear. Ctrl+Z undoes it.')}</small></div></div>`;
+  if(!ISS.length)return `<section>${head}<div class="list"><div class="issue"><i class="dot" style="background:var(--ok)"></i><div><b>${L('Semua aman','All clear')}</b><small>${L('Tidak ada masalah yang terdeteksi.','No problems found.')}</small></div></div></div></section>`;
+  return `<section>${head}${nAuto?`<button class="btn pri" data-act="fixall">${ic('bolt')}${L(`Perbaiki semua yang bisa (${nAuto})`,`Fix everything possible (${nAuto})`)}</button>`:''}<div class="list">${ISS.map(issueHTML).join('')}</div></section>`;
+}
+function bomRows(){const g=new Map();S.parts.forEach(p=>{if(SYM[p.k].net)return;const key=p.k+'|'+p.val;if(!g.has(key))g.set(key,{k:p.k,val:p.val,refs:[]});g.get(key).refs.push(p.ref)});
+  return [...g.values()].map(r=>{r.refs.sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}));return r}).sort((a,b)=>a.refs[0].localeCompare(b.refs[0],undefined,{numeric:true}))}
+function bomHTML(){const rows=bomRows();if(!rows.length)return `<p class="hintline">${L('Belum ada komponen.','No parts yet.')}</p>`;
+  return `<section><h3>${L('Daftar komponen','Bill of materials')} <button class="btn sm" data-act="copy-bom">${ic('copy')}CSV</button></h3><div class="tblwrap"><table class="bom"><thead><tr><th>Qty</th><th>${L('Nilai','Value')}</th><th>Ref</th><th>${L('Jenis','Part')}</th></tr></thead><tbody>${rows.map(r=>`<tr><td>${r.refs.length}</td><td>${esc(r.val)}</td><td>${esc(r.refs.join(', '))}</td><td>${esc(nm(r.k))}</td></tr>`).join('')}</tbody></table></div><p class="hintline">${L('Komponen bernilai sama dikelompokkan otomatis. Siap untuk belanja.','Parts with the same value are grouped, ready for ordering.')}</p></section>`}
+
+/* ---------- exports ---------- */
+function bomCSV(){return 'Qty,Value,Reference,Part\n'+bomRows().map(r=>[r.refs.length,r.val,r.refs.join(' '),SYM[r.k].n[1]].map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n')}
+function spice(){
+  const nn=new Map();let auto=0;
+  const nodeName=pt=>{const root=A.find(K(pt[0],pt[1]));if(SIM&&SIM.gRoot===root)return '0';const n=A.netOfRoot.get(root);if(n&&n.named){if(n.name==='GND')return '0';return n.name.replace(/[^A-Za-z0-9_]/g,c=>c==='+'?'P':c==='-'?'N':'_')}
+    if(!nn.has(root))nn.set(root,'N'+String(++auto).padStart(3,'0'));return nn.get(root)};
+  const L1=[`* ${S.name} — Rangkai netlist (${new Date().toISOString().slice(0,10)})`,'* Buka di LTspice / ngspice'],models=new Set();
+  const supplies=new Set();
+  S.parts.forEach(p=>{const nd=pinsOf(p).map(pn=>nodeName(pn.pt)),v=parseSI(p.val),ref=p.ref.replace(/[^A-Za-z0-9_]/g,'');
+    switch(p.k){
+      case 'R':L1.push(`R${ref.replace(/^R/,'')} ${nd[0]} ${nd[1]} ${spiceNum(v)}`);break;
+      case 'POT':{const pos=p.pos==null?.5:p.pos;L1.push(`R${ref}_A ${nd[0]} ${nd[2]} ${spiceNum(Math.max(v*(1-pos),.5))}`,`R${ref}_B ${nd[2]} ${nd[1]} ${spiceNum(Math.max(v*pos,.5))}`);break}
+      case 'C':case 'CP':L1.push(`C${ref.replace(/^C/,'')} ${nd[0]} ${nd[1]} ${spiceNum(v)}`);break;
+      case 'L':L1.push(`L${ref.replace(/^L/,'')} ${nd[0]} ${nd[1]} ${spiceNum(v)}`);break;
+      case 'D':L1.push(`D${ref.replace(/^D/,'')} ${nd[0]} ${nd[1]} D1N4148`);models.add('.model D1N4148 D(Is=2.52n N=1.752 Rs=0.568 BV=100)');break;
+      case 'ZD':L1.push(`D${ref.replace(/^D/,'')} ${nd[0]} ${nd[1]} DZ${String(v).replace('.','V')}`);models.add(`.model DZ${String(v).replace('.','V')} D(Is=1p N=1.2 BV=${v} IBV=5m)`);break;
+      case 'LED':{const li=ledInfo(p.val);L1.push(`D${ref} ${nd[0]} ${nd[1]} LED_${li.key.toUpperCase()}`);models.add(`.model LED_${li.key.toUpperCase()} D(Is=${(0.02/Math.exp(li.vf/(2*VT))).toExponential(3)} N=2)`);break}
+      case 'NPN':L1.push(`Q${ref.replace(/^Q/,'')} ${nd[1]} ${nd[0]} ${nd[2]} QNPN`);models.add('.model QNPN NPN(Is=10f Bf=250 Br=3)');break;
+      case 'PNP':L1.push(`Q${ref.replace(/^Q/,'')} ${nd[2]} ${nd[0]} ${nd[1]} QPNP`);models.add('.model QPNP PNP(Is=10f Bf=250 Br=3)');break;
+      case 'BAT':L1.push(`V${ref} ${nd[0]} ${nd[1]} DC ${spiceNum(v)}`);break;
+      case 'VCC':if(!supplies.has(nd[0])&&nd[0]!=='0'){supplies.add(nd[0]);L1.push(`V_${nd[0]} ${nd[0]} 0 DC ${spiceNum(v)}`)}break;
+      case 'SW':L1.push(p.on?`R${ref}_SW ${nd[0]} ${nd[1]} 10m`:`* ${p.ref} terbuka / open`);break;
+      case 'LAMP':L1.push(`R${ref}_LAMP ${nd[0]} ${nd[1]} ${spiceNum(lampParams(p.val).R)}`);break;
+      case 'OPAMP':L1.push(`E${ref} ${nd[2]} 0 ${nd[1]} ${nd[0]} 100k`);break;
+      case 'U555':L1.push(`* ${p.ref} NE555: pin ${pinsOf(p).map((pn,i)=>pn.n+'='+nd[i]).join(' ')} (tidak dimodelkan / not modelled)`);break;
+      case 'J2':L1.push(`* ${p.ref} ${p.val}: ${nd.join(' ')}`);break;
+    }});
+  return [...L1,...models,'.op','.end'].join('\n');
+}
+function exportSVG(){
+  const b=boundsOf(S)||[0,0,200,200],pad=30,x=b[0]-pad,y=b[1]-pad,w=b[2]-b[0]+pad*2,h=b[3]-b[1]+pad*2;
+  const css='.sym{fill:none;stroke:#1d2a3c;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.symf{fill:#1d2a3c}.hit,.pin,.whit{fill:none;stroke:none}.wl{stroke:#0e8a78;stroke-width:1.5;stroke-linecap:round}.jdot{fill:#0e8a78}.ref{font:600 7px monospace;fill:#101925}.val{font:500 6.5px monospace;fill:#5a6676}.net{font:700 7px monospace;fill:#2c58a8}.pn{font:500 4.6px monospace;fill:#5a6676}';
+  const wires=S.wires.map(w=>`<line class="wl" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}"/>`).join('');
+  const parts=S.parts.map(p=>partMarkup(p,'')).join('');
+  const dots=A.dots.map(([a,c])=>`<circle class="jdot" cx="${a}" cy="${c}" r="2.4"/>`).join('');
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${x} ${y} ${w} ${h}" width="${w*3}" height="${h*3}"><style>${css}</style><rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#ffffff"/>${wires}${parts}${dots}</svg>`;
+}
+
+/* ---------- modal, menus, toast ---------- */
+let tt;function toast(m){const t=$('#toast');t.className='toast';t.textContent=m;t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,2600)}
+function toastAction(m,acts,kind){const t=$('#toast');t.className='toast '+(kind||'');t.innerHTML=`<i class="tdot"></i><span>${esc(m)}</span>`+(acts||[]).map(a=>`<button class="tbtn" ${a.act?`data-act="${a.act}"`:''} ${a.fix?`data-fix="${esc(a.fix)}"`:''} ${a.go?`data-goto="${a.go}"`:''}>${esc(a.label)}</button>`).join('');t.hidden=false;clearTimeout(tt);tt=setTimeout(()=>t.hidden=true,acts&&acts.length?8000:2600)}
+function openModal(html,wide){$('#dlg').className='dlg'+(wide?' wide':'');$('#dlg').innerHTML=html;$('#modal').hidden=false}
+function closeModal(){$('#modal').hidden=true;$('#dlg').innerHTML=''}
+async function copyText(t,ta){try{await navigator.clipboard.writeText(t);toast(L('Tersalin ke clipboard.','Copied to clipboard.'))}catch(e){if(ta){ta.focus();ta.select()}toast(L('Teks sudah dipilih. Tekan Ctrl+C untuk menyalin.','Text selected. Press Ctrl+C to copy.'))}}
+let expTab='spice';
+function openExport(t){
+  expTab=t||expTab;const tabs=[['spice','SPICE'],['bom','BOM (CSV)'],['json','JSON'],['svg','SVG'],['import',L('Impor','Import')]];
+  const txt=expTab==='spice'?spice():expTab==='bom'?bomCSV():expTab==='json'?JSON.stringify(S,null,1):expTab==='svg'?exportSVG():'';
+  const desc={spice:L('Netlist SPICE untuk LTspice, ngspice, atau KiCad. Salin lalu simpan sebagai file .cir.','SPICE netlist for LTspice, ngspice or KiCad. Copy it and save as a .cir file.'),
+    bom:L('Daftar belanja komponen. Tempel ke Excel atau Google Sheets.','Parts list for ordering. Paste into Excel or Google Sheets.'),
+    json:L('Simpan cadangan proyek. Bisa dibuka lagi lewat tab Impor di perangkat mana pun.','Back up the project. Open it again from the Import tab on any device.'),
+    svg:L('Gambar vektor tajam untuk laporan, slide, Figma atau Inkscape. Simpan sebagai file .svg.','Crisp vector image for reports, slides, Figma or Inkscape. Save as an .svg file.'),
+    import:L('Tempel JSON hasil ekspor Rangkai. Akan dibuka sebagai proyek baru.','Paste JSON exported from Rangkai. It opens as a new project.')}[expTab];
+  openModal(`<div class="dh"><h2>${L('Ekspor & impor','Export & import')}</h2><button class="ib" data-act="modal-close" aria-label="Tutup">${ic('x')}</button></div>
+   <div class="db"><div class="dtabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" data-exp="${k}" aria-selected="${k===expTab}">${l}</button>`).join('')}</div>
+   <p class="hintline">${desc}</p><textarea id="expta" spellcheck="false" ${expTab==='import'?`placeholder='{"parts":[…],"wires":[…]}'`:'readonly'}>${esc(txt)}</textarea>
+   <div class="btns">${expTab==='import'?`<button class="btn pri" data-act="do-import">${ic('check')}${L('Buka sebagai proyek','Open as project')}</button>`:`<button class="btn pri" data-act="copy-exp">${ic('copy')}${L('Salin','Copy')}</button>`}</div><p class="hintline" id="experr" style="color:var(--danger)"></p></div>`,true);
+}
+function openProjects(){
+  IDX.list.sort((a,b)=>(b.t||0)-(a.t||0));
+  openModal(`<div class="dh"><h2>${L('Proyek','Projects')}</h2><button class="ib" data-act="modal-close" aria-label="Tutup">${ic('x')}</button></div>
+   <div class="db"><p class="hintline">${L('Tersimpan otomatis di browser ini. Tanpa akun, tanpa batas jumlah proyek. Pakai Ekspor → JSON untuk memindahkan ke perangkat lain.','Saved automatically in this browser. No account, no project limit. Use Export → JSON to move a project to another device.')}</p>
+   <div class="list">${IDX.list.map(p=>`<div class="prow ${p.id===S.id?'cur':''}"><input id="pn-${p.id}" data-rename="${p.id}" value="${esc(p.name)}" aria-label="${L('Nama proyek','Project name')}"><small>${new Date(p.t||Date.now()).toLocaleDateString(lang==='id'?'id-ID':'en-GB',{day:'numeric',month:'short'})}</small>${p.id===S.id?`<span class="badge ok">${L('dibuka','open')}</span>`:`<button class="btn sm" data-openp="${p.id}">${L('Buka','Open')}</button>`}<button class="ib" data-delp="${p.id}" aria-label="${L('Hapus','Delete')}" style="height:30px;min-width:30px">${ic('del')}</button></div>`).join('')}</div>
+   <div class="btns"><button class="btn pri" data-act="new-proj">${ic('plus')}${L('Proyek kosong baru','New blank project')}</button><button class="btn" data-act="samples">${ic('book')}${L('Dari contoh','From an example')}</button></div></div>`);
+}
+function previewSVG(o){const save=S;S=o;const b=boundsOf(o)||[0,0,100,100],pad=20;const h=o.wires.map(w=>`<line class="wl" x1="${w.x1}" y1="${w.y1}" x2="${w.x2}" y2="${w.y2}"/>`).join('')+o.parts.map(p=>partMarkup(p,'')).join('');S=save;
+  return `<svg viewBox="${b[0]-pad} ${b[1]-pad} ${b[2]-b[0]+pad*2} ${b[3]-b[1]+pad*2}" preserveAspectRatio="xMidYMid meet">${h}</svg>`}
+function openSamples(){
+  openModal(`<div class="dh"><h2>${L('Contoh rangkaian','Example circuits')}</h2><button class="ib" data-act="modal-close" aria-label="Tutup">${ic('x')}</button></div>
+   <div class="db"><p class="hintline">${L('Semua contoh langsung bisa disimulasikan. Dibuka sebagai proyek baru, jadi pekerjaanmu tetap aman.','Every example is ready to simulate. Each opens as a new project, so your work stays safe.')}</p>
+   <div class="gallery">${SAMPLES.map(s=>`<button class="card" data-sample="${s.id}"><div class="pv">${previewSVG(s.build())}</div><div class="t"><b>${s.n[lang==='id'?0:1]}</b><small>${s.d[lang==='id'?0:1]}</small></div></button>`).join('')}</div></div>`,true);
+}
+/* command palette */
+let palSel=0,palItems=[];
+function palCommands(){return [
+  ['tool-wire','wire',L('Alat kabel','Wire tool'),'W'],['label','label',L('Taruh label net','Place net label'),'N'],[simOn?'mode-design':'mode-sim','play',simOn?L('Matikan simulasi','Stop simulation'):L('Jalankan simulasi','Run simulation'),'S'],
+  ['fit','fit',L('Muat semua ke layar','Fit everything'),'F'],['samples','book',L('Buka contoh rangkaian','Open example circuits'),''],['export','export',L('Ekspor SPICE / BOM / SVG','Export SPICE / BOM / SVG'),''],
+  ['projects','folder',L('Kelola proyek','Manage projects'),''],['new-proj','plus',L('Proyek kosong baru','New blank project'),''],['theme','moon',L('Ganti tema terang/gelap','Toggle light/dark theme'),''],['lang','globe',L('Switch to English','Ganti ke Bahasa Indonesia'),''],
+  ['selall','select',L('Pilih semua','Select all'),'Ctrl A']]}
+function openPalette(){openModal(`<div class="pal-in">${ic('search')}<input id="palq" placeholder="${L('Ketik nama komponen atau perintah…','Type a part or command…')}" autocomplete="off" spellcheck="false"><kbd>Esc</kbd></div><div class="pal-list" id="pallist" role="listbox"></div>`);palSel=0;palRender('');{const q=$('#palq');if(q)q.focus()}}
+function palRender(q){q=q.trim().toLowerCase();
+  const comps=Object.keys(SYM).map(k=>({t:'k',k,label:L('Taruh ','Place ')+nm(k),sub:SYM[k].v,hay:(SYM[k].n.join(' ')+' '+k+' '+SYM[k].v+' '+(SYM[k].kw||'')).toLowerCase()}));
+  const cmds=palCommands().map(([a,i,label,kb])=>({t:'a',a,i,label,sub:kb,hay:label.toLowerCase()+' '+a}));
+  palItems=[...comps,...cmds].filter(x=>!q||q.split(/\s+/).every(w=>x.hay.includes(w)||x.label.toLowerCase().includes(w))).slice(0,40);
+  palSel=Math.min(palSel,Math.max(0,palItems.length-1));
+  $('#pallist').innerHTML=palItems.length?palItems.map((x,i)=>`<button class="pal-item" role="option" data-pal="${i}" aria-selected="${i===palSel}"><span class="pic">${x.t==='k'?symIcon(x.k):ic(x.i)}</span><span>${esc(x.label)}</span><small>${esc(x.sub||'')}</small></button>`).join(''):`<p class="hintline" style="padding:12px">${L('Tidak ditemukan.','Nothing found.')}</p>`;
+  const s=$('#pallist').querySelector('[aria-selected="true"]');if(s)s.scrollIntoView({block:'nearest'})}
+function palRun(i){const x=palItems[i];if(!x)return;closeModal();if(x.t==='k'){setTool('place',x.k);placeAtCenterIfTouch()}else act(x.a)}
+
+/* context menu */
+function openCtx(cx,cy,target){
+  const m=$('#ctx');let h='';const b=(act,n,label,k,cls)=>`<button role="menuitem" data-act="${act}" class="${cls||''}">${ic(n)}<span>${label}</span>${k?`<kbd>${k}</kbd>`:''}</button>`;
+  if(target==='menu'){h=b('palette','search',L('Cari komponen / perintah','Search parts / commands'))+b('samples','book',L('Contoh rangkaian','Examples'))+b('projects','folder',L('Proyek','Projects'))+b('export','export',L('Ekspor & impor','Export & import'))+'<hr>'+b('fit','fit',L('Muat semua','Fit all'))+b('theme','moon',L('Ganti tema','Toggle theme'))+b('lang','globe','English / Indonesia')}
+  else if(sel.size){const p=sel.size===1?S.parts.find(q=>sel.has(q.id)):null;
+    if(p&&p.k==='SW')h+=b('toggle-sw','toggle',p.on?L('Buka saklar (OFF)','Open switch (off)'):L('Tutup saklar (ON)','Close switch (on)'))+'<hr>';
+    h+=b('rot','rotate',L('Putar 90°','Rotate 90°'),'R')+b('mir','mirror',L('Cermin','Mirror'),'M')+b('dup','dup',L('Duplikat','Duplicate'),'Ctrl D')+b('copy','copy',L('Salin','Copy'),'Ctrl C')+b('insp','panel',L('Properti','Properties'))+'<hr>'+b('del','del',L('Hapus','Delete'),'Del','dng')}
+  else{h=b('lib','plus',L('Tambah komponen','Add a part'))+b('tool-wire','wire',L('Tarik kabel','Draw a wire'),'W')+b('label','label',L('Label net','Net label'),'N')+(clip?b('paste','copy',L('Tempel','Paste'),'Ctrl V'):'')+'<hr>'+b('selall','select',L('Pilih semua','Select all'),'Ctrl A')+b('fit','fit',L('Muat semua','Fit all'),'F')}
+  m.innerHTML=h;m.hidden=false;const r=m.getBoundingClientRect();
+  m.style.left=clamp(cx,8,innerWidth-r.width-8)+'px';m.style.top=clamp(cy,8,innerHeight-r.height-8)+'px';
+  const f=m.querySelector('button');if(f&&lastPtrType==='mouse'&&target==='menu')f.focus();
+}
+function closeCtx(){$('#ctx').hidden=true}
+
+/* ---------- actions ---------- */
+function setTool(t,k){tool=t;placeK=k||null;wireStart=null;wireFromSelect=false;if(t==='place'){ghost={r:0,m:false};sel.clear()}if(isPhone()&&t!=='select')sheet=null;render({noSim:true})}
+function placeAtCenterIfTouch(){if(lastPtrType!=='mouse'){const r=sv.getBoundingClientRect();cur=[(r.width/2-view.x)/view.k,(r.height/2-view.y)/view.k];overlay()}}
+function selParts(){return S.parts.filter(p=>sel.has(p.id))}
+function selCenter(){const b=boundsOf({parts:selParts(),wires:S.wires.filter(w=>sel.has(w.id))});return b?[snap((b[0]+b[2])/2),snap((b[1]+b[3])/2)]:[0,0]}
+function rotSel(){
+  if(tool==='place'){ghost.r=(ghost.r+1)%4;overlay();return}
+  const ps=selParts(),ws=S.wires.filter(w=>sel.has(w.id));if(!ps.length&&!ws.length)return;
+  if(ps.length===1&&!ws.length){ps[0].r=(ps[0].r+1)%4;changed();return}
+  const [cx,cy]=selCenter(),R=(x,y)=>[cx-(y-cy),cy+(x-cx)];
+  ps.forEach(p=>{[p.x,p.y]=R(p.x,p.y);p.r=(p.r+1)%4});ws.forEach(w=>{[w.x1,w.y1]=R(w.x1,w.y1);[w.x2,w.y2]=R(w.x2,w.y2)});changed();
+}
+function mirSel(){
+  if(tool==='place'){ghost.m=!ghost.m;overlay();return}
+  const ps=selParts(),ws=S.wires.filter(w=>sel.has(w.id));if(!ps.length&&!ws.length)return;
+  const flip=p=>{p.r=(4-p.r)%4;p.m=!p.m};
+  if(ps.length===1&&!ws.length){flip(ps[0]);changed();return}
+  const [cx]=selCenter();ps.forEach(p=>{p.x=2*cx-p.x;flip(p)});ws.forEach(w=>{w.x1=2*cx-w.x1;w.x2=2*cx-w.x2});changed();
+}
+function delSel(){if(!sel.size)return;S.parts=S.parts.filter(p=>!sel.has(p.id));S.wires=S.wires.filter(w=>!sel.has(w.id));sel.clear();changed()}
+function copySel(){if(!sel.size)return false;clip={parts:JSON.parse(JSON.stringify(selParts())),wires:JSON.parse(JSON.stringify(S.wires.filter(w=>sel.has(w.id))))};pasteN=0;return true}
+function paste(){if(!clip)return;pasteN++;const d=20*pasteN;sel.clear();const used=new Set(S.parts.map(p=>p.ref));
+  clip.parts.forEach(o=>{const p=Object.assign({},o,{id:'p'+(++S.n),x:o.x+d,y:o.y+d});if(!SYM[p.k].net&&used.has(p.ref))p.ref=nextRef(SYM[p.k].pre);used.add(p.ref);S.parts.push(p);sel.add(p.id)});
+  clip.wires.forEach(o=>{const w={id:'w'+(++S.n),x1:o.x1+d,y1:o.y1+d,x2:o.x2+d,y2:o.y2+d};S.wires.push(w);sel.add(w.id)});changed()}
+function zoomAt(f,sx,sy){const r=sv.getBoundingClientRect();if(sx==null){sx=r.width/2;sy=r.height/2}const nk=clamp(view.k*f,.35,12),wx=(sx-view.x)/view.k,wy=(sy-view.y)/view.k;view.k=nk;view.x=sx-wx*nk;view.y=sy-wy*nk;applyView()}
+function visibleRect(){const r=sv.getBoundingClientRect();let l=0,t=0,rt=r.width,b=r.height;
+  if(!isPhone()){t=56;b-=50;if(libOpen&&!isNarrow())l=$('#lib').getBoundingClientRect().right-r.left+8;else l=64;rt=$('#insp').getBoundingClientRect().left-r.left-8}else{t=40;b-=70}
+  return {l,t,w:Math.max(rt-l,120),h:Math.max(b-t,120)}}
+function fit(){const b=boundsOf(S),v=visibleRect();if(!b){view.k=2;view.x=v.l+v.w/2;view.y=v.t+v.h/2;applyView();return}
+  const bw=b[2]-b[0]+60,bh=b[3]-b[1]+60;view.k=clamp(Math.min(v.w/bw,v.h/bh),.35,5);view.x=v.l+v.w/2-(b[0]+b[2])/2*view.k;view.y=v.t+v.h/2-(b[1]+b[3])/2*view.k;applyView()}
+function gotoPart(id){const p=S.parts.find(q=>q.id===id);if(!p)return;sel=new Set([id]);tab='props';const v=visibleRect();view.x=v.l+v.w/2-p.x*view.k;view.y=v.t+v.h/2-p.y*view.k;applyView();if(isPhone())sheet=null;render()}
+function setTheme(){const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==='dark':matchMedia('(prefers-color-scheme: dark)').matches;r.dataset.theme=dark?'light':'dark';store('rangkai2.theme',r.dataset.theme);renderChrome()}
+
+function act(a,el){
+  closeCtx();
+  switch(a){
+    case 'tool-select':setTool('select');break;
+    case 'tool-wire':setTool('wire');break;
+    case 'label':setTool('place','LBL');placeAtCenterIfTouch();break;
+    case 'rot':rotSel();break;case 'mir':mirSel();break;case 'del':delSel();break;
+    case 'dup':if(copySel())paste();break;
+    case 'copy':if(copySel())toast(L('Disalin. Tempel dengan Ctrl+V.','Copied. Paste with Ctrl+V.'));break;
+    case 'paste':paste();break;
+    case 'selall':sel=new Set([...S.parts.map(p=>p.id),...S.wires.map(w=>w.id)]);render({noSim:true});break;
+    case 'undo':undo();break;case 'redo':redo();break;
+    case 'zin':zoomAt(1.25);break;case 'zout':zoomAt(.8);break;case 'fit':fit();break;
+    case 'mode-sim':simOn=true;render();if(SIM&&SIM.ok&&!isPhone())tab=tab==='props'&&!sel.size?'props':tab;break;
+    case 'mode-design':simOn=false;render();break;
+    case 'lib':if(isPhone()){sheet=sheet==='lib'?null:'lib';renderChrome()}else{libOpen=!libOpen;store('rangkai2.lib',libOpen?'1':'0');renderChrome()}break;
+    case 'lib-close':if(isPhone())sheet=null;else libOpen=false;renderChrome();break;
+    case 'insp':if(isPhone()){sheet=sheet==='insp'?null:'insp';if(sel.size)tab='props'}renderInsp();renderChrome();break;
+    case 'sheet-close':sheet=null;renderChrome();break;
+    case 'done':wireStart=null;setTool('select');break;
+    case 'bend':bendV=!bendV;overlay();toast(bendV?L('Tekukan: vertikal dulu','Bend: vertical first'):L('Tekukan: horizontal dulu','Bend: horizontal first'));break;
+    case 'toggle-sw':{const p=selParts()[0];if(p&&p.k==='SW'){p.on=!p.on;changed()}break}
+    case 'clear-hl':hlNet=null;render({noSim:true});break;
+    case 'theme':setTheme();break;
+    case 'lang':lang=lang==='id'?'en':'id';store('rangkai2.lang',lang);document.documentElement.lang=lang;renderLib();render();break;
+    case 'menu':{const r=el?el.getBoundingClientRect():{left:innerWidth-220,bottom:56};openCtx(r.left-160,r.bottom+6,'menu');break}
+    case 'palette':openPalette();break;
+    case 'samples':openSamples();break;
+    case 'export':openExport();break;
+    case 'projects':openProjects();break;
+    case 'modal-close':closeModal();break;
+    case 'new-proj':closeModal();newProj(null,L('Proyek baru','New project'));render();fit();toast(L('Proyek baru dibuat.','New project created.'));break;
+    case 'copy-exp':copyText($('#expta').value,$('#expta'));break;
+    case 'copy-bom':copyText(bomCSV());break;
+    case 'do-import':{try{const o=JSON.parse($('#expta').value);if(!valid(o))throw 0;closeModal();newProj(o,o.name||L('Proyek impor','Imported project'));render();fit();toast(L('Proyek diimpor.','Project imported.'))}catch(e){$('#experr').textContent=L('JSON tidak bisa dibaca. Pastikan isinya hasil ekspor JSON dari Rangkai.','Could not read that JSON. Make sure it was exported from Rangkai.')}break}
+    case 'fixall':fixAll();break;
+    case 'autofix':autoFix=!autoFix;store('rangkai2.autofix',autoFix?'1':'0');renderInsp();if(autoFix&&ISS.some(i=>i.lv==='bad'&&i.fix&&i.fix.auto)){prevBad=new Set();proactive(false);break}toast(autoFix?L('Perbaiki otomatis aktif.','Auto-fix is on.'):L('Perbaiki otomatis mati.','Auto-fix is off.'));break;
+    case 'welcome-close':$('#welcome').hidden=true;store('rangkai2.welcomed','1');break;
+    case 'welcome-samples':$('#welcome').hidden=true;store('rangkai2.welcomed','1');openSamples();break;
+  }
+}
+
+/* ---------- pointer interaction ---------- */
+const sv=$('#sv');
+let gest=null,downInfo=null,lpTimer=null,spaceDown=false;const ptrs=new Map();
+function toWorld(cx,cy){const r=sv.getBoundingClientRect();return [(cx-r.left-view.x)/view.k,(cy-r.top-view.y)/view.k]}
+function pinAt(w,tol){let best=null,bd=tol;S.parts.forEach(p=>pinsOf(p).forEach(pn=>{const d=Math.hypot(pn.pt[0]-w[0],pn.pt[1]-w[1]);if(d<=bd){bd=d;best={p,pn,pt:pn.pt}}}));return best}
+function wireAt(w,tol){let best=null,bd=tol;S.wires.forEach(s=>{const minx=Math.min(s.x1,s.x2)-tol,maxx=Math.max(s.x1,s.x2)+tol,miny=Math.min(s.y1,s.y2)-tol,maxy=Math.max(s.y1,s.y2)+tol;if(w[0]<minx||w[0]>maxx||w[1]<miny||w[1]>maxy)return;
+  const dx=s.x2-s.x1,dy=s.y2-s.y1,l2=dx*dx+dy*dy||1,t=clamp(((w[0]-s.x1)*dx+(w[1]-s.y1)*dy)/l2,0,1),d=Math.hypot(s.x1+t*dx-w[0],s.y1+t*dy-w[1]);if(d<=bd){bd=d;best=s}});return best}
+function partFromTarget(t){const e=t&&t.closest&&t.closest('[data-id]');return e&&e.dataset.id!=='ghost'?S.parts.find(p=>p.id===e.dataset.id):null}
+function isConn(x,y){return S.wires.some(w=>(w.x1===x&&w.y1===y)||(w.x2===x&&w.y2===y)||onSeg(x,y,w))||S.parts.some(p=>pinsOf(p).some(pn=>pn.pt[0]===x&&pn.pt[1]===y))}
+const same=(a,b)=>a&&b&&a[0]===b[0]&&a[1]===b[1];
+function dragSnap(){
+  const parts=selParts().map(p=>({p,x:p.x,y:p.y}));const anchors=new Set();
+  parts.forEach(o=>pinsOf(o.p).forEach(pn=>anchors.add(K(pn.pt[0],pn.pt[1]))));
+  S.wires.filter(w=>sel.has(w.id)).forEach(w=>{anchors.add(K(w.x1,w.y1));anchors.add(K(w.x2,w.y2))});
+  const wires=[];S.wires.forEach(w=>{const s=sel.has(w.id),e1=s||anchors.has(K(w.x1,w.y1)),e2=s||anchors.has(K(w.x2,w.y2));if(e1||e2)wires.push({w,e1,e2,x1:w.x1,y1:w.y1,x2:w.x2,y2:w.y2})});
+  return {parts,wires};
+}
+function tolW(){return (lastPtrType==='mouse'?7:16)/view.k}
+sv.addEventListener('pointerdown',e=>{
+  closeCtx();lastPtrType=e.pointerType;
+  if(e.button===2)return;
+  try{sv.setPointerCapture(e.pointerId)}catch(_){}
+  ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(ptrs.size===2){startPinch();return}
+  if(ptrs.size>2)return;
+  const w=toWorld(e.clientX,e.clientY);cur=w;const pt=[snap(w[0]),snap(w[1])],touch=e.pointerType!=='mouse',tol=tolW();
+  downInfo={x:e.clientX,y:e.clientY,pt,w,touch,moved:false,shift:e.shiftKey,target:e.target};
+  if(touch){clearTimeout(lpTimer);lpTimer=setTimeout(()=>{if(downInfo&&!downInfo.moved&&ptrs.size===1){const p=partFromTarget(downInfo.target)||null,wr=p?null:wireAt(downInfo.w,tol);
+    if(p){if(!sel.has(p.id))sel=new Set([p.id])}else if(wr){if(!sel.has(wr.id))sel=new Set([wr.id])}else sel.clear();
+    gest=null;render({noSim:true});if(navigator.vibrate)try{navigator.vibrate(12)}catch(_){};openCtx(downInfo.x,downInfo.y,p||wr?'sel':'empty');downInfo=null}},480)}
+  if(e.button===1||spaceDown){gest={type:'pan',vx:view.x,vy:view.y};$('#stage').classList.add('panning');return}
+  if(tool==='place'){gest={type:'place'};overlay();return}
+  if(tool==='wire'){const pp=pinAt(w,tol);gest={type:'wire',start:wireStart||(pp?pp.pt:pt)};return}
+  const pp=pinAt(w,tol),part=partFromTarget(e.target);
+  if(simOn&&part&&part.k==='SW'&&!e.shiftKey){gest={type:'toggle',p:part};return}
+  if(pp&&!(part&&sel.has(part.id)&&!touch)){gest={type:'wire',start:pp.pt,fromSelect:true};return}
+  const wr=part?null:wireAt(w,tol);const obj=part||wr;
+  if(obj){if(e.shiftKey){sel.has(obj.id)?sel.delete(obj.id):sel.add(obj.id);gest=null;render({noSim:true});return}
+    if(!sel.has(obj.id))sel=new Set([obj.id]);if(isPhone()||sel.size)tab='props';
+    gest={type:'drag',start:pt,snap:dragSnap()};render({noSim:true});return}
+  if(!e.shiftKey&&sel.size){sel.clear();render({noSim:true})}
+  if(hlNet&&!e.shiftKey){hlNet=null;render({noSim:true})}
+  gest=touch?{type:'pan',vx:view.x,vy:view.y}:{type:'box',a:w,b:w,add:e.shiftKey};
+});
+sv.addEventListener('pointermove',e=>{
+  lastPtrType=e.pointerType;
+  if(ptrs.has(e.pointerId))ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(gest&&gest.type==='pinch'){movePinch();return}
+  cur=toWorld(e.clientX,e.clientY);
+  if(!downInfo||!gest){
+    const pp=(tool!=='place'&&e.pointerType==='mouse')?pinAt(cur,tolW()):null;const ch=(pp&&pp.pt)!==(hoverPin&&hoverPin.pt)&&!same(pp&&pp.pt,hoverPin&&hoverPin.pt);hoverPin=pp;
+    $('#stage').classList.toggle('over-pin',!!pp);
+    if(tool!=='select'||ch)overlay();hudXY();return}
+  if(!downInfo.moved&&Math.hypot(e.clientX-downInfo.x,e.clientY-downInfo.y)>5){downInfo.moved=true;clearTimeout(lpTimer)}
+  if(!downInfo.moved)return;
+  switch(gest.type){
+    case 'pan':view.x=gest.vx+e.clientX-downInfo.x;view.y=gest.vy+e.clientY-downInfo.y;$('#stage').classList.add('panning');applyView();break;
+    case 'drag':{const dx=snap(cur[0])-gest.start[0],dy=snap(cur[1])-gest.start[1];if(dx===gest.dx&&dy===gest.dy)break;gest.dx=dx;gest.dy=dy;
+      gest.snap.parts.forEach(o=>{o.p.x=o.x+dx;o.p.y=o.y+dy});gest.snap.wires.forEach(o=>{if(o.e1){o.w.x1=o.x1+dx;o.w.y1=o.y1+dy}if(o.e2){o.w.x2=o.x2+dx;o.w.y2=o.y2+dy}});render({noSim:true});break}
+    case 'box':gest.b=cur;overlay();break;
+    case 'wire':{const pp=pinAt(cur,tolW());hoverPin=pp;overlay();break}
+    default:overlay();
+  }
+  hudXY();
+});
+function hudXY(){const c=$('#hud .c');if(c)c.textContent=`X ${(snap(cur[0])/100).toFixed(2)}  Y ${(snap(cur[1])/100).toFixed(2)} in`}
+function endPtr(e){
+  ptrs.delete(e.pointerId);clearTimeout(lpTimer);$('#stage').classList.remove('panning');
+  if(gest&&gest.type==='pinch'){if(ptrs.size<1){gest=null;downInfo=null}return}
+  if(!gest||!downInfo){gest=null;downInfo=null;return}
+  const g=gest,di=downInfo;gest=null;downInfo=null;
+  if(e.type==='pointercancel'){if(g.type==='drag')render();return}
+  const w=toWorld(e.clientX,e.clientY),pt=[snap(w[0]),snap(w[1])],tol=tolW();
+  switch(g.type){
+    case 'drag':if(di.moved){fixDiagonals(g.snap);S.wires=S.wires.filter(x=>x.x1!==x.x2||x.y1!==x.y2);const one=g.snap.parts.length===1&&!S.wires.some(x=>sel.has(x.id))?g.snap.parts[0].p:null;const sp=one&&splicePart(one);changed();if(sp)toast(L(`${one.ref} disisipkan ke kabel.`,`${one.ref} spliced into the wire.`))}else render({noSim:true});break;
+    case 'box':{const a=g.a,b=g.b,x0=Math.min(a[0],b[0]),x1=Math.max(a[0],b[0]),y0=Math.min(a[1],b[1]),y1=Math.max(a[1],b[1]);if(!g.add)sel.clear();
+      if(di.moved){S.parts.forEach(p=>{if(p.x>=x0&&p.x<=x1&&p.y>=y0&&p.y<=y1)sel.add(p.id)});S.wires.forEach(s=>{if(Math.min(s.x1,s.x2)>=x0&&Math.max(s.x1,s.x2)<=x1&&Math.min(s.y1,s.y2)>=y0&&Math.max(s.y1,s.y2)<=y1)sel.add(s.id)})}
+      render({noSim:true});break}
+    case 'toggle':if(!di.moved){g.p.on=!g.p.on;changed()}break;
+    case 'place':{const p=newPart(placeK,pt[0],pt[1],ghost.r,ghost.m);S.parts.push(p);const sp=splicePart(p);changed();if(sp)toast(L(`${p.ref} disisipkan ke kabel.`,`${p.ref} spliced into the wire.`));if(placeK==='LBL'){sel=new Set([p.id]);setTool('select');tab='props';if(isPhone())sheet='insp';render({noSim:true});setTimeout(()=>{const f=$('#f-val');if(f&&!isPhone()){f.focus();f.select()}},30)}break}
+    case 'wire':{const pp=pinAt(w,tol),end=pp?pp.pt:pt;
+      if(di.moved&&!same(end,g.start)){const conn=isConn(end[0],end[1]);addWireTo(S,g.start,end,bendV,true);wireStart=conn?null:end;changed({})}
+      else if(!wireStart){wireStart=g.start}
+      else if(same(end,wireStart)){wireStart=null}
+      else{const conn=isConn(end[0],end[1]);addWireTo(S,wireStart,end,bendV,true);wireStart=conn?null:end;changed()}
+      if(g.fromSelect||wireFromSelect){if(wireStart){tool='wire';wireFromSelect=true}else{tool='select';wireFromSelect=false}}
+      render({noSim:true});break}
+  }
+}
+sv.addEventListener('pointerup',endPtr);sv.addEventListener('pointercancel',endPtr);
+sv.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse'&&!gest){hoverPin=null;$('#go').innerHTML=''}});
+sv.addEventListener('dblclick',e=>{if(tool==='wire'){wireStart=null;if(wireFromSelect){tool='select';wireFromSelect=false}render({noSim:true})}else if(tool==='select'){const p=partFromTarget(e.target);if(p&&!isPhone()){sel=new Set([p.id]);tab='props';render({noSim:true});setTimeout(()=>{const f=$('#f-val')||$('#f-ref');if(f){f.focus();f.select()}},20)}}});
+sv.addEventListener('contextmenu',e=>{e.preventDefault();if(tool==='wire'&&wireStart){wireStart=null;if(wireFromSelect){tool='select';wireFromSelect=false}render({noSim:true});return}if(tool!=='select'){setTool('select');return}
+  const w=toWorld(e.clientX,e.clientY),p=partFromTarget(e.target),wr=p?null:wireAt(w,tolW());const o=p||wr;if(o){if(!sel.has(o.id))sel=new Set([o.id])}else sel.clear();render({noSim:true});openCtx(e.clientX,e.clientY,o?'sel':'empty')});
+sv.addEventListener('wheel',e=>{e.preventDefault();const r=sv.getBoundingClientRect();
+  if(e.ctrlKey||(!e.deltaX&&e.deltaMode!==0)||(!e.deltaX&&Math.abs(e.deltaY)>=50))zoomAt(Math.exp(-e.deltaY*(e.ctrlKey?.01:.0018)),e.clientX-r.left,e.clientY-r.top);
+  else{view.x-=e.deltaX;view.y-=e.deltaY;applyView()}},{passive:false});
+function fixDiagonals(sn){sn.wires.forEach(o=>{const w=o.w;if(w.x1!==w.x2&&w.y1!==w.y2){const keepFirst=!o.e1;const a=[w.x1,w.y1],b=[w.x2,w.y2];S.wires=S.wires.filter(x=>x!==w);const mid=keepFirst?[b[0],a[1]]:[a[0],b[1]];
+  [[a,mid],[mid,b]].forEach(([p,q])=>{if(p[0]!==q[0]||p[1]!==q[1])S.wires.push({id:'w'+(++S.n),x1:p[0],y1:p[1],x2:q[0],y2:q[1]})})}})}
+function startPinch(){clearTimeout(lpTimer);if(gest&&gest.type==='drag'&&downInfo&&downInfo.moved){fixDiagonals(gest.snap);changed()}
+  const [a,b]=[...ptrs.values()],r=sv.getBoundingClientRect();gest={type:'pinch',d0:Math.hypot(a.x-b.x,a.y-b.y)||1,k0:view.k,c0:[(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top],vx:view.x,vy:view.y};downInfo=null}
+function movePinch(){const [a,b]=[...ptrs.values()];if(!a||!b)return;const r=sv.getBoundingClientRect(),g=gest;const d=Math.hypot(a.x-b.x,a.y-b.y),c=[(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top];
+  const k=clamp(g.k0*d/g.d0,.35,12),wx=(g.c0[0]-g.vx)/g.k0,wy=(g.c0[1]-g.vy)/g.k0;view.k=k;view.x=c[0]-wx*k;view.y=c[1]-wy*k;applyView()}
+
+/* library: click-to-place, drag-and-drop on desktop */
+let libDrag=null;
+document.addEventListener('pointerdown',e=>{const it=e.target.closest('.item');if(!it)return;lastPtrType=e.pointerType;if(e.pointerType==='mouse'&&e.button===0){libDrag={k:it.dataset.k,x:e.clientX,y:e.clientY,moved:false};e.preventDefault()}});
+document.addEventListener('pointermove',e=>{if(!libDrag)return;if(!libDrag.moved&&Math.hypot(e.clientX-libDrag.x,e.clientY-libDrag.y)>6){libDrag.moved=true;tool='place';placeK=libDrag.k;ghost={r:0,m:false};sel.clear();render({noSim:true})}
+  if(libDrag.moved){cur=toWorld(e.clientX,e.clientY);overlay()}});
+document.addEventListener('pointerup',e=>{if(!libDrag)return;const d=libDrag;libDrag=null;
+  if(d.moved){const over=document.elementFromPoint(e.clientX,e.clientY);if(over&&sv.contains(over)){const w=toWorld(e.clientX,e.clientY);const p=newPart(d.k,snap(w[0]),snap(w[1]),ghost.r,ghost.m);S.parts.push(p);sel=new Set([p.id]);tool='select';placeK=null;const sp=splicePart(p);changed();if(sp)toast(L(`${p.ref} disisipkan ke kabel.`,`${p.ref} spliced into the wire.`))}else{setTool('select')}}
+  else{if(tool==='place'&&placeK===d.k)setTool('select');else setTool('place',d.k)}});
+
+/* clicks */
+document.addEventListener('click',e=>{
+  const it=e.target.closest('.item');if(it&&lastPtrType!=='mouse'){setTool('place',it.dataset.k);placeAtCenterIfTouch();return}
+  const fx=e.target.closest('[data-fix]');if(fx){if(fx.closest('#toast'))$('#toast').hidden=true;runFix(fx.dataset.fix);return}
+  const a=e.target.closest('[data-act]');if(a){if(a.closest('#toast'))$('#toast').hidden=true;act(a.dataset.act,a);return}
+  const t=e.target.closest('[data-tab]');if(t){setTab(t.dataset.tab);return}
+  const n=e.target.closest('[data-net]');if(n&&n.dataset.net){hlNet=hlNet===n.dataset.net?null:n.dataset.net;render({noSim:true});return}
+  const g=e.target.closest('[data-goto]');if(g){if(g.closest('#toast'))$('#toast').hidden=true;gotoPart(g.dataset.goto);return}
+  const ld=e.target.closest('[data-led]');if(ld){const p=selParts()[0];if(p){p.val=ld.dataset.led;changed()}return}
+  const x=e.target.closest('[data-exp]');if(x){openExport(x.dataset.exp);return}
+  const sm=e.target.closest('[data-sample]');if(sm){const s=SAMPLES.find(q=>q.id===sm.dataset.sample);closeModal();newProj(s.build(),s.n[lang==='id'?0:1]);simOn=true;render();fit();toast(L('Contoh dibuka dengan simulasi aktif.','Example opened with simulation on.'));return}
+  const op=e.target.closest('[data-openp]');if(op){closeModal();openProj(op.dataset.openp);render();fit();return}
+  const dp=e.target.closest('[data-delp]');if(dp){const id=dp.dataset.delp;if(dp.dataset.confirm!=='1'){dp.dataset.confirm='1';dp.style.color='var(--danger)';dp.setAttribute('aria-label',L('Klik lagi untuk menghapus','Click again to delete'));toast(L('Klik sekali lagi untuk menghapus proyek ini.','Click again to delete this project.'));return}
+    IDX.list=IDX.list.filter(p=>p.id!==id);try{localStorage.removeItem('rangkai2.p.'+id)}catch(_){}if(id===S.id){if(IDX.list.length)openProj(IDX.list[0].id);else newProj(null,L('Proyek baru','New project'))}store('rangkai2.index',IDX);render();openProjects();return}
+  const pi=e.target.closest('[data-pal]');if(pi){palRun(+pi.dataset.pal);return}
+  if(!e.target.closest('#ctx'))closeCtx();
+});
+$('#modal').addEventListener('pointerdown',e=>{if(e.target.id==='modal')closeModal()});
+document.addEventListener('input',e=>{
+  if(e.target.id==='palq'){palSel=0;palRender(e.target.value);return}
+  const p=selParts()[0];if(!p)return;
+  if(e.target.id==='f-ref'||e.target.id==='f-val'){p[e.target.id==='f-ref'?'ref':'val']=e.target.value;A=analyze();$('#gp').innerHTML=S.parts.map(q=>partMarkup(q,sel.has(q.id)?'sel':'')).join('')}
+  if(e.target.id==='f-pos'){p.pos=+e.target.value/100;const lb=e.target.previousElementSibling;if(lb)lb.textContent=`${L('Posisi wiper','Wiper position')} · ${e.target.value}%`;render();}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='f-ref'||e.target.id==='f-val'||e.target.id==='f-pos')changed();
+  if(e.target.dataset&&e.target.dataset.rename){const id=e.target.dataset.rename,v=e.target.value.trim()||L('Tanpa judul','Untitled');const en=IDX.list.find(x=>x.id===id);if(en)en.name=v;if(id===S.id){S.name=v;saveProj();renderChrome()}else{const o=fetchStore('rangkai2.p.'+id);if(o){o.name=v;store('rangkai2.p.'+id,o)}}store('rangkai2.index',IDX)}
+});
+document.addEventListener('keydown',e=>{
+  const k=e.key.toLowerCase(),mod=e.ctrlKey||e.metaKey;
+  if(!$('#modal').hidden){
+    if(e.key==='Escape'){closeModal();return}
+    if($('#palq')){if(e.key==='ArrowDown'){e.preventDefault();palSel=Math.min(palSel+1,palItems.length-1);palRender($('#palq').value)}else if(e.key==='ArrowUp'){e.preventDefault();palSel=Math.max(palSel-1,0);palRender($('#palq').value)}else if(e.key==='Enter'){e.preventDefault();palRun(palSel)}}
+    return}
+  if(mod&&k==='k'){e.preventDefault();openPalette();return}
+  if(/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){if(e.key==='Enter'||e.key==='Escape')document.activeElement.blur();return}
+  if(!$('#ctx').hidden&&e.key==='Escape'){closeCtx();return}
+  if(e.key===' '){spaceDown=true;e.preventDefault();return}
+  if(mod&&k==='z'){e.preventDefault();e.shiftKey?redo():undo();return}
+  if(mod&&k==='y'){e.preventDefault();redo();return}
+  if(mod&&k==='d'){e.preventDefault();act('dup');return}
+  if(mod&&k==='c'){if(copySel()){e.preventDefault();toast(L('Disalin.','Copied.'))}return}
+  if(mod&&k==='v'){if(clip){e.preventDefault();paste()}return}
+  if(mod&&k==='a'){e.preventDefault();act('selall');return}
+  if(mod||e.altKey)return;
+  const map={v:'tool-select',w:'tool-wire',n:'label',r:'rot',m:'mir',f:'fit',b:'bend','+':'zin','=':'zin','-':'zout'};
+  if(k==='s'){act(simOn?'mode-design':'mode-sim');return}
+  if(k==='/'){e.preventDefault();openPalette();return}
+  if(map[k]){act(map[k]);return}
+  if(k==='delete'||k==='backspace'){e.preventDefault();act('del');return}
+  if(k==='escape'){if(wireStart){wireStart=null;if(wireFromSelect){tool='select';wireFromSelect=false}render({noSim:true})}else if(tool!=='select')setTool('select');else{sel.clear();hlNet=null;render({noSim:true})}}
+  if(['arrowup','arrowdown','arrowleft','arrowright'].includes(k)&&sel.size){e.preventDefault();const d=G*(e.shiftKey?5:1),dx=k==='arrowleft'?-d:k==='arrowright'?d:0,dy=k==='arrowup'?-d:k==='arrowdown'?d:0;
+    const sn=dragSnap();sn.parts.forEach(o=>{o.p.x+=dx;o.p.y+=dy});sn.wires.forEach(o=>{if(o.e1){o.w.x1+=dx;o.w.y1+=dy}if(o.e2){o.w.x2+=dx;o.w.y2+=dy}});fixDiagonals(sn);changed()}
+});
+document.addEventListener('keyup',e=>{if(e.key===' ')spaceDown=false});
+new ResizeObserver(()=>{applyView()}).observe(sv);
+matchMedia('(max-width:760px)').addEventListener('change',()=>{sheet=null;renderLib();render({noSim:true})});
+
+/* ---------- example circuits ---------- */
+function mk(){const s={parts:[],wires:[],n:0};const P=(k,x,y,o={})=>{const p={id:'p'+(++s.n),k,x,y,r:o.r||0,m:!!o.m,ref:'',val:o.val!=null?o.val:SYM[k].v};if(k==='SW')p.on=o.on!=null?o.on:true;if(k==='POT')p.pos=o.pos!=null?o.pos:.5;s.parts.push(p);return p};
+  const pin=(p,n)=>{const d=SYM[p.k].pins.find(q=>q[0]===n);return xf(p,d[1],d[2])};const W=(a,b,v)=>addWireTo(s,a,b,v);
+  const done=()=>{const save=S;S=s;s.parts.forEach(p=>{if(!p.ref)p.ref=SYM[p.k].net?SYM[p.k].pre.replace('#','')+s.n++:nextRef(SYM[p.k].pre,s)});S=save;s.n=Math.max(s.n,1000);return s};return {s,P,pin,W,done}}
+const SAMPLES=[
+ {id:'led',n:['LED dengan resistor','LED with resistor'],d:['Rangkaian pertama: saklar, resistor pembatas arus, dan LED.','The first circuit: a switch, a current-limiting resistor and an LED.'],build(){const {P,pin,W,done}=mk();
+   const v=P('VCC',60,40,{val:'+5V'}),sw=P('SW',100,80),r=P('R',170,80,{val:'330'}),led=P('LED',230,120,{r:1,val:'Merah'}),g=P('GND',230,170);
+   W(pin(v,'V'),pin(sw,'1'),true);W(pin(sw,'2'),pin(r,'1'));W(pin(r,'2'),pin(led,'A'));W(pin(led,'K'),pin(g,'GND'));return done()}},
+ {id:'div',n:['Pembagi tegangan','Voltage divider'],d:['Dua resistor membagi 9 V menjadi sekitar 2,9 V di net VOUT.','Two resistors divide 9 V down to about 2.9 V on VOUT.'],build(){const {s,P,pin,W,done}=mk();
+   const v=P('VCC',100,50,{val:'+9V'}),r1=P('R',100,100,{r:1,val:'10k'}),r2=P('R',100,190,{r:1,val:'4k7'}),g=P('GND',100,250),lb=P('LBL',140,150,{val:'VOUT'});
+   W(pin(v,'V'),pin(r1,'1'));W(pin(r1,'2'),pin(r2,'1'));W(pin(r2,'2'),pin(g,'GND'));W([100,150],pin(lb,'1'));return done()}},
+ {id:'npn',n:['Transistor sebagai saklar','Transistor switch'],d:['Arus basis kecil dari saklar menyalakan LED lewat BC547.','A small base current from the switch turns the LED on through a BC547.'],build(){const {P,pin,W,done}=mk();
+   const v=P('VCC',300,60,{val:'+5V'}),r1=P('R',300,110,{r:1,val:'330'}),led=P('LED',300,180,{r:1,val:'Hijau'}),q=P('NPN',290,240),g=P('GND',300,290),r2=P('R',220,240,{val:'10k'}),sw=P('SW',150,240),v2=P('VCC',130,190,{val:'+5V'});
+   W(pin(v,'V'),pin(r1,'1'));W(pin(r1,'2'),pin(led,'A'));W(pin(led,'K'),pin(q,'C'));W(pin(q,'E'),pin(g,'GND'));W(pin(r2,'2'),pin(q,'B'));W(pin(sw,'2'),pin(r2,'1'));W(pin(v2,'V'),pin(sw,'1'));return done()}},
+ {id:'zener',n:['Regulator zener','Zener regulator'],d:['Zener 5V1 menahan tegangan beban tetap walau sumber 12 V.','A 5V1 zener holds the load voltage steady from a 12 V supply.'],build(){const {P,pin,W,done}=mk();
+   const v=P('VCC',80,50,{val:'+12V'}),r1=P('R',80,100,{r:1,val:'470'}),z=P('ZD',80,180,{r:3,val:'5V1'}),g=P('GND',80,230),rl=P('R',160,190,{r:1,val:'1k'}),g2=P('GND',160,250),lb=P('LBL',200,150,{val:'VREG'});
+   W(pin(v,'V'),pin(r1,'1'));W(pin(r1,'2'),pin(z,'K'));W(pin(z,'A'),pin(g,'GND'));W([80,150],[160,150]);W([160,150],pin(rl,'1'));W([160,150],pin(lb,'1'));W(pin(rl,'2'),pin(g2,'GND'));return done()}},
+ {id:'opamp',n:['Penguat op-amp ×2','Op-amp gain of 2'],d:['Penguat non-inverting. Geser potensio untuk melihat output berubah dan saturasi.','Non-inverting amplifier. Move the pot to watch the output follow and saturate.'],build(){const {P,pin,W,done}=mk();
+   const u=P('OPAMP',250,150,{m:true,r:2}),pot=P('POT',150,140,{r:1,pos:.3}),v=P('VCC',150,90,{val:'+5V'}),g=P('GND',150,200),r2=P('R',220,240,{r:1,val:'10k'}),g2=P('GND',220,300),r1=P('R',250,210,{val:'10k'}),lb=P('LBL',320,150,{val:'VOUT'});
+   W(pin(v,'V'),pin(pot,'1'));W(pin(pot,'2'),pin(g,'GND'));W(pin(pot,'W'),pin(u,'+'));W(pin(u,'-'),pin(r2,'1'));W(pin(r2,'2'),pin(g2,'GND'));W(pin(r1,'2'),pin(u,'OUT'));W(pin(u,'OUT'),pin(lb,'1'));return done()}},
+ {id:'bat',n:['Baterai & lampu','Battery and lamp'],d:['Tanpa simbol Ground: Rangkai memakai kutub − baterai sebagai 0 V.','No ground symbol: Rangkai uses the battery − terminal as 0 V.'],build(){const {P,pin,W,done}=mk();
+   const b=P('BAT',100,160,{r:1,val:'12V'}),sw=P('SW',170,100),l=P('LAMP',240,160,{r:1,val:'12V 2W'});
+   W(pin(b,'+'),pin(sw,'1'),true);W(pin(sw,'2'),pin(l,'1'));W(pin(l,'2'),pin(b,'-'),true);return done()}}
+];
+
+/* ---------- welcome ---------- */
+function showWelcome(){if(fetchStore('rangkai2.welcomed'))return;const w=$('#welcome');w.hidden=false;
+  w.innerHTML=`<h3>${L('Selamat datang di Rangkai','Welcome to Rangkai')}</h3><ul><li>${L('<b>Gratis, tanpa akun, tanpa iklan.</b> Proyek tersimpan di perangkatmu.','<b>Free, no account, no ads.</b> Projects are saved on your device.')}</li><li>${L('<b>Simulasi live:</b> tekan Simulasi, lalu ketuk saklar untuk menyalakan LED.','<b>Live simulation:</b> press Simulate, then tap the switch to light the LED.')}</li><li>${L('<b>Cek otomatis</b> memperingatkan LED atau resistor yang bakal terbakar.','<b>Automatic checks</b> warn you about LEDs or resistors that would burn out.')}</li></ul><div class="btns"><button class="btn pri" data-act="welcome-close">${L('Mulai menggambar','Start drawing')}</button><button class="btn" data-act="welcome-samples">${L('Lihat contoh','See examples')}</button></div>`}
+
+/* ---------- boot ---------- */
+(function boot(){
+  const th=fetchStore('rangkai2.theme')||(()=>{try{return localStorage.getItem('rangkai2.theme')}catch(e){return null}})();if(th==='dark'||th==='light')document.documentElement.dataset.theme=th;
+  document.documentElement.lang=lang;
+  try{const l=localStorage.getItem('rangkai2.lib');if(l==='0')libOpen=false}catch(e){}
+  if(isNarrow())libOpen=false;
+  IDX=fetchStore('rangkai2.index');
+  if(!IDX||!Array.isArray(IDX.list)||!IDX.list.length||!openProj(IDX.cur)){
+    IDX={cur:null,list:(IDX&&Array.isArray(IDX.list))?IDX.list:[]};
+    if(IDX.list.length&&openProj(IDX.list[0].id)){}
+    else{const old=fetchStore('rangkai.v1');if(old&&valid(old))newProj(old,L('Skematik lama (v1)','Earlier sketch (v1)'));
+      const s=SAMPLES[2];newProj(s.build(),s.n[lang==='id'?0:1])}
+  }
+  renderLib();render();prevBad=new Set(ISS.filter(i=>i.lv==='bad').map(i=>i.key));
+  requestAnimationFrame(()=>{fit();showWelcome()});
+})();
+</script>
